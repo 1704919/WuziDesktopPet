@@ -22,7 +22,7 @@
 - **文件处理**：批量重命名，PNG／JPG／WebP 格式转换、预览及重名冲突保护；HEIC 能力依赖 Windows 系统图片组件。
 - **生活提醒**：喝水、吃饭及可选天气提醒；天气查询使用 Open-Meteo 网络服务。
 
-完整版包含 **38 组已处理的运行时动画**。没有把制作时使用的原始绿幕视频或参考图放进发行包。
+完整版包含 **38 组已处理的运行时动画**。
 
 ## 源码与构建
 
@@ -30,7 +30,7 @@
 
 **注意：Git 仓库本身不包含角色动画二进制资源。** 单纯克隆本仓库，不能直接得到与完整版 ZIP 相同的角色画面；普通用户请从 [Releases](https://github.com/1704919/WuziDesktopPet/releases) 下载 Windows 便携版。开发者需要合法取得相应素材，并自行生成 `godot/assets_display/` 的运行时资源。
 
-Windows 原生文件处理组件的源码位于 `tools/native/file_bridge.cpp`。开发者可参考 [测试说明](docs/TESTING.md) 和 [项目目录说明](docs/DIRECTORY_STRUCTURE.md)；需要 Godot 4.7 与对应 Windows 导出模板。
+Windows 原生文件处理组件的源码位于 `tools/native/file_bridge.cpp`。
 
 ## 已知限制
 
@@ -40,7 +40,7 @@ Windows 原生文件处理组件的源码位于 `tools/native/file_bridge.cpp`�
 
 - 本项目原创源代码采用 [MIT License](LICENSE)。
 - **舞梓／阿梓的角色形象、相关设计及衍生动画不属于源码 MIT 授权范围**；相关权利归各自合法权利人所有。
-- 这是非官方粉丝二创作品，不代表角色权利人或任何官方组织。详细说明请见 [素材与版权说明](docs/ASSET_POLICY.md)。
+- 这是非官方粉丝二创作品，不代表角色权利人或任何官方组织。
 - Godot 引擎及其他实际分发组件依各自许可证使用。
 
 **v0.1.0 Windows ZIP SHA-256：**
