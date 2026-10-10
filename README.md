@@ -2,12 +2,12 @@
  2 | 
  3 | 一个基于 **Godot 4.7** 的 Windows Q 版桌宠。具有透明视频动画、随机日常动作、拖拽与点击、本地对话与彩蛋、睡眠、提醒，以及文件批量重命名和图片转换。
  4 | 
- 5 | > **发布状态：Windows 便携包 v0.1.0 已在本地构建，并通过独立目录的启动测试；GitHub 仓库和 Releases 尚未上传。**
+ 5 | > **发布状态：公开源码仓库已上线；Windows 便携包 v0.1.0 已在开发机完成构建与独立启动测试，GitHub Releases 附件仍待上传。**
  6 | > GitHub 源码仓库与运行版 ZIP 分开：源码 Git 仓库不包含动画二进制资源，完整 ZIP 的 Godot PCK 包含 38 组已处理的运行时动画（OGV 与 PNG fallback），**不包含原始绿幕 MP4 或参考图**。
  7 | 
  8 | ## 下载与使用
  9 | 
-当 GitHub Release 发布后，请下载 `WuziDesktopPet-v0.1.0-win64.zip`，**完整解压后**双击 `舞梓桌宠.exe`。最终用户不需要安装 Godot、Python、FFmpeg 或其他开发工具。
+GitHub Release 附件上传后，请下载 `WuziDesktopPet-v0.1.0-win64.zip`，**完整解压后**双击 `舞梓桌宠.exe`。最终用户不需要安装 Godot、Python、FFmpeg 或其他开发工具。
 
 请保留与 EXE 同目录的 `舞梓桌宠.pck` 和 `native/` 文件夹，否则动画或文件处理功能无法正常运行。HEIC 读写取决于 Windows 是否支持相关系统图片编解码器。
 
