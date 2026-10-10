@@ -4,8 +4,6 @@
 
 **[下载 Windows 64 位完整版 v0.1.0](https://github.com/1704919/WuziDesktopPet/releases/download/v0.1.0/WuziDesktopPet-v0.1.0-win64.zip)** · [查看版本说明](https://github.com/1704919/WuziDesktopPet/releases/tag/v0.1.0)
 
-> 首个公开版本。无需安装 Godot 或 Python，完整解压即可运行。项目为非官方粉丝二创。
-
 ## 如何使用
 
 1. 下载上面的 `WuziDesktopPet-v0.1.0-win64.zip`（约 352 MiB）。
