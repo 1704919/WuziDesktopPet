@@ -1,59 +1,52 @@
- 1 | # 舞梓桌面宠物 / Wuzi Desktop Pet
- 2 | 
- 3 | 一个基于 **Godot 4.7** 的 Windows Q 版桌宠。具有透明视频动画、随机日常动作、拖拽与点击、本地对话与彩蛋、睡眠、提醒，以及文件批量重命名和图片转换。
- 4 | 
- 5 | > **发布状态：公开源码仓库已上线；Windows 便携包 v0.1.0 已在开发机完成构建与独立启动测试，GitHub Releases 附件仍待上传。**
- 6 | > GitHub 源码仓库与运行版 ZIP 分开：源码 Git 仓库不包含动画二进制资源，完整 ZIP 的 Godot PCK 包含 38 组已处理的运行时动画（OGV 与 PNG fallback），**不包含原始绿幕 MP4 或参考图**。
- 7 | 
- 8 | ## 下载与使用
- 9 | 
-GitHub Release 附件上传后，请下载 `WuziDesktopPet-v0.1.0-win64.zip`，**完整解压后**双击 `舞梓桌宠.exe`。最终用户不需要安装 Godot、Python、FFmpeg 或其他开发工具。
+# 舞梓桌宠 · Wuzi Desktop Pet
 
-请保留与 EXE 同目录的 `舞梓桌宠.pck` 和 `native/` 文件夹，否则动画或文件处理功能无法正常运行。HEIC 读写取决于 Windows 是否支持相关系统图片编解码器。
+基于 **Godot 4.7** 开发的 Windows 桌面宠物。舞梓会随机活动、和你互动，也能帮助处理图片和批量重命名文件。
 
-当前本地构建位置：`dist/WuziDesktopPet-v0.1.0-win64.zip`。这条路径是作者电脑上的构建成果，**不是互联网下载链接**。截至当前版本，Windows DPI 125%/150% 和多显示器尚未专门实测；运行时动态命中区域可能略大。
+**[下载 Windows 64 位完整版 v0.1.0](https://github.com/1704919/WuziDesktopPet/releases/download/v0.1.0/WuziDesktopPet-v0.1.0-win64.zip)** · [查看版本说明](https://github.com/1704919/WuziDesktopPet/releases/tag/v0.1.0)
 
-## 已有功能
+> 首个公开版本。无需安装 Godot 或 Python，完整解压即可运行。项目为非官方粉丝二创。
 
-- 透明桌宠、鼠标点击与 Q 弹、拖拽／抛掷、右键点播动作。
-- 26 种按权重抽签的自主日常动作，以及独立睡眠、桌面漫游和统一自主暂停。
-- 本地关键词聊天、昵称、角色彩蛋、有限上下文、真实情绪回复、动画与对话联动。
-- 文件处理工作台：批量重命名、PNG/JPG/WebP 互转、可选系统 HEIC、预览/冲突保护、确认执行与失败保留；聊天不会直接处理文件。
-- 喝水、吃饭及可选天气提醒。天气使用 Open-Meteo 网络请求。
+## 如何使用
 
-## 开发者源码
+1. 下载上面的 `WuziDesktopPet-v0.1.0-win64.zip`（约 352 MiB）。
+2. 将 ZIP **完整解压**到任意文件夹，不要直接在压缩包里启动。
+3. 双击 `舞梓桌宠.exe`。
 
-源码在 `godot/` 和 `tools/`。**克隆 Git 仓库不等于下载可运行版**；出于仓库体积与素材权利划分，Git 追踪配置和代码，运行时动画二进制放在 Windows Release ZIP 内。
+请保留 `舞梓桌宠.pck` 和 `native/` 目录，它们分别提供动画及文件处理所需资源。遇到 Windows 未知发布者提示时，请确认下载来源和文件校验值。
 
-需要从源码重建桌宠时，须具有合法来源的动画资源，并按原项目各 `*_video_manifest.json` 和素材构建脚本重建 `godot/assets_display/`；构建不依赖或需要 Git 仓库携带原始 MP4。 Windows 文件辅助组件的 C++ 源码在 `tools/native/file_bridge.cpp`，可运行 `tools/build_file_bridge.ps1` 构建。
+## 功能介绍
 
-独立 Windows 构建要求 Godot 4.7 和配套的 Windows x86_64 导出模板：
+- **桌面陪伴**：透明动画、点击 Q 弹、拖动／抛掷、右键动作点播、桌面漫游。
+- **自主行为**：26 种加权随机日常动作，独立打瞌睡与睡眠系统；可以暂停自主行为。
+- **本地对话**：离线关键词聊天、昵称、彩蛋、情绪回答和动作联动；不需要配置云端 AI API。
+- **文件处理**：批量重命名，PNG／JPG／WebP 格式转换、预览及重名冲突保护；HEIC 能力依赖 Windows 系统图片组件。
+- **生活提醒**：喝水、吃饭及可选天气提醒；天气查询使用 Open-Meteo 网络服务。
 
-```powershell
-py -3 tools/fetch_win_export_templates.py
-py -3 tools/package_windows_release.py
-py -3 tools/smoke_portable_release.py
+完整版包含 **38 组已处理的运行时动画**。没有把制作时使用的原始绿幕视频或参考图放进发行包。
+
+## 源码与构建
+
+本仓库主要提供 `godot/` 下的 GDScript、场景与配置，以及 `tools/` 中的构建和测试工具。
+
+**注意：Git 仓库本身不包含角色动画二进制资源。** 单纯克隆本仓库，不能直接得到与完整版 ZIP 相同的角色画面；普通用户请从 [Releases](https://github.com/1704919/WuziDesktopPet/releases) 下载 Windows 便携版。开发者需要合法取得相应素材，并自行生成 `godot/assets_display/` 的运行时资源。
+
+Windows 原生文件处理组件的源码位于 `tools/native/file_bridge.cpp`。开发者可参考 [测试说明](docs/TESTING.md) 和 [项目目录说明](docs/DIRECTORY_STRUCTURE.md)；需要 Godot 4.7 与对应 Windows 导出模板。
+
+## 已知限制
+
+目前主要在 Windows 11 上验证。125%／150% 显示缩放、多显示器尚未专项测试；个别姿态的鼠标命中范围可能偏大。HEIC 编解码能力取决于用户的 Windows 环境。
+
+## 许可与版权
+
+- 本项目原创源代码采用 [MIT License](LICENSE)。
+- **舞梓／阿梓的角色形象、相关设计及衍生动画不属于源码 MIT 授权范围**；相关权利归各自合法权利人所有。
+- 这是非官方粉丝二创作品，不代表角色权利人或任何官方组织。详细说明请见 [素材与版权说明](docs/ASSET_POLICY.md)。
+- Godot 引擎及其他实际分发组件依各自许可证使用。
+
+**v0.1.0 Windows ZIP SHA-256：**
+
+```text
+408b8cf048c5ca249259890f8aba47e44c0759490f2a761df459e3acaef78de1
 ```
 
-仅验证当前已导出 EXE/PCK 并重新生成 ZIP 时，可传入 `--reuse-export`。完整回归：
-
-```powershell
-py -3 -m pip install numpy pillow imageio-ffmpeg
-py -3 tools/run_baseline_tests.py
-```
-
-开发机普通启动为 `启动桌宠.vbs`，调试启动为 `tools/诊断启动桌宠.bat`，后者和旧脚本依赖作者本机的 Godot 安装路径；正式便携包**不需要这些启动脚本**。
-
-## 许可与角色声明
-
-- 项目原创源代码以 [MIT License](LICENSE) 开源。
-- Godot 引擎采用自身 MIT 许可证，运行 ZIP 内包含相应引擎版权与许可文本。
-- **舞梓／阿梓的角色形象、衍生动画及其他视觉素材不属于项目代码 MIT 许可证。** 相关权利归各合法权利人所有。本桌宠为非官方粉丝二创，未经权利人官方背书；本仓库的版权说明不构成任何第三方授权。
-- 完整 ZIP 只包含处理后的运行资源，不包含原始 MP4；这不会自动消除角色衍生创作和再分发方面的授权问题。详情请阅读 [素材说明](docs/ASSET_POLICY.md)。
-
-## 文档
-
-- [开发机操作说明](README_桌宠.md)
-- [本机完整发布流程](docs/PUBLIC_RELEASE_PLAN.md)
-- [自动测试说明](docs/TESTING.md)
-- [阶段五与后续交接](阶段五5B实现与后续AI交接.md)
+可以在 PowerShell 中运行 `Get-FileHash .\WuziDesktopPet-v0.1.0-win64.zip -Algorithm SHA256` 核对下载文件。
