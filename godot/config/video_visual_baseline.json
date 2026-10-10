@@ -1,0 +1,236 @@
+  1 | {
+  2 |   "schema_version": 10,
+  3 |   "description": "Approved visual baseline with fixed ordinary action scale, sleep-loop watermark cleanup using protected character/Zzz silhouette plus combined gray-cyan and gray-brown residual filtering, and wake-up scale derived from the time-aligned reverse sleep-down physical-size trajectory. Wake-up frame 0 matches sleep-loop, allows only mild early shrink to compensate source zoom, bounds per-frame scale changes, and fixes standing scale from frame 65 onward.",
+  4 |   "min_reference_fill_ratio": {
+  5 |     "idle": 0.58,
+  6 |     "click_happy": 0.58,
+  7 |     "click_shy": 0.58,
+  8 |     "march_in_place": 0.58,
+  9 |     "sleepy": 0.57,
+ 10 |     "yawn": 0.57,
+ 11 |     "click_angry": 0.58,
+ 12 |     "sleep_down": 0.55,
+ 13 |     "drag_reaction": 0.58,
+ 14 |     "startle": 0.57,
+ 15 |     "yawn_small": 0.57,
+ 16 |     "game_rage": 0.58,
+ 17 |     "click_wave": 0.58,
+ 18 |     "wake_up": 0.45,
+ 19 |     "sleep_loop": 0.45,
+ 20 |     "sing": 0.58,
+ 21 |     "game_controller": 0.58,
+ 22 |     "read_book": 0.57,
+ 23 |     "watch_kline": 0.58,
+ 24 |     "drink_milk_tea": 0.57,
+ 25 |     "work_computer": 0.58,
+ 26 |     "lie_phone": 0.58,
+ 27 |     "walk_left": 0.58,
+ 28 |     "walk_right": 0.58,
+ 29 |     "mic_test": 0.58,
+ 30 |     "cat_accident": 0.58,
+ 31 |     "unbox_cards": 0.55,
+ 32 |     "pc_game_rage": 0.53,
+ 33 |     "sunglasses_proud": 0.55,
+ 34 |     "pc_game_focused": 0.46,
+ 35 |     "hop_bounce": 0.55,
+ 36 |     "birthday_cake": 0.58,
+ 37 |     "eat_noodles": 0.58,
+ 38 |     "eat_fried_chicken": 0.58,
+ 39 |     "eat_sushi": 0.58,
+ 40 |     "eat_breakfast": 0.58,
+ 41 |     "eat_bullfrog": 0.58,
+ 42 |     "eat_fries": 0.58
+ 43 |   },
+ 44 |   "rgba_sha256": {
+ 45 |     "idle": {
+ 46 |       "120": "e2c9002fea41a3eb20b424aa51143b2c8afd88abf09f9be31df17e028be9feb2",
+ 47 |       "000": "841d502e071adb8cabcf58a3e3c6142735c927923329b016fb242d7cf18cf2dc",
+ 48 |       "060": "2b7e3102fe1576f375cf0dd6b22ba3a319cc51fdf16deb0a9f068be00b3e911e"
+ 49 |     },
+ 50 |     "click_happy": {
+ 51 |       "120": "7613facfca9db78447a40c9cc87d309a88e3fa455199e749301eb22d3c4f8675",
+ 52 |       "000": "65d4e598968e3a9a47cf5a4f693da33847e3d6a4029e5f925416c5c7e08a154b",
+ 53 |       "060": "9178e088a179eaa66e6a12051359344018d28a4e14d5c5d7a9c11c45ccd8aa86"
+ 54 |     },
+ 55 |     "click_shy": {
+ 56 |       "120": "8b8e3c81304d8605d814308a96811ace958603dcf741dd241745363951a51575",
+ 57 |       "000": "98818f2f52eb37038a4ce748f873f71192bdd1cb59d57c65a5769d632af63efe",
+ 58 |       "060": "d89b390b723762a43de449a5aa10e22ce5d2b364eda99e4621ba6df1f9e3ecec"
+ 59 |     },
+ 60 |     "march_in_place": {
+ 61 |       "120": "04d11297bc685949e21a005af032d8c57026877e5af211804911baca9fc07c73",
+ 62 |       "000": "2b8cd30b98e1bad2f73be2f118910713cb6fadd169b0ff4c73566c13237feace",
+ 63 |       "060": "bffaecb67d6043e1c94b77525e4246689547d6765267c6c14f3b40814c51c871"
+ 64 |     },
+ 65 |     "sleepy": {
+ 66 |       "120": "064907f309fcb73b4b01251114f3127d981ebb743d2f48fedd2e40b522b8b7a0",
+ 67 |       "000": "b603e9d8938de39e66a867517fcccbdd482a93349cc2d46247b2a75b4bb813ed",
+ 68 |       "060": "4725b5c681f672bb8bd8441825396b7a9291a461e4091c5f49c033a9091cae2d"
+ 69 |     },
+ 70 |     "yawn": {
+ 71 |       "120": "340c0d9141251d139af36a0c670b4417d5ef6abd392592ef17f98d46bb1e53a6",
+ 72 |       "000": "1dd28f20c9b5f0580cd8aa5916225ab4ed2425b7ab4639490790f42869ea3084",
+ 73 |       "060": "08268c29b304f66ec1cbc8c9f2663ea980fdfd10e4108179a76357f8a8e39639"
+ 74 |     },
+ 75 |     "click_angry": {
+ 76 |       "120": "50754a67db410ef373d596fee93ab8059822b8c521762f66ed5be69910d3d61a",
+ 77 |       "000": "d4ebbcc5e0702a8fd9c3d3bcb2c40425f7efabb8da868cad2b4c031982dc29e5",
+ 78 |       "060": "6eee20937085a0f00337f40ca3722557a4cb7ae359739927de0686c64fdf8787"
+ 79 |     },
+ 80 |     "sleep_down": {
+ 81 |       "120": "48775ae80cbedc15a0fbbbe3de97b7f962ae38db0c4e3f6f0fab4d8fe42a2829",
+ 82 |       "000": "a498c7ca279bf7c3012714d0914806529cfbc7138faa50b862b269527432781a",
+ 83 |       "060": "9112d005ce5a1682498bcaefd8af57f2dcdf69e26682fe2929cc11d9261f6735"
+ 84 |     },
+ 85 |     "drag_reaction": {
+ 86 |       "120": "9461f31b4d7831346e23dab6135f075c23c01f0e5dbf314ce815ad8eb80a6f70",
+ 87 |       "000": "ed5e0a9bcb47ccea5fe7b4ebac1cb1df842f992c0a0aba94a040e856cbb5d8a7",
+ 88 |       "060": "a5f0e8d4fc89ea0ed3e849d7a90356a70ce668de871a8acb66a2d92d737f613e"
+ 89 |     },
+ 90 |     "startle": {
+ 91 |       "120": "edbeda75898b1e417ba2412d04283f15b5caf79f1520f26ef54441950ac51fb9",
+ 92 |       "000": "053f5840d9440f5d83391ec2abaf0003dd1a4a0a5ef52cf3eeb66e51ba8e8f05",
+ 93 |       "060": "439cfa3b638221bc3308b0d4179a36250f73254b852df45d910f9bbdbd5a13dc"
+ 94 |     },
+ 95 |     "yawn_small": {
+ 96 |       "120": "96efc85be24961dc4d5adedb4084f15ea2733d3cf715669cf0c6746c88cb61cc",
+ 97 |       "000": "0b128c653399c38c22294567ee4e4851abd1c0475b1017c10ba4b118f46e23bc",
+ 98 |       "060": "3b2005fa52eed451f72989049fe58ce5d0919cdeb94ea9e7898960b8e3bb2897"
+ 99 |     },
+    "game_rage": {
+      "120": "2ffac279726c7f96a7069a31de6f7a4191314c16c01ad6216242ede113f53606",
+      "000": "00c14c91929a88ae068b97476c139b491a6a9f2bb2d1f8ddebe3a116462241bc",
+      "060": "f69aedb76f1d83bab72b1e5b106dbf7d9628a7e3b3fad5d250121139eb71eb19"
+    },
+    "click_wave": {
+      "120": "1e15157f305ecceec04a0126ababaf141c87c8e9615ee38c5f3dfc7f53545660",
+      "000": "cca519dd8557a6a6e715bc7dd9a4e55ff0eb41241747529344b145361c44a3b6",
+      "060": "c67b310a47b3ffdd621f7f92e469d3eab40592ee42658fce0f5b7e7b39d979b3"
+    },
+    "wake_up": {
+      "120": "5320911d97bb9299b781569c5008279498e58218d3953a26c1862d022215e189",
+      "000": "2721a3d2ef71656e2d2fa71580fc54fd8c30678a6a05b19cc1431b8bcc5c8c9f",
+      "060": "011ba4495c80a994a2fbb51a07eacb8521a8b59c7c572e9f1fa6fb634d24b370"
+    },
+    "sleep_loop": {
+      "120": "8637308b007a1cc26a75a667970b19aabe5a55316bba7494b85886a9e78635f7",
+      "000": "117f5d5821aa5d4ddc9063a952f911e51888989406c61892558fca86a114ffec",
+      "060": "f930ae4391b34fb4e922000a7bf0449f38bdd3fae024d6abc43c3663f9256ee7"
+    },
+    "sing": {
+      "120": "1d318af92408527a94022e686b0d2535a10603da676283505f36cf009ab5c274",
+      "000": "4ea18b198974903d06431f790e30e0c6056e4a27d9ca14efd752364584ca8faf",
+      "060": "52ba1488b2acc83218a0fa86ea7af43d7fd114b6e65453196ff418ba65f5be03"
+    },
+    "game_controller": {
+      "120": "cbeea5097ce6742c55b3f2bc6028a1fdf6cdb4728ca4f79a4e79ed3a27cf4172",
+      "000": "4f30164d6e80af8475559bb6057809e8b59c98e26c360e7669ccd5ec7efbc371",
+      "060": "d6d35b07b9f984f6bc7bfb0fe4a8756199c28dbac9365f2f3d67e12c90a4f079"
+    },
+    "read_book": {
+      "120": "3da79f9f9539345cec66c7af0cb097a9ca9f62fa0c4298b12ed4cc2e734ccea6",
+      "000": "0e38add24d984d94dc6e7059b2249b3c606dac99d9328d2e64ff1d47d41dbebd",
+      "060": "bc40c74ebb3327f9a134eee321251aac2af8bf854d4fc4afb05f21a7273e0a90"
+    },
+    "watch_kline": {
+      "120": "51cabf7c7cf2cdb3b4b61a39fd9c829e64b9746ae7e7070f28e3c657d2c966e1",
+      "000": "7a5e6223aa9fc50f348df4b3ee3d408dff895732e957039d6ce303fd4bf556d8",
+      "060": "8d0afd9c2fdfc1e0c0bb6ff95919b6af7b85a54a94796706255cc76816148708"
+    },
+    "drink_milk_tea": {
+      "120": "fa6b1640ba8a1e0e2ebaa0569302a6664a182080232b02b9ef744f85c6270f5c",
+      "000": "7171edf8d4754827c6bf8640b46b3cb72d1df8ed6aa8013bc2ab7839bdfc158e",
+      "060": "f78af7f29f876c0632fa49f0c54f0cac4f683e8c56236516f7de1dc7f1b6fff6"
+    },
+    "work_computer": {
+      "120": "cc1d9065ff75d4768c2e0b9b9ed2ee4c2b79a00b4221ff411e6e23a67d924150",
+      "000": "61cfa4f03c6ca4202d3766c6bceda3b9ddcbe5d9b1ae1b03180937966b6a67a2",
+      "060": "62cc06b58f1be4159cd98b6becf61ead09d8d0675d580b382d0c89bc800b4a13"
+    },
+    "lie_phone": {
+      "120": "82734c1b381c701bc1c1f86da04bbcc270fede530696d17ce0f0e1299eb6eeb2",
+      "000": "35e9204ea15fc7452c85b0a4c558a311daab68fb677798396d6a69f3c18ddddc",
+      "060": "c1726368f4764ae8f8675e302b9b27987a9665f193cbb7c44f73705283f3121d"
+    },
+    "walk_left": {
+      "120": "391949f67fe185f9530ebb842c9750de108ae9373a0952be25db53555f889afc",
+      "000": "452e33a29a7bc74ee58743c6aa2b0ee3a896263feeb02450ed02c26f3cd6f1d3",
+      "060": "de5024447d2ba6bdd4c724950286c47f238df8c43d1476d332179f235d86568c"
+    },
+    "walk_right": {
+      "120": "6b57c67e8c6811794233db4374d50042adbeb2069b2b589166c217b1d7498035",
+      "000": "bca15afdb6312156bd8cc035ea4f7b3df3b21c229a3fd55b986300edfc6f27d1",
+      "060": "ee1a10b5e227f97d731a2bd936c0c7cf1e21bb6d138548db8af7cb11416fbc0d"
+    },
+    "mic_test": {
+      "120": "726d9587e0eacff05ef05b3a40675c24e939514b462a28bb56170b2a07024d18",
+      "000": "7002e920858eb7076630f6189264a53f1d60faefcbf815f8304b936fdf153410",
+      "060": "f82639505f7a500035ae2d49cc4b9d6163cb061000a6147c3ff05d2c44e9d503"
+    },
+    "cat_accident": {
+      "120": "83a78c9045e15387a024104da634477885679db29ad796c729de9e2e7b403ba6",
+      "000": "cae8f1102735ffb3086de5e1db80012caafb1763505c275c9d4bbcbb4a45531c",
+      "060": "72ad173c8fcee2ac3856fa382ec595a8c1b6f25d03649fbd345224060a7f10e6"
+    },
+    "unbox_cards": {
+      "120": "f797ddf0420b303bbdfdd5dbd14b8bc3399da1690a2ae7dc6a4f339ff3e1aa55",
+      "000": "d85cb0f7fb6bb5605ad905d6dce43d186bb10e5883829751ec22c24daefda4fe",
+      "060": "0fe296b5ad61a5cc23a660d88bb23433efd138f0ba739619bd98c5f56ce55cc4"
+    },
+    "pc_game_rage": {
+      "120": "2fa87c603316f043f465a6768638cd362e14e51ffaaf2c31a958d62dae094829",
+      "000": "ae23c1c086f0ff785d30fbc64eb393928ea371a2e5dbc4c8e10e556665cc19ed",
+      "060": "de9b0803c461db3d7b691f824014b76349bf7b233a475ada7ed557e3864ae821"
+    },
+    "sunglasses_proud": {
+      "120": "17373dc75e01030e207f07cbc27bd2bd32544450cc0cbff03b6019ba5f48db6d",
+      "000": "133342adb96ec6112208b45c854f0dd5a72dbc6213dfbf220675b263976796e4",
+      "060": "2ded810621e6fd748d36a7ee9b6be1f488e9828d5fda18dd31f9ae9bac93efe6"
+    },
+    "pc_game_focused": {
+      "120": "40aa875b7269556ec45f8e2003db12f7c62622cbafa17af02cd7c08e25fbd0c9",
+      "000": "7d36734c6cee4146469c02999ec99fd119771b662a9c95544ebd8004d22615f4",
+      "060": "e5c2e1969834a8cc4b32c09a9d609451d372e7ab0c20222ce59b970c16bef5ce"
+    },
+    "hop_bounce": {
+      "120": "f33f26673e1a485c8aadda04ffa52d8b1e7b1feeea256c8917cf12b3417cc633",
+      "000": "438d541737547f552f1e2e1d1ded6d2151f5b2f6ae1c800c698f2cab08022ae3",
+      "060": "2d3131d1867e230edc444fc6fe1fecb47e4cb8243f8586f1699dcb248c908309"
+    },
+    "birthday_cake": {
+      "120": "af57e441d7843a5361764c9635d216c09c65b3410ea5ac1711e66cd79c3a093d",
+      "000": "ad097e59305f1cd69944ef4615df73ec9ec4730844d0096aa66175dc18b09a9b",
+      "060": "8f39f7c7c29695b1ba2f969fda5ea643718161d99f07704513e29eca5ba768f8"
+    },
+    "eat_noodles": {
+      "120": "e5cf143c3a00f8cb02b3f74b4d22c1e8fe48ac76c5a5f90c7d1598bae4e73dc4",
+      "000": "0dedc7ceeb36f5baa3f291b725feacbf73813804c103febe3a2391ce75ac8207",
+      "060": "e2cfaef867fe918dc8d5f690a378a76594724ea2d6c17d4fc9b7192d83a679ea"
+    },
+    "eat_fried_chicken": {
+      "120": "4a65747a93aef79f2bf74b044fce448089367ca2c8549e03a44b99f35d92ec1f",
+      "000": "575f63a7728e9feaed276452ff4b9b4415355e452f49c6e4771da373f38b0f0c",
+      "060": "fb7f9b685ce0646f4db252913bdff042d4f904e4b27091a4d44a7d6d5972814c"
+    },
+    "eat_sushi": {
+      "120": "cbcd17ff52cec6e8960ff95de690d817558946ca352bac7f5420ed42e28f6b68",
+      "000": "0ea2a04b2f7d536cde9d966d8bec5e6f0e5248ffd2c6007029c474e357b9cc15",
+      "060": "f4d4ece5f585cde0458d9c44c7c2fdcfa51551bee76e56edd5117737a96881b0"
+    },
+    "eat_breakfast": {
+      "120": "06c82a2ea80995d1f1a4065831bdcc4f206154bde30e7050c25a363d169cdcd5",
+      "000": "1d49a8bcb11cd6a8226841f9b4ce2057f34f99c3b6f53e5dced838bb575c0779",
+      "060": "36e3110d9854fd88a24987f5f74e0164740df98af4517fd3a4ac884fba55b89c"
+    },
+    "eat_bullfrog": {
+      "120": "068cd82b6b25f0db75fed1b3ec02e4d1c63f887290c6ec042e6a197c1df06aef",
+      "000": "684859aaf809c7c8e6cfade0f92746e9d921728b0004d40eb3f859066d38ac2f",
+      "060": "71bf1569d69beed3401250facd1933e0dd8ece226e33a98bd86a4cd2b5d6665a"
+    },
+    "eat_fries": {
+      "120": "12a363078cdb369b04fd5d463b1d1bb751f64ba1f9c971e3df41b001ca2dba71",
+      "000": "8eafedd4ecfe4b76d6935ec1db3f6310d8fc557c18d12da36ef458c02dd7beee",
+      "060": "e6e217eeb08bc7ecca80c92fa2457087bf7d915eec7bc12b4494c967aec6ed0c"
+    }
+  }
+}
