@@ -44,7 +44,7 @@ Windows 原生文件处理组件的源码位于 `tools/native/file_bridge.cpp`�
 **v0.1.0 Windows ZIP SHA-256：**
 
 ```text
-408b8cf048c5ca249259890f8aba47e44c0759490f2a761df459e3acaef78de1
+6737bac328a1d515271b708da828b11ae3039606220e921d4c309293277ee579
 ```
 
 可以在 PowerShell 中运行 `Get-FileHash .\WuziDesktopPet-v0.1.0-win64.zip -Algorithm SHA256` 核对下载文件。
