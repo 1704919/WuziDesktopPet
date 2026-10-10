@@ -1,0 +1,749 @@
+  1 | {
+  2 |   "window": {
+  3 |     "width": 760,
+  4 |     "height": 420,
+  5 |     "margin_right": 28,
+  6 |     "margin_bottom": 28,
+  7 |     "always_on_top": true
+  8 |   },
+  9 |   "sprite_scale": 1,
+ 10 |   "master_texture": "res://assets_display/wuzi_chibi/video_idle/frames/000.png",
+ 11 |   "idle_video": {
+ 12 |     "enabled": true,
+ 13 |     "frames_dir": "res://assets_display/wuzi_chibi/video_idle/frames",
+ 14 |     "frame_count": 121,
+ 15 |     "fps": 12,
+ 16 |     "start_frame": 0,
+ 17 |     "end_frame": 120
+ 18 |   },
+ 19 |   "video_runtime": {
+ 20 |     "enabled": true
+ 21 |   },
+ 22 |   "reduce_motion": false,
+ 23 |   "manual_action_categories": [
+ 24 |     {
+ 25 |       "id": "click",
+ 26 |       "label": "点击动作"
+ 27 |     },
+ 28 |     {
+ 29 |       "id": "daily",
+ 30 |       "label": "日常动作"
+ 31 |     },
+ 32 |     {
+ 33 |       "id": "entertainment",
+ 34 |       "label": "娱乐动作"
+ 35 |     },
+ 36 |     {
+ 37 |       "id": "leisure_work",
+ 38 |       "label": "休闲与工作"
+ 39 |     },
+ 40 |     {
+ 41 |       "id": "rest",
+ 42 |       "label": "休息与睡眠"
+ 43 |     },
+ 44 |     {
+ 45 |       "id": "food",
+ 46 |       "label": "吃饭动作"
+ 47 |     }
+ 48 |   ],
+ 49 |   "manual_actions": [
+ 50 |     {
+ 51 |       "id": "idle",
+ 52 |       "label": "待机",
+ 53 |       "kind": "idle",
+ 54 |       "category": "daily"
+ 55 |     },
+ 56 |     {
+ 57 |       "id": "click_happy_video",
+ 58 |       "label": "开心",
+ 59 |       "kind": "clip",
+ 60 |       "category": "click"
+ 61 |     },
+ 62 |     {
+ 63 |       "id": "click_shy_video",
+ 64 |       "label": "害羞",
+ 65 |       "kind": "clip",
+ 66 |       "category": "click"
+ 67 |     },
+ 68 |     {
+ 69 |       "id": "click_angry_video",
+ 70 |       "label": "傲娇生气",
+ 71 |       "kind": "clip",
+ 72 |       "category": "click"
+ 73 |     },
+ 74 |     {
+ 75 |       "id": "march_in_place_video",
+ 76 |       "label": "原地踏步",
+ 77 |       "kind": "clip",
+ 78 |       "category": "daily"
+ 79 |     },
+ 80 |     {
+ 81 |       "id": "sleepy_video",
+ 82 |       "label": "打瞌睡",
+ 83 |       "kind": "clip",
+ 84 |       "category": "rest"
+ 85 |     },
+ 86 |     {
+ 87 |       "id": "yawn_video",
+ 88 |       "label": "打哈欠",
+ 89 |       "kind": "clip",
+ 90 |       "category": "rest"
+ 91 |     },
+ 92 |     {
+ 93 |       "id": "yawn_small_video",
+ 94 |       "label": "小幅打哈欠",
+ 95 |       "kind": "clip",
+ 96 |       "category": "rest"
+ 97 |     },
+ 98 |     {
+ 99 |       "id": "click_wave_video",
+      "label": "打招呼",
+      "kind": "clip",
+      "category": "click"
+    },
+    {
+      "id": "startle_video",
+      "label": "被吓到",
+      "kind": "clip",
+      "category": "daily"
+    },
+    {
+      "id": "game_rage_video",
+      "label": "打游戏暴怒",
+      "kind": "clip",
+      "category": "entertainment"
+    },
+    {
+      "id": "sing",
+      "label": "悠闲唱歌",
+      "kind": "clip",
+      "category": "entertainment"
+    },
+    {
+      "id": "game_controller",
+      "label": "正常打游戏",
+      "kind": "clip",
+      "category": "entertainment"
+    },
+    {
+      "id": "read_book",
+      "label": "坐下看书",
+      "kind": "clip",
+      "category": "leisure_work"
+    },
+    {
+      "id": "watch_kline",
+      "label": "盯盘看 K 线",
+      "kind": "clip",
+      "category": "leisure_work"
+    },
+    {
+      "id": "work_computer",
+      "label": "使用电脑工作",
+      "kind": "clip",
+      "category": "leisure_work"
+    },
+    {
+      "id": "lie_phone",
+      "label": "躺下玩手机",
+      "kind": "clip",
+      "category": "leisure_work"
+    },
+    {
+      "id": "drink_milk_tea",
+      "label": "喝奶茶",
+      "kind": "clip",
+      "category": "food"
+    },
+    {
+      "id": "birthday_cake",
+      "label": "吃生日蛋糕",
+      "kind": "clip",
+      "category": "food"
+    },
+    {
+      "id": "eat_noodles",
+      "label": "吃拉面",
+      "kind": "clip",
+      "category": "food"
+    },
+    {
+      "id": "eat_fried_chicken",
+      "label": "吃炸鸡",
+      "kind": "clip",
+      "category": "food"
+    },
+    {
+      "id": "eat_sushi",
+      "label": "吃寿司",
+      "kind": "clip",
+      "category": "food"
+    },
+    {
+      "id": "eat_breakfast",
+      "label": "吃早餐",
+      "kind": "clip",
+      "category": "food"
+    },
+    {
+      "id": "eat_bullfrog",
+      "label": "吃炒牛蛙",
+      "kind": "clip",
+      "category": "food"
+    },
+    {
+      "id": "eat_fries",
+      "label": "吃薯条",
+      "kind": "clip",
+      "category": "food"
+    },
+    {
+      "id": "mic_test",
+      "label": "试麦：喂喂喂",
+      "kind": "clip",
+      "category": "daily"
+    },
+    {
+      "id": "cat_accident",
+      "label": "抱猫粮不小心踢到橘猫",
+      "kind": "clip",
+      "category": "daily"
+    },
+    {
+      "id": "sleep_down",
+      "label": "睡觉",
+      "kind": "sleep",
+      "category": "rest"
+    },
+    {
+      "id": "unbox_cards",
+      "label": "拆卡",
+      "kind": "clip",
+      "category": "daily"
+    },
+    {
+      "id": "pc_game_rage",
+      "label": "打电脑游戏暴怒",
+      "kind": "clip",
+      "category": "entertainment"
+    },
+    {
+      "id": "sunglasses_proud",
+      "label": "得意墨镜",
+      "kind": "clip",
+      "category": "daily"
+    },
+    {
+      "id": "pc_game_focused",
+      "label": "认真打电脑游戏",
+      "kind": "clip",
+      "category": "entertainment"
+    },
+    {
+      "id": "hop_bounce",
+      "label": "原地蹦蹦跳",
+      "kind": "clip",
+      "category": "daily"
+    }
+  ],
+  "idle_actions": {
+    "enabled": true,
+    "interval_sec": [
+      10,
+      20
+    ],
+    "actions": [
+      {
+        "id": "march_in_place_video",
+        "weight": 2,
+        "category": "A"
+      },
+      {
+        "id": "yawn_small_video",
+        "weight": 4,
+        "category": "A"
+      },
+      {
+        "id": "yawn_video",
+        "weight": 4,
+        "category": "A"
+      },
+      {
+        "id": "read_book",
+        "weight": 2,
+        "category": "B"
+      },
+      {
+        "id": "work_computer",
+        "weight": 2,
+        "category": "B"
+      },
+      {
+        "id": "lie_phone",
+        "weight": 4,
+        "category": "B"
+      },
+      {
+        "id": "watch_kline",
+        "weight": 4,
+        "category": "B"
+      },
+      {
+        "id": "sing",
+        "weight": 4,
+        "category": "C"
+      },
+      {
+        "id": "game_controller",
+        "weight": 4,
+        "category": "C"
+      },
+      {
+        "id": "pc_game_focused",
+        "weight": 4,
+        "category": "C"
+      },
+      {
+        "id": "game_rage_video",
+        "weight": 4,
+        "category": "C"
+      },
+      {
+        "id": "pc_game_rage",
+        "weight": 4,
+        "category": "C"
+      },
+      {
+        "id": "drink_milk_tea",
+        "weight": 4,
+        "category": "D"
+      },
+      {
+        "id": "eat_breakfast",
+        "weight": 3,
+        "category": "D"
+      },
+      {
+        "id": "eat_noodles",
+        "weight": 3,
+        "category": "D"
+      },
+      {
+        "id": "eat_fried_chicken",
+        "weight": 3,
+        "category": "D"
+      },
+      {
+        "id": "eat_sushi",
+        "weight": 3,
+        "category": "D"
+      },
+      {
+        "id": "eat_bullfrog",
+        "weight": 3,
+        "category": "D"
+      },
+      {
+        "id": "eat_fries",
+        "weight": 3,
+        "category": "D"
+      },
+      {
+        "id": "birthday_cake",
+        "weight": 1,
+        "category": "D"
+      },
+      {
+        "id": "mic_test",
+        "weight": 4,
+        "category": "E"
+      },
+      {
+        "id": "hop_bounce",
+        "weight": 4,
+        "category": "E"
+      },
+      {
+        "id": "unbox_cards",
+        "weight": 4,
+        "category": "E"
+      },
+      {
+        "id": "sunglasses_proud",
+        "weight": 4,
+        "category": "E"
+      },
+      {
+        "id": "cat_accident",
+        "weight": 4,
+        "category": "E"
+      },
+      {
+        "id": "startle_video",
+        "weight": 3,
+        "category": "E"
+      }
+    ]
+  },
+  "roaming": {
+    "enabled": true,
+    "movement_catalog": "res://config/movement_catalog.json",
+    "speed_px_sec": 56,
+    "pause_interval_sec": [
+      14,
+      26
+    ],
+    "edge_margin_px": 28
+  },
+  "interaction": {
+    "click_padding_px": 30,
+    "drag_threshold_px": 12,
+    "dynamic_hit_shape": {
+      "enabled": true,
+      "catalog": "res://config/video_hit_shapes.json",
+      "fallback_padding_px": 12
+    },
+    "pet_hitbox": {
+      "left": -125.2,
+      "top": -155.4,
+      "right": 124.8,
+      "bottom": 161
+    },
+    "drag_spring": {
+      "stiffness": 95,
+      "damping": 15.5,
+      "max_speed": 3200
+    },
+    "throw": {
+      "enabled": true,
+      "velocity_multiplier": 0.82,
+      "min_speed": 145,
+      "gravity": 680,
+      "max_fall_speed": 760,
+      "bounce": 0.48,
+      "friction": 0.88,
+      "stop_speed": 55
+    },
+    "drag_action": "drag_reaction_video"
+  },
+  "reactions": [
+    {
+      "id": "click_happy_video",
+      "kind": "clip",
+      "duration_ms": 10083,
+      "weight": 1,
+      "cooldown_sec": 0.5
+    },
+    {
+      "id": "click_shy_video",
+      "kind": "clip",
+      "duration_ms": 10083,
+      "weight": 1,
+      "cooldown_sec": 0.5
+    }
+  ],
+  "clips": {
+    "click_happy_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_click_happy/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "click_shy_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_click_shy/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "march_in_place_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_march_in_place/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "sleepy_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_sleepy/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "yawn_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_yawn/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "click_angry_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_click_angry/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "drag_reaction_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_drag_reaction/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "sleep_down_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_sleep_down/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "startle_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_startle/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "yawn_small_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_yawn_small/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "game_rage_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_game_rage/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "click_wave_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_click_wave/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "wake_up_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_wake_up/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "sleep_loop_video": {
+      "source_type": "green_screen_video",
+      "loop": true,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_sleep_loop/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "sing_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_sing/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "game_controller_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_game_controller/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "read_book_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_read_book/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "watch_kline_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_watch_kline/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "drink_milk_tea_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_drink_milk_tea/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "birthday_cake": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_birthday_cake/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "eat_noodles": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_eat_noodles/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "eat_fried_chicken": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_eat_fried_chicken/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "eat_sushi": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_eat_sushi/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "eat_breakfast": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_eat_breakfast/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "eat_bullfrog": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_eat_bullfrog/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "eat_fries": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_eat_fries/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "work_computer_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_work_computer/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "lie_phone_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_lie_phone/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "walk_left_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_walk_left/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "walk_right_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_walk_right/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "mic_test_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_mic_test/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "cat_accident_video": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_cat_accident/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "unbox_cards": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_unbox_cards/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "pc_game_rage": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_pc_game_rage/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "sunglasses_proud": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_sunglasses_proud/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "pc_game_focused": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_pc_game_focused/frames",
+      "frame_count": 121,
+      "fps": 12
+    },
+    "hop_bounce": {
+      "source_type": "green_screen_video",
+      "loop": false,
+      "render_mode": "direct",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_hop_bounce/frames",
+      "frame_count": 121,
+      "fps": 12
+    }
+  },
+  "click_reactions": {
+    "cooldown_sec": 0.5,
+    "normal_action": "click_wave_video",
+    "shy_action": "click_shy_video",
+    "angry_action": "click_angry_video"
+  }
+}

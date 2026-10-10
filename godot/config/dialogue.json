@@ -1,0 +1,471 @@
+  1 | {
+  2 |   "description": "按数组顺序处理关键词；精确匹配优先，其次当前话题承接。阶段二只输出文本。",
+  3 |   "fallback": {
+  4 |     "responses": [
+  5 |       "嗯嗯，听到啦～你继续说。",
+  6 |       "我在听呢，慢慢说。",
+  7 |       "嗯，陪你聊一会儿。"
+  8 |     ],
+  9 |     "nickname_responses": [
+ 10 |       "{nickname}，我在听呢。",
+ 11 |       "慢慢说呀，{nickname}。"
+ 12 |     ]
+ 13 |   },
+ 14 |   "negated": {
+ 15 |     "responses": [
+ 16 |       "好呀，那就先聊点别的。",
+ 17 |       "嗯，听到啦，我们慢慢聊。",
+ 18 |       "好，不勉强，陪你待一会儿。"
+ 19 |     ]
+ 20 |   },
+ 21 |   "dream_talk": {
+ 22 |     "chat": {
+ 23 |       "responses": [
+ 24 |         "唔，我听见了。",
+ 25 |         "再让我睡一小会儿。",
+ 26 |         "嗯，你还在呀。",
+ 27 |         "刚刚好像梦到你了。",
+ 28 |         "别吵，我还没醒呢。",
+ 29 |         "那个，好像不是这个梦。",
+ 30 |         "嗯，我在听，慢慢说。",
+ 31 |         "再说一句，我听得到。"
+ 32 |       ],
+ 33 |       "nickname_responses": [
+ 34 |         "{nickname}，我听见啦。",
+ 35 |         "{nickname}，再陪我睡一会儿。",
+ 36 |         "嗯，是{nickname}呀。",
+ 37 |         "{nickname}，我还在做梦呢。"
+ 38 |       ]
+ 39 |     },
+ 40 |     "reminder": {
+ 41 |       "prefixes": [
+ 42 |         "唔，好像有什么事情。",
+ 43 |         "嗯，我记着呢。",
+ 44 |         "等我醒一点再说。",
+ 45 |         "好像有人在提醒我。"
+ 46 |       ]
+ 47 |     },
+ 48 |     "weather": {
+ 49 |       "prefixes": [
+ 50 |         "外面的天气，好像在叫我。",
+ 51 |         "嗯，是天气提醒呀。",
+ 52 |         "窗外怎么了来着。",
+ 53 |         "天气的事情，我听见了。"
+ 54 |       ]
+ 55 |     },
+ 56 |     "fallback": {
+ 57 |       "prefixes": [
+ 58 |         "唔，我听到了。",
+ 59 |         "嗯，好像有人在说话。",
+ 60 |         "再让我睡一会儿。"
+ 61 |       ]
+ 62 |     }
+ 63 |   },
+ 64 |   "event_feedback": {
+ 65 |     "file_success": [
+ 66 |       "搞定！我是不是很能干？",
+ 67 |       "全部处理好啦，厉害吧！",
+ 68 |       "完成～夸我一下嘛。"
+ 69 |     ],
+ 70 |     "file_failure": [
+ 71 |       "出问题了，不是我偷懒哦。",
+ 72 |       "这个文件好像不太对劲，你看看？",
+ 73 |       "对不起，我再试一次好不好。"
+ 74 |     ],
+ 75 |     "file_preview": [
+ 76 |       "先看看预览，确认没问题再动手。"
+ 77 |     ],
+ 78 |     "file_duplicate": [
+ 79 |       "发现重名啦，要不要换个名字？"
+ 80 |     ],
+ 81 |     "drag_start": [
+ 82 |       "哇，要带我去哪里？"
+ 83 |     ],
+ 84 |     "drag_end": [
+ 85 |       "这个位置不错，就放这儿吧。",
+ 86 |       "换个地方待着，也不错～"
+ 87 |     ],
+ 88 |     "click_spam": [
+ 89 |       "一直戳，会戳坏的啦！",
+ 90 |       "你是不是把我当解压玩具了？",
+ 91 |       "好了好了，我知道你在了！",
+ 92 |       "再戳我要生气了哦，真的。",
+ 93 |       "戳戳戳，手不累吗？"
+ 94 |     ]
+ 95 |   },
+ 96 |   "mood_state_responses": {
+ 97 |     "normal": ["现在心情挺平静的，怎么啦？", "没有生气哦，我现在挺好的。"],
+ 98 |     "happy": ["当然开心啦！嘿嘿～", "今天心情不错，你看不出来吗？"],
+ 99 |     "shy": ["有点害羞……你别一直盯着我嘛。", "哎呀，我现在有点不好意思啦。"],
+    "angry": ["哼，我现在确实有点生气！", "是有点生气啦，谁让你一直逗我。"],
+    "sleepy": ["唔……有点困，想打个盹。", "好困呀，眼睛都快睁不开了。"]
+  },
+  "rules": [
+    {
+      "id": "file_help",
+      "topic": "files",
+      "exact": [],
+      "keywords": [
+        "改名",
+        "重命名",
+        "转换",
+        "转格式",
+        "移动文件",
+        "删除文件",
+        "批量",
+        "文件处理"
+      ],
+      "exclude": [],
+      "responses": [
+        "把文件拖给我，或右键打开「文件处理…」吧，改名和图片转换都能在工作台里设置。",
+        "需要批量改名或转格式，就用右键「文件处理…」。聊天里不会直接操作你的文件哦。"
+      ],
+      "nickname_responses": [],
+      "followups": [],
+      "followup_responses": []
+    },
+    {
+      "id": "praise",
+      "topic": "praise",
+      "exact": [],
+      "keywords": [
+        "可爱",
+        "漂亮",
+        "好看",
+        "喜欢你",
+        "爱你"
+      ],
+      "exclude": [
+        "不可爱",
+        "不漂亮",
+        "不好看",
+        "不喜欢你",
+        "不爱你"
+      ],
+      "responses": [
+        "突然说这个干嘛……",
+        "哼，我当然知道。",
+        "嘿嘿……今天嘴这么甜？",
+        "再夸下去，我可要当真了。"
+      ],
+      "nickname_responses": [
+        "{nickname}，你这么说我会害羞的。",
+        "今天嘴这么甜呀，{nickname}。"
+      ],
+      "followups": [
+        "真的",
+        "真的呀",
+        "当然啦",
+        "就是这样",
+        "你就是很可爱"
+      ],
+      "followup_responses": [
+        "好啦好啦，我听见你的夸奖了……",
+        "那我就收下这句夸奖啦。"
+      ],
+      "action_request": "click_shy_video",
+      "mood_event": "praise"
+    },
+    {
+      "id": "touch",
+      "topic": "touch",
+      "exact": [],
+      "keywords": [
+        "摸摸",
+        "摸头",
+        "抱抱"
+      ],
+      "exclude": [],
+      "responses": [
+        "嗯……只许轻轻摸哦。",
+        "嘿嘿，再陪我待一会儿。",
+        "好吧，给你摸一下。"
+      ],
+      "nickname_responses": [
+        "{nickname}，要轻一点哦。",
+        "那就抱一下吧，{nickname}。"
+      ],
+      "followups": [],
+      "followup_responses": [],
+      "action_request": "click_happy_video",
+      "mood_event": "touch"
+    },
+    {
+      "id": "mood_query",
+      "topic": "mood",
+      "exact": [],
+      "keywords": [
+        "生气了吗",
+        "生气了",
+        "开心吗",
+        "心情怎么样",
+        "心情如何",
+        "你现在什么心情"
+      ],
+      "exclude": [],
+      "responses": [
+        "我在这儿陪你呢，怎么啦？",
+        "想知道我的心情呀？先陪我说说话。",
+        "嗯？你在关心我嘛。"
+      ],
+      "nickname_responses": [],
+      "followups": [],
+      "followup_responses": []
+    },
+    {
+      "id": "sleep",
+      "topic": "sleep",
+      "exact": [],
+      "keywords": [
+        "睡觉",
+        "睡吧",
+        "晚安",
+        "困了",
+        "休息"
+      ],
+      "exclude": [
+        "不困了"
+      ],
+      "responses": [
+        "困了就歇一会儿吧，我陪着你。",
+        "好呀，记得让眼睛也休息一下。",
+        "晚一点再聊也没关系，先好好休息。"
+      ],
+      "nickname_responses": [
+        "{nickname}，累了就早点休息哦。",
+        "好好休息吧，{nickname}。"
+      ],
+      "followups": [
+        "那去吧",
+        "那就去吧",
+        "好",
+        "好呀",
+        "嗯",
+        "那休息吧"
+      ],
+      "followup_responses": [
+        "嗯，那就安静歇一会儿。",
+        "好，先休息，等会儿再聊。"
+      ],
+      "action_request": "sleep_down",
+      "mood_event": "sleepy"
+    },
+    {
+      "id": "tired",
+      "topic": "tired",
+      "exact": [],
+      "keywords": [
+        "累了",
+        "好累",
+        "疲惫",
+        "辛苦",
+        "难受"
+      ],
+      "exclude": [
+        "不累了"
+      ],
+      "responses": [
+        "辛苦啦，先缓一口气吧。",
+        "今天已经做了不少事吧，歇一下。",
+        "我陪着你，慢慢来就好。"
+      ],
+      "nickname_responses": [
+        "辛苦啦，{nickname}。先照顾好自己。",
+        "{nickname}，坐下来歇一会儿吧。"
+      ],
+      "followups": [
+        "好",
+        "好呀",
+        "嗯"
+      ],
+      "followup_responses": [
+        "嗯，先别着急，慢慢来。",
+        "那就放松一下肩膀吧。"
+      ],
+      "action_request": "yawn_video",
+      "mood_event": "sleepy"
+    },
+    {
+      "id": "eat",
+      "topic": "eat",
+      "action_requests": ["eat_noodles", "eat_fries", "eat_sushi", "eat_fried_chicken"],
+      "exact": [],
+      "keywords": [
+        "吃饭",
+        "吃东西",
+        "吃吧",
+        "饿了",
+        "吃了吗",
+        "吃了没"
+      ],
+      "exclude": [],
+      "responses": [
+        "说到吃的，我也想吃点东西了。",
+        "还没呢，今天吃点什么好？",
+        "到饭点就记得好好吃饭呀。"
+      ],
+      "nickname_responses": [
+        "{nickname}，你今天吃了什么呀？",
+        "记得吃饭哦，{nickname}。"
+      ],
+      "followups": [
+        "那去吃吧",
+        "那去吧",
+        "那就去吧",
+        "去吧",
+        "好",
+        "好呀",
+        "那吃吧"
+      ],
+      "followup_responses": [
+        "那我开动啦，想象一下热乎乎的面条。",
+        "好呀，那就准备吃饭啦。"
+      ]
+    },
+    {
+      "id": "sing",
+      "topic": "sing",
+      "exact": [],
+      "keywords": [
+        "唱歌",
+        "唱一首",
+        "唱首歌"
+      ],
+      "exclude": [],
+      "responses": [
+        "好呀，给你哼一小段。",
+        "那我就唱一会儿～"
+      ],
+      "nickname_responses": [],
+      "followups": [],
+      "followup_responses": [],
+      "action_request": "sing"
+    },
+    {
+      "id": "slack",
+      "topic": "slack",
+      "action_requests": ["lie_phone", "read_book"],
+      "exact": [],
+      "keywords": [
+        "摸鱼",
+        "偷懒"
+      ],
+      "exclude": [],
+      "responses": [
+        "偶尔放松一下，也挺好的嘛。",
+        "那就偷偷歇一小会儿。",
+        "摸鱼时间到，伸个懒腰吧。"
+      ],
+      "nickname_responses": [
+        "{nickname}，一起歇一小会儿吧。",
+        "被你发现我在摸鱼啦，{nickname}。"
+      ],
+      "followups": [],
+      "followup_responses": []
+    },
+    {
+      "id": "bored",
+      "topic": "bored",
+      "action_requests": ["game_controller", "read_book"],
+      "exact": [],
+      "keywords": [
+        "无聊",
+        "没意思",
+        "没事干"
+      ],
+      "exclude": [],
+      "responses": [
+        "那来陪我说说话嘛。",
+        "要不右键点播一个动作看看？",
+        "我在呢，想聊什么都可以。"
+      ],
+      "nickname_responses": [
+        "{nickname}，来陪我聊会儿嘛。",
+        "无聊的话就看看我呀，{nickname}。"
+      ],
+      "followups": [
+        "好",
+        "好呀",
+        "聊什么"
+      ],
+      "followup_responses": [
+        "聊聊今天遇到的小事吧。",
+        "今天有没有什么让你开心的事？"
+      ]
+    },
+    {
+      "id": "morning",
+      "topic": "greeting",
+      "exact": [
+        "早"
+      ],
+      "keywords": [
+        "早安",
+        "早上好"
+      ],
+      "exclude": [],
+      "responses": [
+        "早上好，今天也慢慢来。",
+        "早呀，记得吃早餐。",
+        "新的一天，先伸个懒腰吧。"
+      ],
+      "nickname_responses": [
+        "早上好，{nickname}。",
+        "{nickname}，今天起得挺早嘛。"
+      ],
+      "followups": [],
+      "followup_responses": []
+    },
+    {
+      "id": "welcome",
+      "topic": "greeting",
+      "exact": [],
+      "keywords": [
+        "回来了",
+        "回来啦"
+      ],
+      "exclude": [],
+      "responses": [
+        "欢迎回来，我一直在这儿。",
+        "回来啦？先歇一会儿吧。",
+        "等到你啦，今天怎么样？"
+      ],
+      "nickname_responses": [
+        "欢迎回来，{nickname}。",
+        "{nickname}，回来就好。"
+      ],
+      "followups": [],
+      "followup_responses": []
+    },
+    {
+      "id": "greeting",
+      "topic": "greeting",
+      "exact": [
+        "你好",
+        "在吗",
+        "哈喽",
+        "嗨",
+        "hello",
+        "hi"
+      ],
+      "keywords": [
+        "你好",
+        "在吗",
+        "哈喽",
+        "嗨"
+      ],
+      "exclude": [],
+      "responses": [
+        "你好呀～今天想让我陪你干点什么？",
+        "在呢，我一直挂在这儿～",
+        "嗨，来陪我聊一会儿吧。"
+      ],
+      "nickname_responses": [
+        "你好呀，{nickname}。",
+        "{nickname}，我在呢。"
+      ],
+      "followups": [],
+      "followup_responses": []
+    }
+  ]
+}

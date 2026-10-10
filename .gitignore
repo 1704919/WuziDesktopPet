@@ -1,0 +1,51 @@
+ 1 | # Godot generated cache
+ 2 | godot/.godot/
+ 3 | godot/test_output/
+ 4 | 
+ 5 | # Generated runtime animation frames and compiled native helper
+ 6 | godot/assets_display/
+ 7 | godot/native/*.exe
+ 8 | 
+ 9 | # Local work / build outputs
+work/
+tools/__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.log
+*.tmp
+
+# Test baseline runs (generated and high-volume)
+docs/baselines/
+
+# Manual rollback snapshots retained outside Git history
+backups/
+
+# Volatile AI handoff/runtime state
+.ai-bridge/
+
+# Large source/reference media kept on disk, not in code-refactor Git history
+分享区/
+assets/
+
+# Retired historical implementation is preserved on disk separately
+archive/
+
+# Local secrets, signing credentials and export packages
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.key
+dist/
+release/
+releases/
+*.pck
+
+# Common editor / OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

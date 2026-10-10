@@ -1,0 +1,69 @@
+ 1 | {
+ 2 |   "reminders": {
+ 3 |     "enabled": true,
+ 4 |     "water_interval_minutes": 90,
+ 5 |     "meal_times": [
+ 6 |       {
+ 7 |         "time": "11:45",
+ 8 |         "text": "快到午饭时间了，想想今天吃什么？"
+ 9 |       },
+      {
+        "time": "18:00",
+        "text": "到晚饭时间啦，别忘了吃东西。"
+      }
+    ],
+    "random_chatter_enabled": false,
+    "random_chatter_interval_minutes": [
+      20,
+      45
+    ],
+    "random_messages": [
+      "坐太久的话，起来活动一下吧。",
+      "今天也别忘了留一点时间摸鱼。",
+      "我还在这里。"
+    ]
+  },
+  "weather": {
+    "enabled": false,
+    "provider": "open-meteo",
+    "location_name": "",
+    "latitude": null,
+    "longitude": null,
+    "check_interval_minutes": 600,
+    "rain_probability_threshold": 50,
+    "hot_threshold_c": 35,
+    "cold_threshold_c": 5
+  },
+  "file_conversion": {
+    "image_quality": 0.92,
+    "output_suffix": "_converted"
+  },
+  "mood": {
+    "min_score": -100,
+    "max_score": 100,
+    "happy_threshold": 25,
+    "angry_threshold": -25,
+    "click_window_ms": 3500,
+    "recovery_interval_sec": 5,
+    "recovery_step": 4,
+    "happy_duration_ms": 6500,
+    "shy_duration_ms": 6500,
+    "angry_duration_ms": 9000,
+    "sleepy_duration_ms": 10000
+  },
+  "action_coordinator": {
+    "duplicate_merge_ms": 300
+  },
+  "inactivity": {
+    "enabled": true,
+    "long_idle_minutes": 20,
+    "rest_check_interval_sec": [
+      90,
+      180
+    ],
+    "sleepy_weight_multiplier": 4,
+    "rest_baseline_weight": 3,
+    "sleep_trigger_probability": 0.18,
+    "sleep_loop_cycles": 5
+  }
+}
