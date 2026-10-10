@@ -1,12 +1,12 @@
- 1 | # Windows 文件组件
- 2 | 
- 3 | `wuzi_file_bridge.exe` 是本项目 `tools/native/file_bridge.cpp` 的 x64 构建产物，源码按 MIT 提供。
- 4 | 
- 5 | - `move` 使用不带 `MOVEFILE_REPLACE_EXISTING` 的 Windows API，不覆盖目标。
- 6 | - `copy` 使用 `CopyFileW(..., TRUE)`，不覆盖目标。
- 7 | - `probe` 使用独占创建、实际写入和关闭即删除的临时文件验证目录可写。
- 8 | - `caps` 分别检测系统 HEIF 解码器和编码器；实际文件不受支持时仍会返回错误。
- 9 | - `decode` / `encode` 使用 Windows Imaging Component，读取 HEIC/HEIF 第一帧或输出 HEIC。
+# Windows 文件组件
+
+`wuzi_file_bridge.exe` 是本项目 `tools/native/file_bridge.cpp` 的 x64 构建产物，源码按 MIT 提供。
+
+- `move` 使用不带 `MOVEFILE_REPLACE_EXISTING` 的 Windows API，不覆盖目标。
+- `copy` 使用 `CopyFileW(..., TRUE)`，不覆盖目标。
+- `probe` 使用独占创建、实际写入和关闭即删除的临时文件验证目录可写。
+- `caps` 分别检测系统 HEIF 解码器和编码器；实际文件不受支持时仍会返回错误。
+- `decode` / `encode` 使用 Windows Imaging Component，读取 HEIC/HEIF 第一帧或输出 HEIC。
 - 不随程序分发 libheif、FFmpeg、HEIF/HEVC 编解码器。PNG/JPG/WebP 使用 Godot Image。
 
 重建：在项目根目录运行 `tools/build_file_bridge.ps1`，需要 Visual Studio C++ Build Tools 和 Windows SDK。编译时静态链接 MSVC 运行库；最终用户不需要安装编译工具。

@@ -1,12 +1,12 @@
- 1 | from __future__ import annotations
- 2 | 
- 3 | import json
- 4 | from pathlib import Path
- 5 | 
- 6 | import imageio_ffmpeg
- 7 | import numpy as np
- 8 | from PIL import Image, ImageDraw, ImageFont
- 9 | 
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import imageio_ffmpeg
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+
 ROOT = Path(__file__).resolve().parents[1]
 QROOT = ROOT / "分享区" / "Q版"
 OUT = ROOT / "work" / "video_review"

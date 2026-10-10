@@ -1,12 +1,12 @@
- 1 | ; Engine configuration file.
- 2 | ; Generated for the Q版舞梓 desktop-pet prototype.
- 3 | config_version=5
- 4 | 
- 5 | [application]
- 6 | 
- 7 | config/name="舞梓桌宠"
- 8 | run/main_scene="res://scenes/main.tscn"
- 9 | boot_splash/show_image=false
+; Engine configuration file.
+; Generated for the Q版舞梓 desktop-pet prototype.
+config_version=5
+
+[application]
+
+config/name="舞梓桌宠"
+run/main_scene="res://scenes/main.tscn"
+boot_splash/show_image=false
 boot_splash/bg_color=Color(0, 0, 0, 0)
 boot_splash/minimum_display_time=0
 

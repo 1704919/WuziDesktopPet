@@ -1,12 +1,12 @@
- 1 | extends Node
- 2 | 
- 3 | signal reminder_due(text: String)
- 4 | 
- 5 | var enabled := true
- 6 | var water_interval_sec := 5400.0
- 7 | var water_countdown_sec := 5400.0
- 8 | var meal_times: Array = []
- 9 | var random_chatter_enabled := false
+extends Node
+
+signal reminder_due(text: String)
+
+var enabled := true
+var water_interval_sec := 5400.0
+var water_countdown_sec := 5400.0
+var meal_times: Array = []
+var random_chatter_enabled := false
 var chatter_paused := false
 var random_messages: Array = []
 var chatter_min_sec := 1200.0

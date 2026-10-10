@@ -1,12 +1,12 @@
- 1 | from __future__ import annotations
- 2 | 
- 3 | import json
- 4 | from pathlib import Path
- 5 | 
- 6 | import numpy as np
- 7 | from PIL import Image
- 8 | 
- 9 | ROOT = Path(__file__).resolve().parents[1]
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import numpy as np
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parents[1]
 SETS = {
     "idle": ROOT / "godot/assets_display/wuzi_chibi/video_idle/frames",
     "click_happy": ROOT / "godot/assets_display/wuzi_chibi/video_click_happy/frames",

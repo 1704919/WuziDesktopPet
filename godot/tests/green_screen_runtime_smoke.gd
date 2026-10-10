@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | func _init() -> void:
- 4 | 	call_deferred("_run")
- 5 | 
- 6 | 
- 7 | func _run() -> void:
- 8 | 	var failures: Array[String] = []
- 9 | 	var file := FileAccess.open("res://config/pet_behavior.json", FileAccess.READ)
+extends SceneTree
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	var failures: Array[String] = []
+	var file := FileAccess.open("res://config/pet_behavior.json", FileAccess.READ)
 	if file == null:
 		push_error("GREENSCREEN_RUNTIME_SMOKE_FAILED: missing pet_behavior.json")
 		quit(2)

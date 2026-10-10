@@ -1,12 +1,12 @@
- 1 | from __future__ import annotations
- 2 | 
- 3 | import subprocess
- 4 | from pathlib import Path
- 5 | 
- 6 | from PIL import Image, ImageDraw
- 7 | import imageio_ffmpeg
- 8 | 
- 9 | ROOT = Path(__file__).resolve().parents[1]
+from __future__ import annotations
+
+import subprocess
+from pathlib import Path
+
+from PIL import Image, ImageDraw
+import imageio_ffmpeg
+
+ROOT = Path(__file__).resolve().parents[1]
 VIDEO = ROOT / "分享区" / "Q版" / "绿幕视频" / "角色自然待机动画生成.mp4"
 OUT = ROOT / "work" / "greenscreen_debug"
 OUT.mkdir(parents=True, exist_ok=True)

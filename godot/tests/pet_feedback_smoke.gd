@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | const Workbench = preload("res://scripts/batch_file_window.gd")
- 4 | 
- 5 | var failures: Array[String] = []
- 6 | 
- 7 | 
- 8 | func check(condition: bool, name: String) -> void:
- 9 | 	if not condition:
+extends SceneTree
+
+const Workbench = preload("res://scripts/batch_file_window.gd")
+
+var failures: Array[String] = []
+
+
+func check(condition: bool, name: String) -> void:
+	if not condition:
 		failures.append(name)
 
 

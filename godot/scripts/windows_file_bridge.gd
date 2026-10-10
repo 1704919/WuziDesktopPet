@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | 
- 4 | static func executable_path() -> String:
- 5 | 	if OS.has_feature("editor"):
- 6 | 		return ProjectSettings.globalize_path("res://native/wuzi_file_bridge.exe")
- 7 | 	return OS.get_executable_path().get_base_dir().path_join("native/wuzi_file_bridge.exe")
- 8 | 
- 9 | 
+extends RefCounted
+
+
+static func executable_path() -> String:
+	if OS.has_feature("editor"):
+		return ProjectSettings.globalize_path("res://native/wuzi_file_bridge.exe")
+	return OS.get_executable_path().get_base_dir().path_join("native/wuzi_file_bridge.exe")
+
+
 static func run(operation: String, arguments: PackedStringArray = []) -> Dictionary:
 	var executable := executable_path()
 	if OS.get_name() != "Windows" or not FileAccess.file_exists(executable):

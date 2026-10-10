@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | 
- 4 | static func load_catalog(config: Dictionary) -> Dictionary:
- 5 | 	var roaming := config.get("roaming", {}) as Dictionary
- 6 | 	if not bool(roaming.get("enabled", false)):
- 7 | 		return {}
- 8 | 
- 9 | 	var catalog_path := str(roaming.get("movement_catalog", "res://config/movement_catalog.json"))
+extends RefCounted
+
+
+static func load_catalog(config: Dictionary) -> Dictionary:
+	var roaming := config.get("roaming", {}) as Dictionary
+	if not bool(roaming.get("enabled", false)):
+		return {}
+
+	var catalog_path := str(roaming.get("movement_catalog", "res://config/movement_catalog.json"))
 	var file := FileAccess.open(catalog_path, FileAccess.READ)
 	if file == null:
 		return {}

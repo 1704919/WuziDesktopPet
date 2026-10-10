@@ -1,1002 +1,1002 @@
-   1 | extends Node2D
-   2 | 
-   3 | enum PetState { IDLE, REACTION, DRAGGING, THROWING, ROAMING, SLEEPING, WAKING }
-   4 | 
-   5 | const InputGuard = preload("res://scripts/input_guard.gd")
-   6 | const DialogueManager = preload("res://scripts/dialogue_manager.gd")
-   7 | const InactivityManager = preload("res://scripts/inactivity_manager.gd")
-   8 | const DreamTalkManager = preload("res://scripts/dream_talk_manager.gd")
-   9 | const DynamicHitShapeManager = preload("res://scripts/dynamic_hit_shape_manager.gd")
-  10 | const BatchFileWindow = preload("res://scripts/batch_file_window.gd")
-  11 | const PetWindowLayout = preload("res://scripts/pet_window_layout.gd")
-  12 | const PetContextMenu = preload("res://scripts/pet_context_menu.gd")
-  13 | const PetDragThrowMotion = preload("res://scripts/pet_drag_throw_motion.gd")
-  14 | const WeatherReplyFormatter = preload("res://scripts/weather_reply_formatter.gd")
-  15 | const PetClipCatalogLoader = preload("res://scripts/pet_clip_catalog_loader.gd")
-  16 | const PetMovementCatalogLoader = preload("res://scripts/pet_movement_catalog_loader.gd")
-  17 | const PetRoamingController = preload("res://scripts/pet_roaming_controller.gd")
-  18 | const PetAnimationPlayback = preload("res://scripts/pet_animation_playback.gd")
-  19 | const PetIdleActionPicker = preload("res://scripts/pet_idle_action_picker.gd")
-  20 | 
-  21 | var dialogue_manager := DialogueManager.new()
-  22 | var inactivity_manager := InactivityManager.new()
-  23 | var dream_talk_manager := DreamTalkManager.new()
-  24 | var dynamic_hit_shape_manager := DynamicHitShapeManager.new()
-  25 | var roaming_controller := PetRoamingController.new()
-  26 | var animation_playback := PetAnimationPlayback.new()
-  27 | var nickname_card: Control
-  28 | var batch_file_window: Window
-  29 | 
-  30 | @onready var pet_visual: Node2D = $PetVisual
-  31 | @onready var body_pivot: Node2D = $PetVisual/BodyPivot
-  32 | @onready var pet_sprite: Sprite2D = $PetVisual/BodyPivot/PetSprite
-  33 | @onready var pet_sprite_next: Sprite2D = $PetVisual/BodyPivot/PetSpriteNext
-  34 | @onready var pet_video: VideoStreamPlayer = $PetVisual/BodyPivot/PetVideo
-  35 | @onready var bubble = $Bubble
-  36 | @onready var context_menu: Control = $ContextBubble
-  37 | @onready var command_bubble: Control = $CommandBubble
-  38 | @onready var command_input: LineEdit = $CommandBubble/Card/Margin/Content/CommandInput
-  39 | @onready var command_cancel: Button = $CommandBubble/Card/Margin/Content/Actions/Cancel
-  40 | @onready var command_send: Button = $CommandBubble/Card/Margin/Content/Actions/Send
-  41 | @onready var weather_bubble: Control = $WeatherBubble
-  42 | @onready var weather_city: LineEdit = $WeatherBubble/Card/Margin/Content/City
-  43 | @onready var weather_enabled: CheckButton = $WeatherBubble/Card/Margin/Content/Enabled
-  44 | @onready var weather_cancel: Button = $WeatherBubble/Card/Margin/Content/Actions/Cancel
-  45 | @onready var weather_save: Button = $WeatherBubble/Card/Margin/Content/Actions/Save
-  46 | @onready var settings_store = $SettingsStore
-  47 | @onready var reminder_manager = $ReminderManager
-  48 | @onready var file_drop_manager = $FileDropManager
-  49 | @onready var action_registry = $ActionRegistry
-  50 | @onready var mood_manager = $MoodManager
-  51 | @onready var action_coordinator = $ActionCoordinator
-  52 | @onready var mood_indicator: Control = $MoodIndicator
-  53 | @onready var weather_manager = $WeatherManager
-  54 | 
-  55 | var config: Dictionary = {}
-  56 | var feature_config: Dictionary = {}
-  57 | var clips: Dictionary = {}
-  58 | var movement_catalog: Dictionary = {}
-  59 | var idle_video_textures: Array[Texture2D] = []
-  60 | var idle_video_frame := 0
-  61 | var idle_video_accum_sec := 0.0
-  62 | var idle_runtime_stream: VideoStream
-  63 | var video_runtime_enabled := false
-  64 | var active_video_action_id := ""
-  65 | var active_video_fps := 12.0
-  66 | var active_video_frame_count := 0
-  67 | var rng := RandomNumberGenerator.new()
-  68 | 
-  69 | var state: PetState = PetState.IDLE
-  70 | var master_texture: Texture2D
-  71 | var base_scale := 1.0
-  72 | var base_position := Vector2(550, 210)
-  73 | var base_body_pivot_position := Vector2(0, 161)
-  74 | 
-  75 | var idle_action_countdown_sec := 9.0
-  76 | var last_idle_action_id := ""
-  77 | var last_idle_action_category := ""
-  78 | var idle_category_streak := 0
-  79 | # Existing persisted preference; now pauses all autonomous behavior.
-  80 | var random_actions_paused := false
-  81 | 
-  82 | const MENU_TOGGLE_RANDOM := PetContextMenu.MENU_TOGGLE_RANDOM
-  83 | const MENU_RESET_POSITION := PetContextMenu.MENU_RESET_POSITION
-  84 | const MENU_EXIT := PetContextMenu.MENU_EXIT
-  85 | const MENU_TALK := PetContextMenu.MENU_TALK
-  86 | const MENU_TOGGLE_REMINDERS := PetContextMenu.MENU_TOGGLE_REMINDERS
-  87 | const MENU_PLAY_ACTION := PetContextMenu.MENU_PLAY_ACTION
-  88 | const MENU_ACTION_BACK := PetContextMenu.MENU_ACTION_BACK
-  89 | const MENU_FILE_WORKBENCH := PetContextMenu.MENU_FILE_WORKBENCH
-  90 | const MENU_CLEAR_FILES := PetContextMenu.MENU_CLEAR_FILES
-  91 | const MENU_WEATHER_SETTINGS := PetContextMenu.MENU_WEATHER_SETTINGS
-  92 | const MENU_WEATHER_NOW := PetContextMenu.MENU_WEATHER_NOW
-  93 | const MENU_SETTINGS := PetContextMenu.MENU_SETTINGS
-  94 | const MENU_NICKNAME := PetContextMenu.MENU_NICKNAME
-  95 | const MENU_ACTION_CATEGORY_BACK := PetContextMenu.MENU_ACTION_CATEGORY_BACK
-  96 | const MENU_TOGGLE_ROAMING := PetContextMenu.MENU_TOGGLE_ROAMING
-  97 | const MENU_ACTION_PAGE_UP := PetContextMenu.MENU_ACTION_PAGE_UP
-  98 | const MENU_ACTION_PAGE_DOWN := PetContextMenu.MENU_ACTION_PAGE_DOWN
-  99 | const ACTION_CATEGORY_MENU_BASE := PetContextMenu.ACTION_CATEGORY_MENU_BASE
- 100 | const ACTION_MENU_BASE := PetContextMenu.ACTION_MENU_BASE
- 101 | const CONTEXT_MENU_FIXED_ANCHOR := PetContextMenu.CONTEXT_MENU_FIXED_ANCHOR
- 102 | 
- 103 | const ACTION_PRIORITY_IDLE := 10
- 104 | const ACTION_PRIORITY_ROAMING := 20
- 105 | const ACTION_PRIORITY_DIALOGUE := 50
- 106 | const ACTION_PRIORITY_CLICK := 60
- 107 | const ACTION_PRIORITY_SLEEP := 80
- 108 | const ACTION_PRIORITY_MANUAL := 90
- 109 | const ACTION_PRIORITY_DRAG := 100
- 110 | const ACTION_PRIORITY_WAKE := 110
- 111 | 
- 112 | var sequence_token := 0
- 113 | var sequence_running := false
- 114 | var active_clip_uses_visual_fade := false
- 115 | const ACTION_VISUAL_FADE_MIN_ALPHA := 0.55
- 116 | const ACTION_VISUAL_FADE_OUT_SEC := 0.045
- 117 | const ACTION_VISUAL_FADE_IN_SEC := 0.060
- 118 | 
- 119 | var last_reaction_id := ""
- 120 | var last_reaction_tier := ""
- 121 | var reaction_cooldown_until_ms := 0
- 122 | var last_rapid_click_line_ms := -100000
- 123 | const RAPID_CLICK_LINE_COOLDOWN_MS := 1500
- 124 | var active_clip_id := ""
- 125 | var sleep_phase := "none"
- 126 | 
- 127 | # dsh-pet style Q-bounce state. Keep this independent from the click-reaction
- 128 | # video cooldown so every completed click can retrigger the tactile feedback.
- 129 | var click_squash_active := false
- 130 | var click_squash_phase := 0
- 131 | var click_squash_elapsed_sec := 0.0
- 132 | var click_squash_from_y := 1.0
- 133 | const CLICK_SQUASH_SCALE_Y := 0.55
- 134 | const CLICK_SQUASH_COMPRESS_SEC := 0.055
- 135 | const CLICK_SQUASH_REBOUND_SEC := 0.285
- 136 | 
- 137 | var pointer_pressed := false
- 138 | var dragging := false
- 139 | var drag_moved := false
- 140 | var drag_mouse_start := Vector2i.ZERO
- 141 | var drag_window_start := Vector2.ZERO
- 142 | var drag_current_position := Vector2.ZERO
- 143 | var drag_target_position := Vector2.ZERO
- 144 | var drag_velocity := Vector2.ZERO
- 145 | var throw_velocity := Vector2.ZERO
- 146 | var drag_threshold_px := 12
- 147 | 
- 148 | var bubble_interactive := false
- 149 | var overlay_interactive := false
- 150 | var debug_last_passthrough_polygon := PackedVector2Array()
- 151 | var debug_character_passthrough_polygon := PackedVector2Array()
- 152 | var active_hit_action_id := "idle"
- 153 | var active_hit_frame := 0
- 154 | var dynamic_hit_shapes_ready := false
- 155 | var context_menu_anchor := Vector2.ZERO
- 156 | var manual_action_map: Dictionary = {}
- 157 | var manual_category_map: Dictionary = {}
- 158 | 
- 159 | 
- 160 | func _ready() -> void:
- 161 | 	rng.randomize()
- 162 | 	animation_playback.name = "PetAnimationPlayback"
- 163 | 	add_child(animation_playback)
- 164 | 	animation_playback.configure(
- 165 | 		pet_sprite,
- 166 | 		pet_sprite_next,
- 167 | 		pet_video,
- 168 | 		body_pivot,
- 169 | 		Callable(self, "_is_sequence_token_current"),
- 170 | 		Callable(self, "_show_runtime_video"),
- 171 | 		Callable(self, "_hide_runtime_video"),
- 172 | 		Callable(self, "_set_active_hit_frame")
- 173 | 	)
- 174 | 	settings_store.load_settings()
- 175 | 	_load_config()
- 176 | 	_load_feature_config()
- 177 | 	base_position = pet_visual.position
- 178 | 	PetWindowLayout.configure(get_viewport(), config, settings_store, base_position)
- 179 | 	_load_clips()
- 180 | 	_load_dynamic_hit_shapes()
- 181 | 	_load_idle_video()
- 182 | 	_load_movement_catalog()
- 183 | 	action_registry.load_catalog()
- 184 | 	_configure_feature_modules()
- 185 | 
- 186 | 	base_scale = float(config.get("sprite_scale", 1.0))
- 187 | 	base_position = pet_visual.position
- 188 | 	base_body_pivot_position = body_pivot.position
- 189 | 	pet_visual.scale = Vector2.ONE * base_scale
- 190 | 	var interaction := config.get("interaction", {}) as Dictionary
- 191 | 	drag_threshold_px = int(interaction.get("drag_threshold_px", 12))
- 192 | 
- 193 | 	master_texture = load(str(config.get("master_texture", ""))) as Texture2D
- 194 | 	if master_texture == null:
- 195 | 		push_error("Failed to load master texture")
- 196 | 		get_tree().quit(2)
- 197 | 		return
- 198 | 
- 199 | 	pet_sprite.texture = master_texture
- 200 | 	pet_sprite_next.texture = null
- 201 | 	pet_sprite.modulate = Color.WHITE
- 202 | 	pet_sprite_next.modulate.a = 0.0
- 203 | 
- 204 | 	_configure_mouse_passthrough()
- 205 | 	_setup_control_menu()
- 206 | 	_schedule_next_idle_action()
- 207 | 	_return_to_idle(false)
- 208 | 	call_deferred("_try_auto_birthday_easter_egg")
- 209 | 
- 210 | 
- 211 | func _load_config() -> void:
- 212 | 	var file := FileAccess.open("res://config/pet_behavior.json", FileAccess.READ)
- 213 | 	if file == null:
- 214 | 		push_error("Unable to open pet_behavior.json")
- 215 | 		get_tree().quit(2)
- 216 | 		return
- 217 | 
- 218 | 	var parsed: Variant = JSON.parse_string(file.get_as_text())
- 219 | 	if typeof(parsed) != TYPE_DICTIONARY:
- 220 | 		push_error("pet_behavior.json is not a JSON object")
- 221 | 		get_tree().quit(2)
- 222 | 		return
- 223 | 
- 224 | 	config = parsed as Dictionary
- 225 | 
- 226 | 
- 227 | func _load_feature_config() -> void:
- 228 | 	var file := FileAccess.open("res://config/feature_config.json", FileAccess.READ)
- 229 | 	if file == null:
- 230 | 		feature_config = {}
- 231 | 		push_warning("feature_config.json not found")
- 232 | 		return
- 233 | 
- 234 | 	var parsed: Variant = JSON.parse_string(file.get_as_text())
- 235 | 	if typeof(parsed) != TYPE_DICTIONARY:
- 236 | 		feature_config = {}
- 237 | 		push_warning("feature_config.json is not a JSON object")
- 238 | 		return
- 239 | 
- 240 | 	feature_config = parsed as Dictionary
- 241 | 
- 242 | 
- 243 | func _configure_feature_modules() -> void:
- 244 | 	dialogue_manager.load_config()
- 245 | 	dream_talk_manager.load_config()
- 246 | 	inactivity_manager.configure(
- 247 | 		feature_config.get("inactivity", {}) as Dictionary,
- 248 | 		Time.get_ticks_msec()
- 249 | 	)
- 250 | 	var mood_cfg := feature_config.get("mood", {}) as Dictionary
- 251 | 	mood_manager.configure(mood_cfg)
- 252 | 	mood_indicator.call("configure", mood_cfg)
- 253 | 	if not mood_indicator.visibility_changed.is_connected(_on_mood_indicator_visibility_changed):
- 254 | 		mood_indicator.visibility_changed.connect(_on_mood_indicator_visibility_changed)
- 255 | 	action_coordinator.configure(
- 256 | 		action_registry,
- 257 | 		feature_config.get("action_coordinator", {}) as Dictionary
- 258 | 	)
- 259 | 	if not mood_manager.mood_changed.is_connected(_on_mood_changed):
- 260 | 		mood_manager.mood_changed.connect(_on_mood_changed)
- 261 | 	_on_mood_changed(mood_manager.current_mood, mood_manager.mood_score)
- 262 | 	command_input.max_length = InputGuard.MESSAGE_LIMIT
- 263 | 	var reminder_cfg := feature_config.get("reminders", {}) as Dictionary
- 264 | 	reminder_manager.configure(reminder_cfg)
- 265 | 	var stored_reminders := bool(settings_store.get_value(
- 266 | 		"reminders_enabled",
- 267 | 		bool(reminder_cfg.get("enabled", true))
- 268 | 	))
- 269 | 	reminder_manager.set_enabled(stored_reminders)
- 270 | 
- 271 | 	var file_cfg := feature_config.get("file_conversion", {}) as Dictionary
- 272 | 	file_drop_manager.configure(file_cfg)
- 273 | 
- 274 | 	var weather_cfg := feature_config.get("weather", {}) as Dictionary
- 275 | 	var stored_weather_variant: Variant = settings_store.get_value("weather", {})
- 276 | 	var stored_weather: Dictionary = {}
- 277 | 	if typeof(stored_weather_variant) == TYPE_DICTIONARY:
- 278 | 		stored_weather = stored_weather_variant as Dictionary
- 279 | 	weather_manager.configure(weather_cfg, stored_weather)
- 280 | 
- 281 | 	random_actions_paused = bool(settings_store.get_value(
- 282 | 		"random_actions_paused",
- 283 | 		false
- 284 | 	))
- 285 | 	reminder_manager.set_chatter_paused(random_actions_paused)
- 286 | 	var roaming_cfg := config.get("roaming", {}) as Dictionary
- 287 | 	var stored_roaming_enabled := bool(settings_store.get_value(
- 288 | 		"roaming_enabled",
- 289 | 		true
- 290 | 	))
- 291 | 	roaming_controller.configure(
- 292 | 		roaming_cfg,
- 293 | 		movement_catalog,
- 294 | 		stored_roaming_enabled
- 295 | 	)
- 296 | 
- 297 | 	reminder_manager.reminder_due.connect(_on_reminder_due)
- 298 | 	file_drop_manager.queue_changed.connect(_on_file_queue_changed)
- 299 | 	weather_manager.weather_updated.connect(_on_weather_updated)
- 300 | 	weather_manager.reminder_due.connect(_on_weather_reminder_due)
- 301 | 	weather_manager.request_failed.connect(_on_weather_request_failed)
- 302 | 	bubble.action_selected.connect(_on_bubble_action_selected)
- 303 | 	bubble.interactive_changed.connect(_on_bubble_interactive_changed)
- 304 | 	bubble.bounds_changed.connect(_on_bubble_bounds_changed)
- 305 | 	command_bubble.interactive_changed.connect(_on_overlay_interactive_changed)
- 306 | 	weather_bubble.interactive_changed.connect(_on_overlay_interactive_changed)
- 307 | 	context_menu.interactive_changed.connect(_on_overlay_interactive_changed)
- 308 | 
- 309 | 	if not get_window().files_dropped.is_connected(_on_files_dropped):
- 310 | 		get_window().files_dropped.connect(_on_files_dropped)
- 311 | 
- 312 | 	command_send.pressed.connect(_on_command_send_pressed)
- 313 | 	command_cancel.pressed.connect(_on_command_cancel_pressed)
- 314 | 	command_input.text_submitted.connect(_on_command_text_submitted)
- 315 | 	command_input.text_changed.connect(_on_command_input_changed)
- 316 | 	command_input.text_change_rejected.connect(_on_command_input_rejected)
- 317 | 
- 318 | 	weather_save.pressed.connect(_on_weather_save_pressed)
- 319 | 	weather_cancel.pressed.connect(_on_weather_cancel_pressed)
- 320 | 
- 321 | 
- 322 | func _persist_window_position() -> void:
- 323 | 	PetWindowLayout.persist_position(settings_store)
- 324 | 
- 325 | 
- 326 | func _setup_control_menu() -> void:
- 327 | 	context_menu.item_selected.connect(_on_control_menu_id_pressed)
- 328 | 
- 329 | 
- 330 | func _open_control_menu(local_position: Vector2) -> void:
- 331 | 	command_bubble.call("hide_card", false)
- 332 | 	weather_bubble.call("hide_card", false)
- 333 | 	_hide_nickname_card(false)
- 334 | 	context_menu_anchor = local_position
- 335 | 	PetContextMenu.open_root(
- 336 | 		context_menu,
- 337 | 		config,
- 338 | 		local_position,
- 339 | 		bool(reminder_manager.enabled),
- 340 | 		random_actions_paused,
- 341 | 		roaming_controller.is_enabled(),
- 342 | 		manual_action_map,
- 343 | 		manual_category_map
- 344 | 	)
- 345 | 
- 346 | 
- 347 | func _open_settings_menu() -> void:
- 348 | 	PetContextMenu.open_settings(
- 349 | 		context_menu,
- 350 | 		context_menu_anchor,
- 351 | 		manual_action_map,
- 352 | 		manual_category_map
- 353 | 	)
- 354 | 
- 355 | 
- 356 | func _open_batch_file_window() -> void:
- 357 | 	command_bubble.call("hide_card", false)
- 358 | 	weather_bubble.call("hide_card", false)
- 359 | 	_hide_nickname_card(false)
- 360 | 	context_menu.call("hide_menu", false)
- 361 | 	if not is_instance_valid(batch_file_window):
- 362 | 		batch_file_window = BatchFileWindow.new()
- 363 | 		add_child(batch_file_window)
- 364 | 		batch_file_window.feedback_requested.connect(_on_file_feedback_requested)
- 365 | 		batch_file_window.call("setup", file_drop_manager)
- 366 | 	batch_file_window.call("open_workbench")
- 367 | 
- 368 | 
- 369 | func _open_action_picker() -> void:
- 370 | 	PetContextMenu.open_action_picker(
- 371 | 		context_menu,
- 372 | 		config,
- 373 | 		context_menu_anchor,
- 374 | 		manual_action_map,
- 375 | 		manual_category_map
- 376 | 	)
- 377 | 
- 378 | 
- 379 | func _open_action_category(category_id: String, page_index: int = 0) -> void:
- 380 | 	PetContextMenu.open_action_category(
- 381 | 		context_menu,
- 382 | 		config,
- 383 | 		context_menu_anchor,
- 384 | 		category_id,
- 385 | 		manual_action_map,
- 386 | 		manual_category_map,
- 387 | 		page_index
- 388 | 	)
- 389 | 
- 390 | 
- 391 | func _on_control_menu_id_pressed(id: int) -> void:
- 392 | 	_register_user_activity()
- 393 | 	if id >= ACTION_MENU_BASE:
- 394 | 		if sleep_phase != "none":
- 395 | 			bubble.say(dream_talk_manager.chat_reply(settings_store.get_nickname()), 3.6)
- 396 | 			return
- 397 | 		var spec := manual_action_map.get(id, {}) as Dictionary
- 398 | 		if not spec.is_empty():
- 399 | 			_play_manual_action(spec)
- 400 | 		return
- 401 | 	if id >= ACTION_CATEGORY_MENU_BASE:
- 402 | 		var category_id := str(manual_category_map.get(id, ""))
- 403 | 		if not category_id.is_empty():
- 404 | 			call_deferred("_open_action_category", category_id)
- 405 | 		return
- 406 | 
- 407 | 	match id:
- 408 | 		MENU_TALK:
- 409 | 			_open_command_window()
- 410 | 		MENU_PLAY_ACTION:
- 411 | 			call_deferred("_open_action_picker")
- 412 | 		MENU_ACTION_CATEGORY_BACK:
- 413 | 			call_deferred("_open_action_picker")
- 414 | 		MENU_ACTION_PAGE_UP, MENU_ACTION_PAGE_DOWN:
- 415 | 			var navigation := manual_category_map.get(id, {}) as Dictionary
- 416 | 			var category_id := str(navigation.get("category_id", ""))
- 417 | 			var page_index := int(navigation.get("page_index", 0))
- 418 | 			if not category_id.is_empty():
- 419 | 				call_deferred(
- 420 | 					"_open_action_category",
- 421 | 					category_id,
- 422 | 					page_index
- 423 | 				)
- 424 | 		MENU_ACTION_BACK:
- 425 | 			call_deferred("_open_control_menu", context_menu_anchor)
- 426 | 		MENU_TOGGLE_REMINDERS:
- 427 | 			var value: bool = not bool(reminder_manager.enabled)
- 428 | 			reminder_manager.set_enabled(value)
- 429 | 			settings_store.set_value("reminders_enabled", value)
- 430 | 			bubble.say(
- 431 | 				"日常提醒已%s。" % ("开启" if value else "关闭"),
- 432 | 				2.4
- 433 | 			)
- 434 | 		MENU_WEATHER_NOW:
- 435 | 			_request_weather_now()
- 436 | 		MENU_WEATHER_SETTINGS:
- 437 | 			_open_weather_window()
- 438 | 		MENU_SETTINGS:
- 439 | 			call_deferred("_open_settings_menu")
- 440 | 		MENU_NICKNAME:
- 441 | 			_open_nickname_window()
- 442 | 		MENU_FILE_WORKBENCH:
- 443 | 			_open_batch_file_window()
- 444 | 		MENU_TOGGLE_RANDOM:
- 445 | 			_set_autonomous_paused(not random_actions_paused)
- 446 | 		MENU_TOGGLE_ROAMING:
- 447 | 			_set_roaming_enabled(not roaming_controller.is_enabled())
- 448 | 		MENU_CLEAR_FILES:
- 449 | 			file_drop_manager.clear_queue()
- 450 | 			bubble.say("好啦，拖进来的文件队列清空了～", 2.6)
- 451 | 		MENU_RESET_POSITION:
- 452 | 			var was_sleeping := sleep_phase != "none"
- 453 | 			if was_sleeping:
- 454 | 				_interrupt_sleep_by_user()
- 455 | 			else:
- 456 | 				_cancel_active_action()
- 457 | 			throw_velocity = Vector2.ZERO
- 458 | 			pointer_pressed = false
- 459 | 			dragging = false
- 460 | 			_reset_window_position()
- 461 | 			_persist_window_position()
- 462 | 			if not was_sleeping:
- 463 | 				_return_to_idle(false)
- 464 | 		MENU_EXIT:
- 465 | 			_quit_pet()
- 466 | 
- 467 | 
- 468 | func _play_manual_action(spec: Dictionary) -> void:
- 469 | 	var action_id := str(spec.get("id", ""))
- 470 | 	var kind := str(spec.get("kind", "clip"))
- 471 | 
- 472 | 	match kind:
- 473 | 		"idle":
- 474 | 			_cancel_active_action()
- 475 | 			_return_to_idle(false)
- 476 | 		"sleep":
- 477 | 			_start_sleep_entry("manual", ACTION_PRIORITY_MANUAL)
- 478 | 		"clip":
- 479 | 			_request_coordinated_clip(
- 480 | 				action_id,
- 481 | 				"manual",
- 482 | 				ACTION_PRIORITY_MANUAL,
- 483 | 				true,
- 484 | 				PetState.REACTION
- 485 | 			)
- 486 | 		_:
- 487 | 			_cancel_active_action()
- 488 | 			_return_to_idle(false)
- 489 | 
- 490 | 
- 491 | func _open_command_window() -> void:
- 492 | 	weather_bubble.call("hide_card", false)
- 493 | 	_hide_nickname_card(false)
- 494 | 	context_menu.call("hide_menu", false)
- 495 | 	command_input.clear()
- 496 | 	_on_command_input_changed("")
- 497 | 	command_bubble.call("popup_card")
- 498 | 	# popup_card() makes the control visible synchronously, so focus can be
- 499 | 	# assigned immediately instead of waiting another frame.
- 500 | 	command_input.grab_focus()
- 501 | 
- 502 | 
- 503 | func _on_command_send_pressed() -> void:
- 504 | 	_on_command_text_submitted(command_input.text)
- 505 | 
- 506 | 
- 507 | func _on_command_cancel_pressed() -> void:
- 508 | 	command_bubble.call("hide_card")
- 509 | 	command_input.clear()
- 510 | 
- 511 | 
- 512 | func _on_command_text_submitted(text: String) -> void:
- 513 | 	var checked := InputGuard.check(text, InputGuard.MESSAGE_LIMIT)
- 514 | 	if not checked.ok:
- 515 | 		if checked.error == "too_long":
- 516 | 			_on_command_input_rejected("")
- 517 | 		return
- 518 | 	_register_user_activity()
- 519 | 	command_bubble.call("hide_card")
- 520 | 	command_input.clear()
- 521 | 	_handle_command_text(text)
- 522 | 
- 523 | 
- 524 | func _handle_command_text(text: String) -> void:
- 525 | 	if _is_sleep_dream_state():
- 526 | 		bubble.say(
- 527 | 			dream_talk_manager.chat_reply(settings_store.get_nickname()),
- 528 | 			4.0
- 529 | 		)
- 530 | 		return
- 531 | 
- 532 | 	var result := dialogue_manager.submit_message(
- 533 | 		text,
- 534 | 		settings_store.get_nickname()
- 535 | 	)
- 536 | 	_apply_dialogue_result(result, "dialogue")
- 537 | 
- 538 | 
- 539 | func _apply_dialogue_result(
- 540 | 	result: Dictionary,
- 541 | 	source: String
- 542 | ) -> void:
- 543 | 	if result.is_empty():
- 544 | 		return
- 545 | 
- 546 | 	var mood_event := str(result.get("mood_event", ""))
- 547 | 	if not mood_event.is_empty():
- 548 | 		mood_manager.apply_event(mood_event)
- 549 | 
- 550 | 	var reply := str(result.get("text", ""))
- 551 | 	if str(result.get("intent", "")) == "mood_query":
- 552 | 		# Use the current MoodManager snapshot; static templates can lie.
- 553 | 		reply = dialogue_manager.mood_reply(
- 554 | 			str(mood_manager.get_snapshot().get("mood", "normal"))
- 555 | 		)
- 556 | 	if not reply.is_empty():
- 557 | 		bubble.say(reply, 4.0)
- 558 | 
- 559 | 	var action_request := str(result.get("action_request", ""))
- 560 | 	if action_request == "sleep_down":
- 561 | 		_start_sleep_entry(source, ACTION_PRIORITY_DIALOGUE)
- 562 | 	elif not action_request.is_empty():
- 563 | 		_request_coordinated_clip(
- 564 | 			action_request,
- 565 | 			source,
- 566 | 			ACTION_PRIORITY_DIALOGUE,
- 567 | 			true,
- 568 | 			PetState.REACTION
- 569 | 		)
- 570 | 
- 571 | 
- 572 | func _on_file_feedback_requested(kind: String) -> void:
- 573 | 	var text := dialogue_manager.event_reply(kind)
- 574 | 	if text.is_empty():
- 575 | 		return
- 576 | 	if is_instance_valid(batch_file_window):
- 577 | 		batch_file_window.call("set_character_feedback", text)
- 578 | 	# The independent file workbench can cover the pet. Show the feedback in
- 579 | 	# its own status area too, without stealing keyboard focus.
- 580 | 	bubble.say(text, 4.0)
- 581 | 
- 582 | 
- 583 | func _say_event_feedback(kind: String, duration: float = 3.2) -> void:
- 584 | 	var text := dialogue_manager.event_reply(kind)
- 585 | 	if not text.is_empty():
- 586 | 		bubble.say(text, duration)
- 587 | 
- 588 | 
- 589 | func _try_auto_birthday_easter_egg() -> void:
- 590 | 	var date := Time.get_date_dict_from_system()
- 591 | 	var year := int(date.get("year", -1))
- 592 | 	var last_year := int(settings_store.get_value(
- 593 | 		"last_birthday_auto_trigger_year",
- 594 | 		-1
- 595 | 	))
- 596 | 	var result := dialogue_manager.birthday_auto_event(
- 597 | 		date,
- 598 | 		last_year
- 599 | 	) as Dictionary
- 600 | 	if result.is_empty():
- 601 | 		return
- 602 | 
- 603 | 	settings_store.set_value(
- 604 | 		"last_birthday_auto_trigger_year",
- 605 | 		year
- 606 | 	)
- 607 | 	_apply_dialogue_result(result, "birthday_auto")
- 608 | 
- 609 | 
- 610 | func _on_command_input_changed(text: String) -> void:
- 611 | 	command_send.disabled = not bool(InputGuard.check(text, InputGuard.MESSAGE_LIMIT).ok)
- 612 | 	$CommandBubble/Card/Margin/Content/Title.text = "你想对她说：%d / 50" % text.length()
- 613 | 
- 614 | 
- 615 | func _on_command_input_rejected(_rejected: String) -> void:
- 616 | 	$CommandBubble/Card/Margin/Content/Title.text = "最多 50 个字符，已保留能放下的内容。"
- 617 | 
- 618 | 
- 619 | func _open_nickname_window() -> void:
- 620 | 	command_bubble.call("hide_card", false)
- 621 | 	weather_bubble.call("hide_card", false)
- 622 | 	context_menu.call("hide_menu", false)
- 623 | 	if not is_instance_valid(nickname_card):
- 624 | 		nickname_card = load("res://scenes/nickname_card.tscn").instantiate()
- 625 | 		add_child(nickname_card)
- 626 | 		nickname_card.interactive_changed.connect(_on_overlay_interactive_changed)
- 627 | 		nickname_card.nickname_submitted.connect(_on_nickname_submitted)
- 628 | 	nickname_card.call("open_for", settings_store.get_nickname())
- 629 | 
- 630 | 
- 631 | func _hide_nickname_card(animated: bool = true) -> void:
- 632 | 	if is_instance_valid(nickname_card):
- 633 | 		nickname_card.call("hide_card", animated)
- 634 | 
- 635 | 
- 636 | func _on_nickname_submitted(text: String) -> void:
- 637 | 	var checked := InputGuard.check(text, InputGuard.NICKNAME_LIMIT, true)
- 638 | 	if not checked.ok:
- 639 | 		nickname_card.call("show_error", "昵称最多 12 个字符，请缩短后再保存。")
- 640 | 		return
- 641 | 	if not settings_store.set_nickname(text):
- 642 | 		nickname_card.call("show_error", "暂时没能保存，请稍后重试。")
- 643 | 		return
- 644 | 	_hide_nickname_card()
- 645 | 	bubble.say("昵称已清除，照常陪你聊天。" if checked.text.is_empty() else "记住啦，以后就这样称呼你。", 3.0)
- 646 | 
- 647 | 
- 648 | func _open_weather_window() -> void:
- 649 | 	command_bubble.call("hide_card", false)
- 650 | 	_hide_nickname_card(false)
- 651 | 	context_menu.call("hide_menu", false)
- 652 | 	weather_city.text = str(weather_manager.location_query)
- 653 | 	weather_enabled.button_pressed = bool(weather_manager.enabled)
- 654 | 	weather_bubble.call("popup_card")
- 655 | 	weather_city.call_deferred("grab_focus")
- 656 | 
- 657 | 
- 658 | func _on_weather_cancel_pressed() -> void:
- 659 | 	weather_bubble.call("hide_card")
- 660 | 
- 661 | 
- 662 | func _on_weather_save_pressed() -> void:
- 663 | 	var city := weather_city.text.strip_edges()
- 664 | 	var enabled := weather_enabled.button_pressed
- 665 | 
- 666 | 	if enabled and city.is_empty():
- 667 | 		bubble.say("先告诉我你在哪个城市呀，不然我不知道该往哪儿看天气～", 4.0)
- 668 | 		return
- 669 | 
- 670 | 	weather_manager.set_location(city, enabled)
- 671 | 	settings_store.set_value(
- 672 | 		"weather",
- 673 | 		weather_manager.export_settings()
- 674 | 	)
- 675 | 	weather_bubble.call("hide_card")
- 676 | 
- 677 | 	if enabled and not city.is_empty():
- 678 | 		bubble.say("好～我去看看那边现在是什么天气。", 2.8)
- 679 | 		weather_manager.refresh()
- 680 | 	else:
- 681 | 		bubble.say("好，天气提醒先关掉啦。", 2.8)
- 682 | 
- 683 | 
- 684 | func _request_weather_now() -> void:
- 685 | 	if str(weather_manager.location_name).is_empty():
- 686 | 		bubble.ask(
- 687 | 			"还没设置天气城市，要现在设置吗？",
- 688 | 			[
- 689 | 				{"id": "weather_setup", "label": "去设置"},
- 690 | 				{"id": "dismiss", "label": "稍后"}
- 691 | 			]
- 692 | 		)
- 693 | 		return
- 694 | 
- 695 | 	bubble.say("我去瞄一眼天气～", 2.2)
- 696 | 	weather_manager.refresh()
- 697 | 
- 698 | 
- 699 | func _on_weather_updated(summary: Dictionary) -> void:
- 700 | 	settings_store.set_value(
- 701 | 		"weather",
- 702 | 		weather_manager.export_settings()
- 703 | 	)
- 704 | 
- 705 | 	var weather_text := _build_weather_reply(summary)
- 706 | 	bubble.say(
- 707 | 		dream_talk_manager.format_notice("weather", weather_text)
- 708 | 		if _is_sleep_dream_state()
- 709 | 		else weather_text,
- 710 | 		7.0
- 711 | 	)
- 712 | 
- 713 | 
- 714 | func _build_weather_reply(summary: Dictionary) -> String:
- 715 | 	return WeatherReplyFormatter.build(summary)
- 716 | 
- 717 | 
- 718 | func _on_weather_reminder_due(text: String) -> void:
- 719 | 	bubble.say(
- 720 | 		dream_talk_manager.format_notice("weather", text)
- 721 | 		if _is_sleep_dream_state()
- 722 | 		else text,
- 723 | 		6.0
- 724 | 	)
- 725 | 
- 726 | 
- 727 | func _on_weather_request_failed(message: String) -> void:
- 728 | 	bubble.say(
- 729 | 		dream_talk_manager.format_notice("weather", message)
- 730 | 		if _is_sleep_dream_state()
- 731 | 		else message,
- 732 | 		4.5
- 733 | 	)
- 734 | 
- 735 | 
- 736 | func _on_reminder_due(text: String) -> void:
- 737 | 	bubble.say(
- 738 | 		dream_talk_manager.format_notice("reminder", text)
- 739 | 		if _is_sleep_dream_state()
- 740 | 		else text,
- 741 | 		5.0
- 742 | 	)
- 743 | 
- 744 | 
- 745 | func _on_bubble_action_selected(action_id: String) -> void:
- 746 | 	match action_id:
- 747 | 		"convert_png", "convert_jpg", "convert_webp":
- 748 | 			# Stage 5A safety guard: stale bubble actions may only open preview.
- 749 | 			_open_batch_file_window()
- 750 | 		"weather_setup":
- 751 | 			_open_weather_window()
- 752 | 		"dismiss":
- 753 | 			pass
- 754 | 
- 755 | 
- 756 | func _on_bubble_interactive_changed(enabled: bool) -> void:
- 757 | 	bubble_interactive = enabled
- 758 | 	call_deferred("_configure_mouse_passthrough")
- 759 | 
- 760 | 
- 761 | func _on_bubble_bounds_changed() -> void:
- 762 | 	_configure_mouse_passthrough()
- 763 | 
- 764 | 
- 765 | func _on_overlay_interactive_changed(_enabled: bool) -> void:
- 766 | 	overlay_interactive = (
- 767 | 		command_bubble.visible
- 768 | 		or weather_bubble.visible
- 769 | 		or context_menu.visible
- 770 | 		or (is_instance_valid(nickname_card) and nickname_card.visible)
- 771 | 	)
- 772 | 	call_deferred("_configure_mouse_passthrough")
- 773 | 
- 774 | 
- 775 | func _on_mood_indicator_visibility_changed() -> void:
- 776 | 	call_deferred("_configure_mouse_passthrough")
- 777 | 
- 778 | 
- 779 | func _on_files_dropped(files: PackedStringArray) -> void:
- 780 | 	_register_user_activity()
- 781 | 	if sleep_phase != "none":
- 782 | 		_interrupt_sleep_by_user()
- 783 | 	var summary := file_drop_manager.enqueue(files) as Dictionary
- 784 | 	var images := int(summary.get("images", 0))
- 785 | 	var audio := int(summary.get("audio", 0))
- 786 | 	var video := int(summary.get("video", 0))
- 787 | 	var other := int(summary.get("other", 0))
- 788 | 
- 789 | 	var parts: PackedStringArray = []
- 790 | 	if images > 0:
- 791 | 		parts.append("%d 张图片" % images)
- 792 | 	if audio > 0:
- 793 | 		parts.append("%d 个音频" % audio)
- 794 | 	if video > 0:
- 795 | 		parts.append("%d 个视频" % video)
- 796 | 	if other > 0:
- 797 | 		parts.append("%d 个其他文件" % other)
- 798 | 
- 799 | 	var description := "、".join(parts)
- 800 | 	if description.is_empty():
- 801 | 		description = "文件"
- 802 | 
- 803 | 	var note := "收到%s，已经加入文件处理队列。" % description
- 804 | 	if audio + video > 0:
- 805 | 		note += "\n音频和视频只参与批量重命名，不提供格式转换。"
- 806 | 	bubble.say(note, 3.2)
- 807 | 	call_deferred("_open_batch_file_window")
- 808 | 
- 809 | 
- 810 | func _on_file_queue_changed(_summary: Dictionary) -> void:
- 811 | 	pass
- 812 | 
- 813 | 
- 814 | func _convert_queued_images(_target: String) -> void:
- 815 | 	_open_batch_file_window()
- 816 | 
- 817 | 
- 818 | func _quit_pet() -> void:
- 819 | 	_persist_window_position()
- 820 | 	settings_store.save_settings()
- 821 | 	get_tree().quit()
- 822 | 
- 823 | 
- 824 | func _exit_tree() -> void:
- 825 | 	if is_instance_valid(settings_store):
- 826 | 		settings_store.set_window_position(
- 827 | 			DisplayServer.window_get_position(),
- 828 | 			false
- 829 | 		)
- 830 | 		settings_store.save_settings()
- 831 | 
- 832 | 
- 833 | func _reset_window_position() -> void:
- 834 | 	var window_cfg := config.get("window", {}) as Dictionary
- 835 | 	var usable := DisplayServer.screen_get_usable_rect()
- 836 | 	var window_size := DisplayServer.window_get_size()
- 837 | 	var pos := Vector2i(
- 838 | 		usable.position.x + usable.size.x - window_size.x - int(window_cfg.get("margin_right", 28)),
- 839 | 		usable.position.y + usable.size.y - window_size.y - int(window_cfg.get("margin_bottom", 28))
- 840 | 	)
- 841 | 	DisplayServer.window_set_position(pos)
- 842 | 
- 843 | 
- 844 | func _load_dynamic_hit_shapes() -> void:
- 845 | 	var interaction := config.get("interaction", {}) as Dictionary
- 846 | 	var dynamic_cfg := interaction.get("dynamic_hit_shape", {}) as Dictionary
- 847 | 	if not bool(dynamic_cfg.get("enabled", true)):
- 848 | 		dynamic_hit_shapes_ready = false
- 849 | 		return
- 850 | 
- 851 | 	var catalog_path := str(
- 852 | 		dynamic_cfg.get("catalog", "res://config/video_hit_shapes.json")
- 853 | 	)
- 854 | 	dynamic_hit_shapes_ready = dynamic_hit_shape_manager.load_catalog(catalog_path)
- 855 | 	if not dynamic_hit_shapes_ready:
- 856 | 		push_warning("Dynamic hit-shape catalog unavailable; using fallback pet hitbox.")
- 857 | 
- 858 | 
- 859 | func _set_active_hit_frame(action_id: String, frame_index: int) -> void:
- 860 | 	var next_action := action_id if not action_id.is_empty() else "idle"
- 861 | 	var next_frame := maxi(0, frame_index)
- 862 | 	if active_hit_action_id == next_action and active_hit_frame == next_frame:
- 863 | 		return
- 864 | 	active_hit_action_id = next_action
- 865 | 	active_hit_frame = next_frame
- 866 | 	_configure_mouse_passthrough()
- 867 | 
- 868 | 
- 869 | func _fallback_character_polygon() -> PackedVector2Array:
- 870 | 	var interaction := config.get("interaction", {}) as Dictionary
- 871 | 	var hitbox := interaction.get("pet_hitbox", {}) as Dictionary
- 872 | 	var dynamic_cfg := interaction.get("dynamic_hit_shape", {}) as Dictionary
- 873 | 	var pad := float(dynamic_cfg.get("fallback_padding_px", 12.0))
- 874 | 	var left := base_position.x + float(hitbox.get("left", -125.0)) * base_scale - pad
- 875 | 	var top := base_position.y + float(hitbox.get("top", -155.0)) * base_scale - pad
- 876 | 	var right := base_position.x + float(hitbox.get("right", 125.0)) * base_scale + pad
- 877 | 	var bottom := base_position.y + float(hitbox.get("bottom", 161.0)) * base_scale + pad
- 878 | 	return PackedVector2Array([
- 879 | 		Vector2(left, top),
- 880 | 		Vector2(right, top),
- 881 | 		Vector2(right, bottom),
- 882 | 		Vector2(left, bottom)
- 883 | 	])
- 884 | 
- 885 | 
- 886 | func _current_character_passthrough_polygon() -> PackedVector2Array:
- 887 | 	if not dynamic_hit_shapes_ready:
- 888 | 		return _fallback_character_polygon()
- 889 | 
- 890 | 	var raw := dynamic_hit_shape_manager.polygon_for(
- 891 | 		active_hit_action_id,
- 892 | 		active_hit_frame
- 893 | 	)
- 894 | 	if raw.size() < 3:
- 895 | 		return _fallback_character_polygon()
- 896 | 
- 897 | 	var canvas_center := dynamic_hit_shape_manager.canvas_size * 0.5
- 898 | 	var transformed := PackedVector2Array()
- 899 | 	for point in raw:
- 900 | 		transformed.append(pet_sprite.to_global(point - canvas_center))
- 901 | 	return transformed
- 902 | 
- 903 | 
- 904 | func _append_rect_corners(points: PackedVector2Array, rect: Rect2) -> void:
- 905 | 	var grown := rect.grow(2.0)
- 906 | 	points.append(grown.position)
- 907 | 	points.append(Vector2(grown.end.x, grown.position.y))
- 908 | 	points.append(grown.end)
- 909 | 	points.append(Vector2(grown.position.x, grown.end.y))
- 910 | 
- 911 | 
- 912 | func _visible_ui_passthrough_rects() -> Array[Rect2]:
- 913 | 	var rects: Array[Rect2] = []
- 914 | 	if bubble.visible:
- 915 | 		rects.append(bubble.call("get_window_bounds") as Rect2)
- 916 | 	if context_menu.visible:
- 917 | 		rects.append(context_menu.get_global_rect())
- 918 | 	if command_bubble.visible:
- 919 | 		rects.append(command_bubble.get_global_rect())
- 920 | 	if weather_bubble.visible:
- 921 | 		rects.append(weather_bubble.get_global_rect())
- 922 | 	if is_instance_valid(nickname_card) and nickname_card.visible:
- 923 | 		rects.append(nickname_card.get_global_rect())
- 924 | 	if mood_indicator.visible:
- 925 | 		rects.append(mood_indicator.get_global_rect())
- 926 | 	return rects
- 927 | 
- 928 | 
- 929 | func _configure_mouse_passthrough() -> void:
- 930 | 	# Normal mode follows the alpha-derived polygon for the *current animation
- 931 | 	# frame*. This keeps standing, crouching and lying poses clickable without
- 932 | 	# leaving a large invisible rectangle over desktop icons.
- 933 | 	var character_polygon := _current_character_passthrough_polygon()
- 934 | 	debug_character_passthrough_polygon = character_polygon
- 935 | 	mood_indicator.call("set_hover_polygon", character_polygon)
- 936 | 
- 937 | 	var ui_rects := _visible_ui_passthrough_rects()
- 938 | 	if ui_rects.is_empty():
- 939 | 		debug_last_passthrough_polygon = character_polygon
- 940 | 	else:
- 941 | 		# DisplayServer accepts one polygon. When UI is visible, use the convex
- 942 | 		# hull of the current character plus only the actually visible cards.
- 943 | 		# This is intentionally much smaller than the old full 760x420 capture.
- 944 | 		var combined := PackedVector2Array(character_polygon)
- 945 | 		for rect in ui_rects:
- 946 | 			_append_rect_corners(combined, rect)
- 947 | 		debug_last_passthrough_polygon = Geometry2D.convex_hull(combined)
- 948 | 
- 949 | 	DisplayServer.window_set_mouse_passthrough(debug_last_passthrough_polygon)
- 950 | 
- 951 | 
- 952 | func _load_clips() -> void:
- 953 | 	clips.clear()
- 954 | 	var runtime_cfg := config.get("video_runtime", {}) as Dictionary
- 955 | 	video_runtime_enabled = bool(runtime_cfg.get("enabled", false))
- 956 | 	PetClipCatalogLoader.populate(clips, config, video_runtime_enabled)
- 957 | 
- 958 | 
- 959 | func _load_idle_video() -> void:
- 960 | 	idle_video_textures.clear()
- 961 | 	idle_runtime_stream = null
- 962 | 
- 963 | 	var spec := config.get("idle_video", {}) as Dictionary
- 964 | 	if not bool(spec.get("enabled", false)):
- 965 | 		return
- 966 | 
- 967 | 	var frames_dir := str(spec.get("frames_dir", ""))
- 968 | 	var frame_count := int(spec.get("frame_count", 0))
- 969 | 	if frames_dir.is_empty() or frame_count <= 0:
- 970 | 		push_warning("idle_video is enabled but not configured")
- 971 | 		return
- 972 | 
- 973 | 	var runtime_video_path := "%s/runtime_alpha.ogv" % frames_dir.get_base_dir()
- 974 | 	if video_runtime_enabled and ResourceLoader.exists(runtime_video_path):
- 975 | 		idle_runtime_stream = load(runtime_video_path) as VideoStream
- 976 | 		if idle_runtime_stream == null:
- 977 | 			push_warning("Failed to load idle runtime video; PNG fallback remains active.")
- 978 | 
- 979 | 	for index in range(frame_count):
- 980 | 		var path := "%s/%03d.png" % [frames_dir, index]
- 981 | 		var texture := load(path) as Texture2D
- 982 | 		if texture == null:
- 983 | 			push_warning("Failed to load idle-video frame: %s" % path)
- 984 | 			idle_video_textures.clear()
- 985 | 			return
- 986 | 		idle_video_textures.append(texture)
- 987 | 
- 988 | 	_reset_idle_video()
- 989 | 
- 990 | 
- 991 | func _idle_video_is_ready() -> bool:
- 992 | 	return not idle_video_textures.is_empty()
- 993 | 
- 994 | 
- 995 | func _idle_runtime_is_ready() -> bool:
- 996 | 	return video_runtime_enabled and idle_runtime_stream != null
- 997 | 
- 998 | 
- 999 | func _runtime_video_is_active() -> bool:
+extends Node2D
+
+enum PetState { IDLE, REACTION, DRAGGING, THROWING, ROAMING, SLEEPING, WAKING }
+
+const InputGuard = preload("res://scripts/input_guard.gd")
+const DialogueManager = preload("res://scripts/dialogue_manager.gd")
+const InactivityManager = preload("res://scripts/inactivity_manager.gd")
+const DreamTalkManager = preload("res://scripts/dream_talk_manager.gd")
+const DynamicHitShapeManager = preload("res://scripts/dynamic_hit_shape_manager.gd")
+const BatchFileWindow = preload("res://scripts/batch_file_window.gd")
+const PetWindowLayout = preload("res://scripts/pet_window_layout.gd")
+const PetContextMenu = preload("res://scripts/pet_context_menu.gd")
+const PetDragThrowMotion = preload("res://scripts/pet_drag_throw_motion.gd")
+const WeatherReplyFormatter = preload("res://scripts/weather_reply_formatter.gd")
+const PetClipCatalogLoader = preload("res://scripts/pet_clip_catalog_loader.gd")
+const PetMovementCatalogLoader = preload("res://scripts/pet_movement_catalog_loader.gd")
+const PetRoamingController = preload("res://scripts/pet_roaming_controller.gd")
+const PetAnimationPlayback = preload("res://scripts/pet_animation_playback.gd")
+const PetIdleActionPicker = preload("res://scripts/pet_idle_action_picker.gd")
+
+var dialogue_manager := DialogueManager.new()
+var inactivity_manager := InactivityManager.new()
+var dream_talk_manager := DreamTalkManager.new()
+var dynamic_hit_shape_manager := DynamicHitShapeManager.new()
+var roaming_controller := PetRoamingController.new()
+var animation_playback := PetAnimationPlayback.new()
+var nickname_card: Control
+var batch_file_window: Window
+
+@onready var pet_visual: Node2D = $PetVisual
+@onready var body_pivot: Node2D = $PetVisual/BodyPivot
+@onready var pet_sprite: Sprite2D = $PetVisual/BodyPivot/PetSprite
+@onready var pet_sprite_next: Sprite2D = $PetVisual/BodyPivot/PetSpriteNext
+@onready var pet_video: VideoStreamPlayer = $PetVisual/BodyPivot/PetVideo
+@onready var bubble = $Bubble
+@onready var context_menu: Control = $ContextBubble
+@onready var command_bubble: Control = $CommandBubble
+@onready var command_input: LineEdit = $CommandBubble/Card/Margin/Content/CommandInput
+@onready var command_cancel: Button = $CommandBubble/Card/Margin/Content/Actions/Cancel
+@onready var command_send: Button = $CommandBubble/Card/Margin/Content/Actions/Send
+@onready var weather_bubble: Control = $WeatherBubble
+@onready var weather_city: LineEdit = $WeatherBubble/Card/Margin/Content/City
+@onready var weather_enabled: CheckButton = $WeatherBubble/Card/Margin/Content/Enabled
+@onready var weather_cancel: Button = $WeatherBubble/Card/Margin/Content/Actions/Cancel
+@onready var weather_save: Button = $WeatherBubble/Card/Margin/Content/Actions/Save
+@onready var settings_store = $SettingsStore
+@onready var reminder_manager = $ReminderManager
+@onready var file_drop_manager = $FileDropManager
+@onready var action_registry = $ActionRegistry
+@onready var mood_manager = $MoodManager
+@onready var action_coordinator = $ActionCoordinator
+@onready var mood_indicator: Control = $MoodIndicator
+@onready var weather_manager = $WeatherManager
+
+var config: Dictionary = {}
+var feature_config: Dictionary = {}
+var clips: Dictionary = {}
+var movement_catalog: Dictionary = {}
+var idle_video_textures: Array[Texture2D] = []
+var idle_video_frame := 0
+var idle_video_accum_sec := 0.0
+var idle_runtime_stream: VideoStream
+var video_runtime_enabled := false
+var active_video_action_id := ""
+var active_video_fps := 12.0
+var active_video_frame_count := 0
+var rng := RandomNumberGenerator.new()
+
+var state: PetState = PetState.IDLE
+var master_texture: Texture2D
+var base_scale := 1.0
+var base_position := Vector2(550, 210)
+var base_body_pivot_position := Vector2(0, 161)
+
+var idle_action_countdown_sec := 9.0
+var last_idle_action_id := ""
+var last_idle_action_category := ""
+var idle_category_streak := 0
+# Existing persisted preference; now pauses all autonomous behavior.
+var random_actions_paused := false
+
+const MENU_TOGGLE_RANDOM := PetContextMenu.MENU_TOGGLE_RANDOM
+const MENU_RESET_POSITION := PetContextMenu.MENU_RESET_POSITION
+const MENU_EXIT := PetContextMenu.MENU_EXIT
+const MENU_TALK := PetContextMenu.MENU_TALK
+const MENU_TOGGLE_REMINDERS := PetContextMenu.MENU_TOGGLE_REMINDERS
+const MENU_PLAY_ACTION := PetContextMenu.MENU_PLAY_ACTION
+const MENU_ACTION_BACK := PetContextMenu.MENU_ACTION_BACK
+const MENU_FILE_WORKBENCH := PetContextMenu.MENU_FILE_WORKBENCH
+const MENU_CLEAR_FILES := PetContextMenu.MENU_CLEAR_FILES
+const MENU_WEATHER_SETTINGS := PetContextMenu.MENU_WEATHER_SETTINGS
+const MENU_WEATHER_NOW := PetContextMenu.MENU_WEATHER_NOW
+const MENU_SETTINGS := PetContextMenu.MENU_SETTINGS
+const MENU_NICKNAME := PetContextMenu.MENU_NICKNAME
+const MENU_ACTION_CATEGORY_BACK := PetContextMenu.MENU_ACTION_CATEGORY_BACK
+const MENU_TOGGLE_ROAMING := PetContextMenu.MENU_TOGGLE_ROAMING
+const MENU_ACTION_PAGE_UP := PetContextMenu.MENU_ACTION_PAGE_UP
+const MENU_ACTION_PAGE_DOWN := PetContextMenu.MENU_ACTION_PAGE_DOWN
+const ACTION_CATEGORY_MENU_BASE := PetContextMenu.ACTION_CATEGORY_MENU_BASE
+const ACTION_MENU_BASE := PetContextMenu.ACTION_MENU_BASE
+const CONTEXT_MENU_FIXED_ANCHOR := PetContextMenu.CONTEXT_MENU_FIXED_ANCHOR
+
+const ACTION_PRIORITY_IDLE := 10
+const ACTION_PRIORITY_ROAMING := 20
+const ACTION_PRIORITY_DIALOGUE := 50
+const ACTION_PRIORITY_CLICK := 60
+const ACTION_PRIORITY_SLEEP := 80
+const ACTION_PRIORITY_MANUAL := 90
+const ACTION_PRIORITY_DRAG := 100
+const ACTION_PRIORITY_WAKE := 110
+
+var sequence_token := 0
+var sequence_running := false
+var active_clip_uses_visual_fade := false
+const ACTION_VISUAL_FADE_MIN_ALPHA := 0.55
+const ACTION_VISUAL_FADE_OUT_SEC := 0.045
+const ACTION_VISUAL_FADE_IN_SEC := 0.060
+
+var last_reaction_id := ""
+var last_reaction_tier := ""
+var reaction_cooldown_until_ms := 0
+var last_rapid_click_line_ms := -100000
+const RAPID_CLICK_LINE_COOLDOWN_MS := 1500
+var active_clip_id := ""
+var sleep_phase := "none"
+
+# dsh-pet style Q-bounce state. Keep this independent from the click-reaction
+# video cooldown so every completed click can retrigger the tactile feedback.
+var click_squash_active := false
+var click_squash_phase := 0
+var click_squash_elapsed_sec := 0.0
+var click_squash_from_y := 1.0
+const CLICK_SQUASH_SCALE_Y := 0.55
+const CLICK_SQUASH_COMPRESS_SEC := 0.055
+const CLICK_SQUASH_REBOUND_SEC := 0.285
+
+var pointer_pressed := false
+var dragging := false
+var drag_moved := false
+var drag_mouse_start := Vector2i.ZERO
+var drag_window_start := Vector2.ZERO
+var drag_current_position := Vector2.ZERO
+var drag_target_position := Vector2.ZERO
+var drag_velocity := Vector2.ZERO
+var throw_velocity := Vector2.ZERO
+var drag_threshold_px := 12
+
+var bubble_interactive := false
+var overlay_interactive := false
+var debug_last_passthrough_polygon := PackedVector2Array()
+var debug_character_passthrough_polygon := PackedVector2Array()
+var active_hit_action_id := "idle"
+var active_hit_frame := 0
+var dynamic_hit_shapes_ready := false
+var context_menu_anchor := Vector2.ZERO
+var manual_action_map: Dictionary = {}
+var manual_category_map: Dictionary = {}
+
+
+func _ready() -> void:
+	rng.randomize()
+	animation_playback.name = "PetAnimationPlayback"
+	add_child(animation_playback)
+	animation_playback.configure(
+		pet_sprite,
+		pet_sprite_next,
+		pet_video,
+		body_pivot,
+		Callable(self, "_is_sequence_token_current"),
+		Callable(self, "_show_runtime_video"),
+		Callable(self, "_hide_runtime_video"),
+		Callable(self, "_set_active_hit_frame")
+	)
+	settings_store.load_settings()
+	_load_config()
+	_load_feature_config()
+	base_position = pet_visual.position
+	PetWindowLayout.configure(get_viewport(), config, settings_store, base_position)
+	_load_clips()
+	_load_dynamic_hit_shapes()
+	_load_idle_video()
+	_load_movement_catalog()
+	action_registry.load_catalog()
+	_configure_feature_modules()
+
+	base_scale = float(config.get("sprite_scale", 1.0))
+	base_position = pet_visual.position
+	base_body_pivot_position = body_pivot.position
+	pet_visual.scale = Vector2.ONE * base_scale
+	var interaction := config.get("interaction", {}) as Dictionary
+	drag_threshold_px = int(interaction.get("drag_threshold_px", 12))
+
+	master_texture = load(str(config.get("master_texture", ""))) as Texture2D
+	if master_texture == null:
+		push_error("Failed to load master texture")
+		get_tree().quit(2)
+		return
+
+	pet_sprite.texture = master_texture
+	pet_sprite_next.texture = null
+	pet_sprite.modulate = Color.WHITE
+	pet_sprite_next.modulate.a = 0.0
+
+	_configure_mouse_passthrough()
+	_setup_control_menu()
+	_schedule_next_idle_action()
+	_return_to_idle(false)
+	call_deferred("_try_auto_birthday_easter_egg")
+
+
+func _load_config() -> void:
+	var file := FileAccess.open("res://config/pet_behavior.json", FileAccess.READ)
+	if file == null:
+		push_error("Unable to open pet_behavior.json")
+		get_tree().quit(2)
+		return
+
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_error("pet_behavior.json is not a JSON object")
+		get_tree().quit(2)
+		return
+
+	config = parsed as Dictionary
+
+
+func _load_feature_config() -> void:
+	var file := FileAccess.open("res://config/feature_config.json", FileAccess.READ)
+	if file == null:
+		feature_config = {}
+		push_warning("feature_config.json not found")
+		return
+
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		feature_config = {}
+		push_warning("feature_config.json is not a JSON object")
+		return
+
+	feature_config = parsed as Dictionary
+
+
+func _configure_feature_modules() -> void:
+	dialogue_manager.load_config()
+	dream_talk_manager.load_config()
+	inactivity_manager.configure(
+		feature_config.get("inactivity", {}) as Dictionary,
+		Time.get_ticks_msec()
+	)
+	var mood_cfg := feature_config.get("mood", {}) as Dictionary
+	mood_manager.configure(mood_cfg)
+	mood_indicator.call("configure", mood_cfg)
+	if not mood_indicator.visibility_changed.is_connected(_on_mood_indicator_visibility_changed):
+		mood_indicator.visibility_changed.connect(_on_mood_indicator_visibility_changed)
+	action_coordinator.configure(
+		action_registry,
+		feature_config.get("action_coordinator", {}) as Dictionary
+	)
+	if not mood_manager.mood_changed.is_connected(_on_mood_changed):
+		mood_manager.mood_changed.connect(_on_mood_changed)
+	_on_mood_changed(mood_manager.current_mood, mood_manager.mood_score)
+	command_input.max_length = InputGuard.MESSAGE_LIMIT
+	var reminder_cfg := feature_config.get("reminders", {}) as Dictionary
+	reminder_manager.configure(reminder_cfg)
+	var stored_reminders := bool(settings_store.get_value(
+		"reminders_enabled",
+		bool(reminder_cfg.get("enabled", true))
+	))
+	reminder_manager.set_enabled(stored_reminders)
+
+	var file_cfg := feature_config.get("file_conversion", {}) as Dictionary
+	file_drop_manager.configure(file_cfg)
+
+	var weather_cfg := feature_config.get("weather", {}) as Dictionary
+	var stored_weather_variant: Variant = settings_store.get_value("weather", {})
+	var stored_weather: Dictionary = {}
+	if typeof(stored_weather_variant) == TYPE_DICTIONARY:
+		stored_weather = stored_weather_variant as Dictionary
+	weather_manager.configure(weather_cfg, stored_weather)
+
+	random_actions_paused = bool(settings_store.get_value(
+		"random_actions_paused",
+		false
+	))
+	reminder_manager.set_chatter_paused(random_actions_paused)
+	var roaming_cfg := config.get("roaming", {}) as Dictionary
+	var stored_roaming_enabled := bool(settings_store.get_value(
+		"roaming_enabled",
+		true
+	))
+	roaming_controller.configure(
+		roaming_cfg,
+		movement_catalog,
+		stored_roaming_enabled
+	)
+
+	reminder_manager.reminder_due.connect(_on_reminder_due)
+	file_drop_manager.queue_changed.connect(_on_file_queue_changed)
+	weather_manager.weather_updated.connect(_on_weather_updated)
+	weather_manager.reminder_due.connect(_on_weather_reminder_due)
+	weather_manager.request_failed.connect(_on_weather_request_failed)
+	bubble.action_selected.connect(_on_bubble_action_selected)
+	bubble.interactive_changed.connect(_on_bubble_interactive_changed)
+	bubble.bounds_changed.connect(_on_bubble_bounds_changed)
+	command_bubble.interactive_changed.connect(_on_overlay_interactive_changed)
+	weather_bubble.interactive_changed.connect(_on_overlay_interactive_changed)
+	context_menu.interactive_changed.connect(_on_overlay_interactive_changed)
+
+	if not get_window().files_dropped.is_connected(_on_files_dropped):
+		get_window().files_dropped.connect(_on_files_dropped)
+
+	command_send.pressed.connect(_on_command_send_pressed)
+	command_cancel.pressed.connect(_on_command_cancel_pressed)
+	command_input.text_submitted.connect(_on_command_text_submitted)
+	command_input.text_changed.connect(_on_command_input_changed)
+	command_input.text_change_rejected.connect(_on_command_input_rejected)
+
+	weather_save.pressed.connect(_on_weather_save_pressed)
+	weather_cancel.pressed.connect(_on_weather_cancel_pressed)
+
+
+func _persist_window_position() -> void:
+	PetWindowLayout.persist_position(settings_store)
+
+
+func _setup_control_menu() -> void:
+	context_menu.item_selected.connect(_on_control_menu_id_pressed)
+
+
+func _open_control_menu(local_position: Vector2) -> void:
+	command_bubble.call("hide_card", false)
+	weather_bubble.call("hide_card", false)
+	_hide_nickname_card(false)
+	context_menu_anchor = local_position
+	PetContextMenu.open_root(
+		context_menu,
+		config,
+		local_position,
+		bool(reminder_manager.enabled),
+		random_actions_paused,
+		roaming_controller.is_enabled(),
+		manual_action_map,
+		manual_category_map
+	)
+
+
+func _open_settings_menu() -> void:
+	PetContextMenu.open_settings(
+		context_menu,
+		context_menu_anchor,
+		manual_action_map,
+		manual_category_map
+	)
+
+
+func _open_batch_file_window() -> void:
+	command_bubble.call("hide_card", false)
+	weather_bubble.call("hide_card", false)
+	_hide_nickname_card(false)
+	context_menu.call("hide_menu", false)
+	if not is_instance_valid(batch_file_window):
+		batch_file_window = BatchFileWindow.new()
+		add_child(batch_file_window)
+		batch_file_window.feedback_requested.connect(_on_file_feedback_requested)
+		batch_file_window.call("setup", file_drop_manager)
+	batch_file_window.call("open_workbench")
+
+
+func _open_action_picker() -> void:
+	PetContextMenu.open_action_picker(
+		context_menu,
+		config,
+		context_menu_anchor,
+		manual_action_map,
+		manual_category_map
+	)
+
+
+func _open_action_category(category_id: String, page_index: int = 0) -> void:
+	PetContextMenu.open_action_category(
+		context_menu,
+		config,
+		context_menu_anchor,
+		category_id,
+		manual_action_map,
+		manual_category_map,
+		page_index
+	)
+
+
+func _on_control_menu_id_pressed(id: int) -> void:
+	_register_user_activity()
+	if id >= ACTION_MENU_BASE:
+		if sleep_phase != "none":
+			bubble.say(dream_talk_manager.chat_reply(settings_store.get_nickname()), 3.6)
+			return
+		var spec := manual_action_map.get(id, {}) as Dictionary
+		if not spec.is_empty():
+			_play_manual_action(spec)
+		return
+	if id >= ACTION_CATEGORY_MENU_BASE:
+		var category_id := str(manual_category_map.get(id, ""))
+		if not category_id.is_empty():
+			call_deferred("_open_action_category", category_id)
+		return
+
+	match id:
+		MENU_TALK:
+			_open_command_window()
+		MENU_PLAY_ACTION:
+			call_deferred("_open_action_picker")
+		MENU_ACTION_CATEGORY_BACK:
+			call_deferred("_open_action_picker")
+		MENU_ACTION_PAGE_UP, MENU_ACTION_PAGE_DOWN:
+			var navigation := manual_category_map.get(id, {}) as Dictionary
+			var category_id := str(navigation.get("category_id", ""))
+			var page_index := int(navigation.get("page_index", 0))
+			if not category_id.is_empty():
+				call_deferred(
+					"_open_action_category",
+					category_id,
+					page_index
+				)
+		MENU_ACTION_BACK:
+			call_deferred("_open_control_menu", context_menu_anchor)
+		MENU_TOGGLE_REMINDERS:
+			var value: bool = not bool(reminder_manager.enabled)
+			reminder_manager.set_enabled(value)
+			settings_store.set_value("reminders_enabled", value)
+			bubble.say(
+				"日常提醒已%s。" % ("开启" if value else "关闭"),
+				2.4
+			)
+		MENU_WEATHER_NOW:
+			_request_weather_now()
+		MENU_WEATHER_SETTINGS:
+			_open_weather_window()
+		MENU_SETTINGS:
+			call_deferred("_open_settings_menu")
+		MENU_NICKNAME:
+			_open_nickname_window()
+		MENU_FILE_WORKBENCH:
+			_open_batch_file_window()
+		MENU_TOGGLE_RANDOM:
+			_set_autonomous_paused(not random_actions_paused)
+		MENU_TOGGLE_ROAMING:
+			_set_roaming_enabled(not roaming_controller.is_enabled())
+		MENU_CLEAR_FILES:
+			file_drop_manager.clear_queue()
+			bubble.say("好啦，拖进来的文件队列清空了～", 2.6)
+		MENU_RESET_POSITION:
+			var was_sleeping := sleep_phase != "none"
+			if was_sleeping:
+				_interrupt_sleep_by_user()
+			else:
+				_cancel_active_action()
+			throw_velocity = Vector2.ZERO
+			pointer_pressed = false
+			dragging = false
+			_reset_window_position()
+			_persist_window_position()
+			if not was_sleeping:
+				_return_to_idle(false)
+		MENU_EXIT:
+			_quit_pet()
+
+
+func _play_manual_action(spec: Dictionary) -> void:
+	var action_id := str(spec.get("id", ""))
+	var kind := str(spec.get("kind", "clip"))
+
+	match kind:
+		"idle":
+			_cancel_active_action()
+			_return_to_idle(false)
+		"sleep":
+			_start_sleep_entry("manual", ACTION_PRIORITY_MANUAL)
+		"clip":
+			_request_coordinated_clip(
+				action_id,
+				"manual",
+				ACTION_PRIORITY_MANUAL,
+				true,
+				PetState.REACTION
+			)
+		_:
+			_cancel_active_action()
+			_return_to_idle(false)
+
+
+func _open_command_window() -> void:
+	weather_bubble.call("hide_card", false)
+	_hide_nickname_card(false)
+	context_menu.call("hide_menu", false)
+	command_input.clear()
+	_on_command_input_changed("")
+	command_bubble.call("popup_card")
+	# popup_card() makes the control visible synchronously, so focus can be
+	# assigned immediately instead of waiting another frame.
+	command_input.grab_focus()
+
+
+func _on_command_send_pressed() -> void:
+	_on_command_text_submitted(command_input.text)
+
+
+func _on_command_cancel_pressed() -> void:
+	command_bubble.call("hide_card")
+	command_input.clear()
+
+
+func _on_command_text_submitted(text: String) -> void:
+	var checked := InputGuard.check(text, InputGuard.MESSAGE_LIMIT)
+	if not checked.ok:
+		if checked.error == "too_long":
+			_on_command_input_rejected("")
+		return
+	_register_user_activity()
+	command_bubble.call("hide_card")
+	command_input.clear()
+	_handle_command_text(text)
+
+
+func _handle_command_text(text: String) -> void:
+	if _is_sleep_dream_state():
+		bubble.say(
+			dream_talk_manager.chat_reply(settings_store.get_nickname()),
+			4.0
+		)
+		return
+
+	var result := dialogue_manager.submit_message(
+		text,
+		settings_store.get_nickname()
+	)
+	_apply_dialogue_result(result, "dialogue")
+
+
+func _apply_dialogue_result(
+	result: Dictionary,
+	source: String
+) -> void:
+	if result.is_empty():
+		return
+
+	var mood_event := str(result.get("mood_event", ""))
+	if not mood_event.is_empty():
+		mood_manager.apply_event(mood_event)
+
+	var reply := str(result.get("text", ""))
+	if str(result.get("intent", "")) == "mood_query":
+		# Use the current MoodManager snapshot; static templates can lie.
+		reply = dialogue_manager.mood_reply(
+			str(mood_manager.get_snapshot().get("mood", "normal"))
+		)
+	if not reply.is_empty():
+		bubble.say(reply, 4.0)
+
+	var action_request := str(result.get("action_request", ""))
+	if action_request == "sleep_down":
+		_start_sleep_entry(source, ACTION_PRIORITY_DIALOGUE)
+	elif not action_request.is_empty():
+		_request_coordinated_clip(
+			action_request,
+			source,
+			ACTION_PRIORITY_DIALOGUE,
+			true,
+			PetState.REACTION
+		)
+
+
+func _on_file_feedback_requested(kind: String) -> void:
+	var text := dialogue_manager.event_reply(kind)
+	if text.is_empty():
+		return
+	if is_instance_valid(batch_file_window):
+		batch_file_window.call("set_character_feedback", text)
+	# The independent file workbench can cover the pet. Show the feedback in
+	# its own status area too, without stealing keyboard focus.
+	bubble.say(text, 4.0)
+
+
+func _say_event_feedback(kind: String, duration: float = 3.2) -> void:
+	var text := dialogue_manager.event_reply(kind)
+	if not text.is_empty():
+		bubble.say(text, duration)
+
+
+func _try_auto_birthday_easter_egg() -> void:
+	var date := Time.get_date_dict_from_system()
+	var year := int(date.get("year", -1))
+	var last_year := int(settings_store.get_value(
+		"last_birthday_auto_trigger_year",
+		-1
+	))
+	var result := dialogue_manager.birthday_auto_event(
+		date,
+		last_year
+	) as Dictionary
+	if result.is_empty():
+		return
+
+	settings_store.set_value(
+		"last_birthday_auto_trigger_year",
+		year
+	)
+	_apply_dialogue_result(result, "birthday_auto")
+
+
+func _on_command_input_changed(text: String) -> void:
+	command_send.disabled = not bool(InputGuard.check(text, InputGuard.MESSAGE_LIMIT).ok)
+	$CommandBubble/Card/Margin/Content/Title.text = "你想对她说：%d / 50" % text.length()
+
+
+func _on_command_input_rejected(_rejected: String) -> void:
+	$CommandBubble/Card/Margin/Content/Title.text = "最多 50 个字符，已保留能放下的内容。"
+
+
+func _open_nickname_window() -> void:
+	command_bubble.call("hide_card", false)
+	weather_bubble.call("hide_card", false)
+	context_menu.call("hide_menu", false)
+	if not is_instance_valid(nickname_card):
+		nickname_card = load("res://scenes/nickname_card.tscn").instantiate()
+		add_child(nickname_card)
+		nickname_card.interactive_changed.connect(_on_overlay_interactive_changed)
+		nickname_card.nickname_submitted.connect(_on_nickname_submitted)
+	nickname_card.call("open_for", settings_store.get_nickname())
+
+
+func _hide_nickname_card(animated: bool = true) -> void:
+	if is_instance_valid(nickname_card):
+		nickname_card.call("hide_card", animated)
+
+
+func _on_nickname_submitted(text: String) -> void:
+	var checked := InputGuard.check(text, InputGuard.NICKNAME_LIMIT, true)
+	if not checked.ok:
+		nickname_card.call("show_error", "昵称最多 12 个字符，请缩短后再保存。")
+		return
+	if not settings_store.set_nickname(text):
+		nickname_card.call("show_error", "暂时没能保存，请稍后重试。")
+		return
+	_hide_nickname_card()
+	bubble.say("昵称已清除，照常陪你聊天。" if checked.text.is_empty() else "记住啦，以后就这样称呼你。", 3.0)
+
+
+func _open_weather_window() -> void:
+	command_bubble.call("hide_card", false)
+	_hide_nickname_card(false)
+	context_menu.call("hide_menu", false)
+	weather_city.text = str(weather_manager.location_query)
+	weather_enabled.button_pressed = bool(weather_manager.enabled)
+	weather_bubble.call("popup_card")
+	weather_city.call_deferred("grab_focus")
+
+
+func _on_weather_cancel_pressed() -> void:
+	weather_bubble.call("hide_card")
+
+
+func _on_weather_save_pressed() -> void:
+	var city := weather_city.text.strip_edges()
+	var enabled := weather_enabled.button_pressed
+
+	if enabled and city.is_empty():
+		bubble.say("先告诉我你在哪个城市呀，不然我不知道该往哪儿看天气～", 4.0)
+		return
+
+	weather_manager.set_location(city, enabled)
+	settings_store.set_value(
+		"weather",
+		weather_manager.export_settings()
+	)
+	weather_bubble.call("hide_card")
+
+	if enabled and not city.is_empty():
+		bubble.say("好～我去看看那边现在是什么天气。", 2.8)
+		weather_manager.refresh()
+	else:
+		bubble.say("好，天气提醒先关掉啦。", 2.8)
+
+
+func _request_weather_now() -> void:
+	if str(weather_manager.location_name).is_empty():
+		bubble.ask(
+			"还没设置天气城市，要现在设置吗？",
+			[
+				{"id": "weather_setup", "label": "去设置"},
+				{"id": "dismiss", "label": "稍后"}
+			]
+		)
+		return
+
+	bubble.say("我去瞄一眼天气～", 2.2)
+	weather_manager.refresh()
+
+
+func _on_weather_updated(summary: Dictionary) -> void:
+	settings_store.set_value(
+		"weather",
+		weather_manager.export_settings()
+	)
+
+	var weather_text := _build_weather_reply(summary)
+	bubble.say(
+		dream_talk_manager.format_notice("weather", weather_text)
+		if _is_sleep_dream_state()
+		else weather_text,
+		7.0
+	)
+
+
+func _build_weather_reply(summary: Dictionary) -> String:
+	return WeatherReplyFormatter.build(summary)
+
+
+func _on_weather_reminder_due(text: String) -> void:
+	bubble.say(
+		dream_talk_manager.format_notice("weather", text)
+		if _is_sleep_dream_state()
+		else text,
+		6.0
+	)
+
+
+func _on_weather_request_failed(message: String) -> void:
+	bubble.say(
+		dream_talk_manager.format_notice("weather", message)
+		if _is_sleep_dream_state()
+		else message,
+		4.5
+	)
+
+
+func _on_reminder_due(text: String) -> void:
+	bubble.say(
+		dream_talk_manager.format_notice("reminder", text)
+		if _is_sleep_dream_state()
+		else text,
+		5.0
+	)
+
+
+func _on_bubble_action_selected(action_id: String) -> void:
+	match action_id:
+		"convert_png", "convert_jpg", "convert_webp":
+			# Stage 5A safety guard: stale bubble actions may only open preview.
+			_open_batch_file_window()
+		"weather_setup":
+			_open_weather_window()
+		"dismiss":
+			pass
+
+
+func _on_bubble_interactive_changed(enabled: bool) -> void:
+	bubble_interactive = enabled
+	call_deferred("_configure_mouse_passthrough")
+
+
+func _on_bubble_bounds_changed() -> void:
+	_configure_mouse_passthrough()
+
+
+func _on_overlay_interactive_changed(_enabled: bool) -> void:
+	overlay_interactive = (
+		command_bubble.visible
+		or weather_bubble.visible
+		or context_menu.visible
+		or (is_instance_valid(nickname_card) and nickname_card.visible)
+	)
+	call_deferred("_configure_mouse_passthrough")
+
+
+func _on_mood_indicator_visibility_changed() -> void:
+	call_deferred("_configure_mouse_passthrough")
+
+
+func _on_files_dropped(files: PackedStringArray) -> void:
+	_register_user_activity()
+	if sleep_phase != "none":
+		_interrupt_sleep_by_user()
+	var summary := file_drop_manager.enqueue(files) as Dictionary
+	var images := int(summary.get("images", 0))
+	var audio := int(summary.get("audio", 0))
+	var video := int(summary.get("video", 0))
+	var other := int(summary.get("other", 0))
+
+	var parts: PackedStringArray = []
+	if images > 0:
+		parts.append("%d 张图片" % images)
+	if audio > 0:
+		parts.append("%d 个音频" % audio)
+	if video > 0:
+		parts.append("%d 个视频" % video)
+	if other > 0:
+		parts.append("%d 个其他文件" % other)
+
+	var description := "、".join(parts)
+	if description.is_empty():
+		description = "文件"
+
+	var note := "收到%s，已经加入文件处理队列。" % description
+	if audio + video > 0:
+		note += "\n音频和视频只参与批量重命名，不提供格式转换。"
+	bubble.say(note, 3.2)
+	call_deferred("_open_batch_file_window")
+
+
+func _on_file_queue_changed(_summary: Dictionary) -> void:
+	pass
+
+
+func _convert_queued_images(_target: String) -> void:
+	_open_batch_file_window()
+
+
+func _quit_pet() -> void:
+	_persist_window_position()
+	settings_store.save_settings()
+	get_tree().quit()
+
+
+func _exit_tree() -> void:
+	if is_instance_valid(settings_store):
+		settings_store.set_window_position(
+			DisplayServer.window_get_position(),
+			false
+		)
+		settings_store.save_settings()
+
+
+func _reset_window_position() -> void:
+	var window_cfg := config.get("window", {}) as Dictionary
+	var usable := DisplayServer.screen_get_usable_rect()
+	var window_size := DisplayServer.window_get_size()
+	var pos := Vector2i(
+		usable.position.x + usable.size.x - window_size.x - int(window_cfg.get("margin_right", 28)),
+		usable.position.y + usable.size.y - window_size.y - int(window_cfg.get("margin_bottom", 28))
+	)
+	DisplayServer.window_set_position(pos)
+
+
+func _load_dynamic_hit_shapes() -> void:
+	var interaction := config.get("interaction", {}) as Dictionary
+	var dynamic_cfg := interaction.get("dynamic_hit_shape", {}) as Dictionary
+	if not bool(dynamic_cfg.get("enabled", true)):
+		dynamic_hit_shapes_ready = false
+		return
+
+	var catalog_path := str(
+		dynamic_cfg.get("catalog", "res://config/video_hit_shapes.json")
+	)
+	dynamic_hit_shapes_ready = dynamic_hit_shape_manager.load_catalog(catalog_path)
+	if not dynamic_hit_shapes_ready:
+		push_warning("Dynamic hit-shape catalog unavailable; using fallback pet hitbox.")
+
+
+func _set_active_hit_frame(action_id: String, frame_index: int) -> void:
+	var next_action := action_id if not action_id.is_empty() else "idle"
+	var next_frame := maxi(0, frame_index)
+	if active_hit_action_id == next_action and active_hit_frame == next_frame:
+		return
+	active_hit_action_id = next_action
+	active_hit_frame = next_frame
+	_configure_mouse_passthrough()
+
+
+func _fallback_character_polygon() -> PackedVector2Array:
+	var interaction := config.get("interaction", {}) as Dictionary
+	var hitbox := interaction.get("pet_hitbox", {}) as Dictionary
+	var dynamic_cfg := interaction.get("dynamic_hit_shape", {}) as Dictionary
+	var pad := float(dynamic_cfg.get("fallback_padding_px", 12.0))
+	var left := base_position.x + float(hitbox.get("left", -125.0)) * base_scale - pad
+	var top := base_position.y + float(hitbox.get("top", -155.0)) * base_scale - pad
+	var right := base_position.x + float(hitbox.get("right", 125.0)) * base_scale + pad
+	var bottom := base_position.y + float(hitbox.get("bottom", 161.0)) * base_scale + pad
+	return PackedVector2Array([
+		Vector2(left, top),
+		Vector2(right, top),
+		Vector2(right, bottom),
+		Vector2(left, bottom)
+	])
+
+
+func _current_character_passthrough_polygon() -> PackedVector2Array:
+	if not dynamic_hit_shapes_ready:
+		return _fallback_character_polygon()
+
+	var raw := dynamic_hit_shape_manager.polygon_for(
+		active_hit_action_id,
+		active_hit_frame
+	)
+	if raw.size() < 3:
+		return _fallback_character_polygon()
+
+	var canvas_center := dynamic_hit_shape_manager.canvas_size * 0.5
+	var transformed := PackedVector2Array()
+	for point in raw:
+		transformed.append(pet_sprite.to_global(point - canvas_center))
+	return transformed
+
+
+func _append_rect_corners(points: PackedVector2Array, rect: Rect2) -> void:
+	var grown := rect.grow(2.0)
+	points.append(grown.position)
+	points.append(Vector2(grown.end.x, grown.position.y))
+	points.append(grown.end)
+	points.append(Vector2(grown.position.x, grown.end.y))
+
+
+func _visible_ui_passthrough_rects() -> Array[Rect2]:
+	var rects: Array[Rect2] = []
+	if bubble.visible:
+		rects.append(bubble.call("get_window_bounds") as Rect2)
+	if context_menu.visible:
+		rects.append(context_menu.get_global_rect())
+	if command_bubble.visible:
+		rects.append(command_bubble.get_global_rect())
+	if weather_bubble.visible:
+		rects.append(weather_bubble.get_global_rect())
+	if is_instance_valid(nickname_card) and nickname_card.visible:
+		rects.append(nickname_card.get_global_rect())
+	if mood_indicator.visible:
+		rects.append(mood_indicator.get_global_rect())
+	return rects
+
+
+func _configure_mouse_passthrough() -> void:
+	# Normal mode follows the alpha-derived polygon for the *current animation
+	# frame*. This keeps standing, crouching and lying poses clickable without
+	# leaving a large invisible rectangle over desktop icons.
+	var character_polygon := _current_character_passthrough_polygon()
+	debug_character_passthrough_polygon = character_polygon
+	mood_indicator.call("set_hover_polygon", character_polygon)
+
+	var ui_rects := _visible_ui_passthrough_rects()
+	if ui_rects.is_empty():
+		debug_last_passthrough_polygon = character_polygon
+	else:
+		# DisplayServer accepts one polygon. When UI is visible, use the convex
+		# hull of the current character plus only the actually visible cards.
+		# This is intentionally much smaller than the old full 760x420 capture.
+		var combined := PackedVector2Array(character_polygon)
+		for rect in ui_rects:
+			_append_rect_corners(combined, rect)
+		debug_last_passthrough_polygon = Geometry2D.convex_hull(combined)
+
+	DisplayServer.window_set_mouse_passthrough(debug_last_passthrough_polygon)
+
+
+func _load_clips() -> void:
+	clips.clear()
+	var runtime_cfg := config.get("video_runtime", {}) as Dictionary
+	video_runtime_enabled = bool(runtime_cfg.get("enabled", false))
+	PetClipCatalogLoader.populate(clips, config, video_runtime_enabled)
+
+
+func _load_idle_video() -> void:
+	idle_video_textures.clear()
+	idle_runtime_stream = null
+
+	var spec := config.get("idle_video", {}) as Dictionary
+	if not bool(spec.get("enabled", false)):
+		return
+
+	var frames_dir := str(spec.get("frames_dir", ""))
+	var frame_count := int(spec.get("frame_count", 0))
+	if frames_dir.is_empty() or frame_count <= 0:
+		push_warning("idle_video is enabled but not configured")
+		return
+
+	var runtime_video_path := "%s/runtime_alpha.ogv" % frames_dir.get_base_dir()
+	if video_runtime_enabled and ResourceLoader.exists(runtime_video_path):
+		idle_runtime_stream = load(runtime_video_path) as VideoStream
+		if idle_runtime_stream == null:
+			push_warning("Failed to load idle runtime video; PNG fallback remains active.")
+
+	for index in range(frame_count):
+		var path := "%s/%03d.png" % [frames_dir, index]
+		var texture := load(path) as Texture2D
+		if texture == null:
+			push_warning("Failed to load idle-video frame: %s" % path)
+			idle_video_textures.clear()
+			return
+		idle_video_textures.append(texture)
+
+	_reset_idle_video()
+
+
+func _idle_video_is_ready() -> bool:
+	return not idle_video_textures.is_empty()
+
+
+func _idle_runtime_is_ready() -> bool:
+	return video_runtime_enabled and idle_runtime_stream != null
+
+
+func _runtime_video_is_active() -> bool:
 	return (
 		is_instance_valid(pet_video)
 		and pet_video.visible

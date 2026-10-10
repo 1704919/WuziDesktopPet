@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | func _init() -> void:
- 4 | 	call_deferred("_run")
- 5 | 
- 6 | 
- 7 | func _capture(scene: Node, path: String) -> void:
- 8 | 	await process_frame
- 9 | 	await process_frame
+extends SceneTree
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func _capture(scene: Node, path: String) -> void:
+	await process_frame
+	await process_frame
 	await process_frame
 	if DisplayServer.get_name() == "headless":
 		return

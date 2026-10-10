@@ -1,102 +1,102 @@
-  1 | {
-  2 |   "schema_version": 2,
-  3 |   "character_id": "wuzi_chibi",
-  4 |   "runtime_model": "clip_pool",
-  5 |   "duration_standards_sec": [5, 10],
-  6 |   "actions": {
-  7 |     "idle": {
-  8 |       "category": "idle",
-  9 |       "ready": true,
- 10 |       "status": "green_screen_video",
- 11 |       "asset_type": "video_loop",
- 12 |       "source_action": "idle_breathe_video"
- 13 |     },
- 14 |     "idle_breathe_video": {
- 15 |       "category": "idle",
- 16 |       "ready": true,
- 17 |       "status": "processed_png_sequence",
- 18 |       "asset_type": "png_sequence",
- 19 |       "frames_dir": "res://assets_display/wuzi_chibi/video_idle/frames",
- 20 |       "frame_count": 121,
- 21 |       "fps": 12.0,
- 22 |       "production_target_duration_sec": 10
- 23 |     },
- 24 |     "click_happy_video": {
- 25 |       "category": "click",
- 26 |       "ready": true,
- 27 |       "status": "processed_png_sequence",
- 28 |       "asset_type": "png_sequence",
- 29 |       "frames_dir": "res://assets_display/wuzi_chibi/video_click_happy/frames",
- 30 |       "frame_count": 121,
- 31 |       "fps": 12.0,
- 32 |       "target_duration_sec": 10
- 33 |     },
- 34 |     "click_shy_video": {
- 35 |       "category": "click",
- 36 |       "ready": true,
- 37 |       "status": "processed_png_sequence",
- 38 |       "asset_type": "png_sequence",
- 39 |       "frames_dir": "res://assets_display/wuzi_chibi/video_click_shy/frames",
- 40 |       "frame_count": 121,
- 41 |       "fps": 12.0,
- 42 |       "target_duration_sec": 10
- 43 |     },
- 44 |     "march_in_place": {
- 45 |       "category": "idle",
- 46 |       "ready": true,
- 47 |       "status": "green_screen_video",
- 48 |       "asset_type": "video",
- 49 |       "source_action": "march_in_place_video",
- 50 |       "target_duration_sec": 10
- 51 |     },
- 52 |     "march_in_place_video": {
- 53 |       "category": "idle",
- 54 |       "ready": true,
- 55 |       "status": "processed_png_sequence",
- 56 |       "asset_type": "png_sequence",
- 57 |       "frames_dir": "res://assets_display/wuzi_chibi/video_march_in_place/frames",
- 58 |       "frame_count": 121,
- 59 |       "fps": 12.0,
- 60 |       "target_duration_sec": 10
- 61 |     },
- 62 |     "walk_left": {
- 63 |       "category": "move",
- 64 |       "ready": true,
- 65 |       "status": "green_screen_video",
- 66 |       "asset_type": "video",
- 67 |       "source_action": "walk_left_video",
- 68 |       "target_duration_sec": 10
- 69 |     },
- 70 |     "walk_left_video": {
- 71 |       "category": "move",
- 72 |       "ready": true,
- 73 |       "status": "processed_png_sequence",
- 74 |       "asset_type": "png_sequence",
- 75 |       "frames_dir": "res://assets_display/wuzi_chibi/video_walk_left/frames",
- 76 |       "frame_count": 121,
- 77 |       "fps": 12.0,
- 78 |       "target_duration_sec": 10
- 79 |     },
- 80 |     "walk_right": {
- 81 |       "category": "move",
- 82 |       "ready": true,
- 83 |       "status": "green_screen_video",
- 84 |       "asset_type": "video",
- 85 |       "source_action": "walk_right_video",
- 86 |       "target_duration_sec": 10
- 87 |     },
- 88 |     "walk_right_video": {
- 89 |       "category": "move",
- 90 |       "ready": true,
- 91 |       "status": "processed_png_sequence",
- 92 |       "asset_type": "png_sequence",
- 93 |       "frames_dir": "res://assets_display/wuzi_chibi/video_walk_right/frames",
- 94 |       "frame_count": 121,
- 95 |       "fps": 12.0,
- 96 |       "target_duration_sec": 10
- 97 |     },
- 98 |     "mic_test": {
- 99 |       "category": "general",
+{
+  "schema_version": 2,
+  "character_id": "wuzi_chibi",
+  "runtime_model": "clip_pool",
+  "duration_standards_sec": [5, 10],
+  "actions": {
+    "idle": {
+      "category": "idle",
+      "ready": true,
+      "status": "green_screen_video",
+      "asset_type": "video_loop",
+      "source_action": "idle_breathe_video"
+    },
+    "idle_breathe_video": {
+      "category": "idle",
+      "ready": true,
+      "status": "processed_png_sequence",
+      "asset_type": "png_sequence",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_idle/frames",
+      "frame_count": 121,
+      "fps": 12.0,
+      "production_target_duration_sec": 10
+    },
+    "click_happy_video": {
+      "category": "click",
+      "ready": true,
+      "status": "processed_png_sequence",
+      "asset_type": "png_sequence",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_click_happy/frames",
+      "frame_count": 121,
+      "fps": 12.0,
+      "target_duration_sec": 10
+    },
+    "click_shy_video": {
+      "category": "click",
+      "ready": true,
+      "status": "processed_png_sequence",
+      "asset_type": "png_sequence",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_click_shy/frames",
+      "frame_count": 121,
+      "fps": 12.0,
+      "target_duration_sec": 10
+    },
+    "march_in_place": {
+      "category": "idle",
+      "ready": true,
+      "status": "green_screen_video",
+      "asset_type": "video",
+      "source_action": "march_in_place_video",
+      "target_duration_sec": 10
+    },
+    "march_in_place_video": {
+      "category": "idle",
+      "ready": true,
+      "status": "processed_png_sequence",
+      "asset_type": "png_sequence",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_march_in_place/frames",
+      "frame_count": 121,
+      "fps": 12.0,
+      "target_duration_sec": 10
+    },
+    "walk_left": {
+      "category": "move",
+      "ready": true,
+      "status": "green_screen_video",
+      "asset_type": "video",
+      "source_action": "walk_left_video",
+      "target_duration_sec": 10
+    },
+    "walk_left_video": {
+      "category": "move",
+      "ready": true,
+      "status": "processed_png_sequence",
+      "asset_type": "png_sequence",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_walk_left/frames",
+      "frame_count": 121,
+      "fps": 12.0,
+      "target_duration_sec": 10
+    },
+    "walk_right": {
+      "category": "move",
+      "ready": true,
+      "status": "green_screen_video",
+      "asset_type": "video",
+      "source_action": "walk_right_video",
+      "target_duration_sec": 10
+    },
+    "walk_right_video": {
+      "category": "move",
+      "ready": true,
+      "status": "processed_png_sequence",
+      "asset_type": "png_sequence",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_walk_right/frames",
+      "frame_count": 121,
+      "fps": 12.0,
+      "target_duration_sec": 10
+    },
+    "mic_test": {
+      "category": "general",
       "ready": true,
       "status": "green_screen_video",
       "asset_type": "video",

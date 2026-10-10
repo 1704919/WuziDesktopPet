@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | const WINDOW_LAYOUT_VERSION := 2
- 4 | const LEGACY_PET_X := 210.0
- 5 | 
- 6 | 
- 7 | static func configure(
- 8 | 	viewport: Viewport,
- 9 | 	config: Dictionary,
+extends RefCounted
+
+const WINDOW_LAYOUT_VERSION := 2
+const LEGACY_PET_X := 210.0
+
+
+static func configure(
+	viewport: Viewport,
+	config: Dictionary,
 	settings_store: Node,
 	base_position: Vector2
 ) -> void:

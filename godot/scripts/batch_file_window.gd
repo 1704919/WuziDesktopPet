@@ -1,102 +1,102 @@
-  1 | extends Window
-  2 | 
-  3 | signal feedback_requested(kind: String)
-  4 | 
-  5 | const FileOperationPlanner = preload("res://scripts/file_operation_planner.gd")
-  6 | const FileOperationExecutor = preload("res://scripts/file_operation_executor.gd")
-  7 | const WindowsFileBridge = preload("res://scripts/windows_file_bridge.gd")
-  8 | const BatchWorkbenchTheme = preload("res://scripts/batch_workbench_theme.gd")
-  9 | const BatchWorkbenchUI = preload("res://scripts/batch_workbench_ui.gd")
- 10 | const BatchWorkbenchFilePicker = preload("res://scripts/batch_workbench_file_picker.gd")
- 11 | 
- 12 | var file_drop_manager: Node
- 13 | var planner := FileOperationPlanner.new()
- 14 | var current_plan: Dictionary = {}
- 15 | var last_result: Dictionary = {}
- 16 | var capabilities: Dictionary = {}
- 17 | var executor: RefCounted
- 18 | var worker_id := -1
- 19 | var busy := false
- 20 | var frozen_plan: Dictionary = {}
- 21 | var confirmation: ConfirmationDialog
- 22 | var progress_bar: ProgressBar
- 23 | var cancel_button: Button
- 24 | var retry_button: Button
- 25 | var capability_label: Label
- 26 | var _editable_root: Control
- 27 | var _shown_revision := -1
- 28 | var _applying_execution_result := false
- 29 | 
- 30 | var file_list: ItemList
- 31 | var count_label: Label
- 32 | var status_label: Label
- 33 | var character_feedback_label: Label
- 34 | var last_duplicate_feedback_ms := -100000
- 35 | var start_button: Button
- 36 | var remove_button: Button
- 37 | var include_subfolders: CheckButton
- 38 | 
- 39 | var find_input: LineEdit
- 40 | var replace_input: LineEdit
- 41 | var prefix_input: LineEdit
- 42 | var suffix_input: LineEdit
- 43 | var advanced_toggle: Button
- 44 | var regex_toggle: CheckButton
- 45 | var numbering_toggle: CheckButton
- 46 | var number_start: SpinBox
- 47 | var number_step: SpinBox
- 48 | var number_digits: SpinBox
- 49 | var image_format: OptionButton
- 50 | var output_mode: OptionButton
- 51 | var output_path: LineEdit
- 52 | var choose_output_button: Button
- 53 | 
- 54 | var add_files_dialog: FileDialog
- 55 | var add_folder_dialog: FileDialog
- 56 | var output_folder_dialog: FileDialog
- 57 | 
- 58 | 
- 59 | func _ready() -> void:
- 60 | 	title = "舞梓 · 文件处理"
- 61 | 	size = Vector2i(1060, 700)
- 62 | 	min_size = Vector2i(900, 600)
- 63 | 	always_on_top = false
- 64 | 	transient = false
- 65 | 	exclusive = false
- 66 | 	close_requested.connect(_close_workbench)
- 67 | 	_build_ui()
- 68 | 	_build_dialogs()
- 69 | 	capabilities = WindowsFileBridge.run("caps")
- 70 | 	_update_capability_label()
- 71 | 	set_process(false)
- 72 | 	hide()
- 73 | 
- 74 | 
- 75 | func setup(manager: Node) -> void:
- 76 | 	if file_drop_manager == manager:
- 77 | 		_refresh_plan()
- 78 | 		return
- 79 | 	if file_drop_manager != null and file_drop_manager.queue_changed.is_connected(_on_queue_changed):
- 80 | 		file_drop_manager.queue_changed.disconnect(_on_queue_changed)
- 81 | 	file_drop_manager = manager
- 82 | 	if file_drop_manager != null and not file_drop_manager.queue_changed.is_connected(_on_queue_changed):
- 83 | 		file_drop_manager.queue_changed.connect(_on_queue_changed)
- 84 | 	_refresh_plan()
- 85 | 
- 86 | 
- 87 | func open_workbench() -> void:
- 88 | 	if busy:
- 89 | 		_show_workbench()
- 90 | 		return
- 91 | 	capabilities = WindowsFileBridge.run("caps")
- 92 | 	_update_capability_label()
- 93 | 	output_mode.select(0)
- 94 | 	output_path.text = ""
- 95 | 	_sync_output_controls()
- 96 | 	_refresh_plan()
- 97 | 	_show_workbench()
- 98 | 	# Also handle a queue where every item is blocked: no Start button exists
- 99 | 	# to trigger a duplicate warning.
+extends Window
+
+signal feedback_requested(kind: String)
+
+const FileOperationPlanner = preload("res://scripts/file_operation_planner.gd")
+const FileOperationExecutor = preload("res://scripts/file_operation_executor.gd")
+const WindowsFileBridge = preload("res://scripts/windows_file_bridge.gd")
+const BatchWorkbenchTheme = preload("res://scripts/batch_workbench_theme.gd")
+const BatchWorkbenchUI = preload("res://scripts/batch_workbench_ui.gd")
+const BatchWorkbenchFilePicker = preload("res://scripts/batch_workbench_file_picker.gd")
+
+var file_drop_manager: Node
+var planner := FileOperationPlanner.new()
+var current_plan: Dictionary = {}
+var last_result: Dictionary = {}
+var capabilities: Dictionary = {}
+var executor: RefCounted
+var worker_id := -1
+var busy := false
+var frozen_plan: Dictionary = {}
+var confirmation: ConfirmationDialog
+var progress_bar: ProgressBar
+var cancel_button: Button
+var retry_button: Button
+var capability_label: Label
+var _editable_root: Control
+var _shown_revision := -1
+var _applying_execution_result := false
+
+var file_list: ItemList
+var count_label: Label
+var status_label: Label
+var character_feedback_label: Label
+var last_duplicate_feedback_ms := -100000
+var start_button: Button
+var remove_button: Button
+var include_subfolders: CheckButton
+
+var find_input: LineEdit
+var replace_input: LineEdit
+var prefix_input: LineEdit
+var suffix_input: LineEdit
+var advanced_toggle: Button
+var regex_toggle: CheckButton
+var numbering_toggle: CheckButton
+var number_start: SpinBox
+var number_step: SpinBox
+var number_digits: SpinBox
+var image_format: OptionButton
+var output_mode: OptionButton
+var output_path: LineEdit
+var choose_output_button: Button
+
+var add_files_dialog: FileDialog
+var add_folder_dialog: FileDialog
+var output_folder_dialog: FileDialog
+
+
+func _ready() -> void:
+	title = "舞梓 · 文件处理"
+	size = Vector2i(1060, 700)
+	min_size = Vector2i(900, 600)
+	always_on_top = false
+	transient = false
+	exclusive = false
+	close_requested.connect(_close_workbench)
+	_build_ui()
+	_build_dialogs()
+	capabilities = WindowsFileBridge.run("caps")
+	_update_capability_label()
+	set_process(false)
+	hide()
+
+
+func setup(manager: Node) -> void:
+	if file_drop_manager == manager:
+		_refresh_plan()
+		return
+	if file_drop_manager != null and file_drop_manager.queue_changed.is_connected(_on_queue_changed):
+		file_drop_manager.queue_changed.disconnect(_on_queue_changed)
+	file_drop_manager = manager
+	if file_drop_manager != null and not file_drop_manager.queue_changed.is_connected(_on_queue_changed):
+		file_drop_manager.queue_changed.connect(_on_queue_changed)
+	_refresh_plan()
+
+
+func open_workbench() -> void:
+	if busy:
+		_show_workbench()
+		return
+	capabilities = WindowsFileBridge.run("caps")
+	_update_capability_label()
+	output_mode.select(0)
+	output_path.text = ""
+	_sync_output_controls()
+	_refresh_plan()
+	_show_workbench()
+	# Also handle a queue where every item is blocked: no Start button exists
+	# to trigger a duplicate warning.
 	if (
 		int(current_plan.get("total", 0)) > 0
 		and int(current_plan.get("valid_count", 0)) == 0

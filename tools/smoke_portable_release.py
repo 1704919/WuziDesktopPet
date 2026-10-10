@@ -1,12 +1,12 @@
- 1 | """Smoke-test a Windows portable release in an isolated fresh directory."""
- 2 | from __future__ import annotations
- 3 | 
- 4 | import hashlib
- 5 | import os
- 6 | import shutil
- 7 | import subprocess
- 8 | import sys
- 9 | import tempfile
+"""Smoke-test a Windows portable release in an isolated fresh directory."""
+from __future__ import annotations
+
+import hashlib
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
 import zipfile
 from pathlib import Path
 

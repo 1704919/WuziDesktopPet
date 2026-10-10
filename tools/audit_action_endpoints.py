@@ -1,102 +1,102 @@
-  1 | """Audit the *installed* desktop-pet action endpoints against installed idle.
-  2 | 
-  3 | Only reads production config and generated RGBA PNG endpoints. It never changes
-  4 | videos, gameplay config, alpha frames, scale curves, or approved visual baselines.
-  5 | """
-  6 | from __future__ import annotations
-  7 | 
-  8 | import argparse
-  9 | import hashlib
- 10 | import json
- 11 | from pathlib import Path
- 12 | 
- 13 | import numpy as np
- 14 | from PIL import Image, ImageDraw
- 15 | 
- 16 | ROOT = Path(__file__).resolve().parents[1]
- 17 | GODOT = ROOT / "godot"
- 18 | CONFIG = GODOT / "config" / "pet_behavior.json"
- 19 | SLEEP_IDS = {"sleep_down", "sleep_loop", "wake_up"}
- 20 | ALPHA_THRESHOLD = 72
- 21 | 
- 22 | 
- 23 | def installed_directory(resource_path: str) -> Path:
- 24 |     if not resource_path.startswith("res://"):
- 25 |         raise ValueError(f"Expected Godot resource path: {resource_path}")
- 26 |     directory = (GODOT / resource_path[len("res://"):]).resolve()
- 27 |     if not directory.is_relative_to(GODOT.resolve()):
- 28 |         raise ValueError(f"Frames directory escapes Godot project: {resource_path}")
- 29 |     if not directory.is_dir():
- 30 |         raise FileNotFoundError(directory)
- 31 |     return directory
- 32 | 
- 33 | 
- 34 | def endpoint(directory: Path, index: int) -> tuple[Path, dict]:
- 35 |     path = directory / f"{index:03d}.png"
- 36 |     with Image.open(path) as image:
- 37 |         rgba = np.asarray(image.convert("RGBA"), dtype=np.uint8)
- 38 |     mask = rgba[..., 3] >= ALPHA_THRESHOLD
- 39 |     ys, xs = np.nonzero(mask)
- 40 |     if not xs.size:
- 41 |         raise ValueError(f"Empty visible character at {path}")
- 42 |     x1, x2 = int(xs.min()), int(xs.max()) + 1
- 43 |     y1, y2 = int(ys.min()), int(ys.max()) + 1
- 44 | 
- 45 |     # Upper silhouette core is an intentionally lightweight *proxy* for the
- 46 |     # character's head/upper body; it is not object recognition. Props can
- 47 |     # still contaminate the proxy. Such measurements are review-only.
- 48 |     band_top = max(y1, round(y1 + (y2 - y1) * 0.08))
- 49 |     band_bottom = min(y2, round(y1 + (y2 - y1) * 0.42))
- 50 |     runs = []
- 51 |     for y in range(band_top, band_bottom):
- 52 |         padded = np.pad(mask[y, x1:x2].astype(np.int8), (1, 1))
- 53 |         changes = np.diff(padded)
- 54 |         lefts = np.flatnonzero(changes == 1)
- 55 |         rights = np.flatnonzero(changes == -1)
- 56 |         if lefts.size:
- 57 |             runs.append(float((rights - lefts).max()))
- 58 |     return path, {
- 59 |         "bbox": [x1, y1, x2, y2],
- 60 |         "width": float(x2 - x1),
- 61 |         "height": float(y2 - y1),
- 62 |         "center_x": (x1 + x2) / 2.0,
- 63 |         "center_y": (y1 + y2) / 2.0,
- 64 |         "bottom": float(y2),
- 65 |         "upper_core_width": round(float(np.percentile(runs, 75)), 2) if runs else None,
- 66 |     }
- 67 | 
- 68 | 
- 69 | def difference(reference: dict, candidate: dict) -> dict:
- 70 |     diffs = {
- 71 |         "height_percent": round(100 * (candidate["height"] / reference["height"] - 1), 2),
- 72 |         "width_percent": round(100 * (candidate["width"] / reference["width"] - 1), 2),
- 73 |         "center_x_px": round(candidate["center_x"] - reference["center_x"], 2),
- 74 |         "center_y_px": round(candidate["center_y"] - reference["center_y"], 2),
- 75 |         "bottom_px": round(candidate["bottom"] - reference["bottom"], 2),
- 76 |     }
- 77 |     if reference["upper_core_width"] and candidate["upper_core_width"]:
- 78 |         diffs["upper_core_percent"] = round(
- 79 |             100 * (candidate["upper_core_width"] / reference["upper_core_width"] - 1), 2
- 80 |         )
- 81 |     return diffs
- 82 | 
- 83 | 
- 84 | def grade(diffs: dict, *, mode: str) -> dict:
- 85 |     # Thresholds describe visual *candidates*, not a guarantee of identical
- 86 |     # anatomy. A large prop or a change of pose needs human review.
- 87 |     thresholds = {
- 88 |         "standing": {
- 89 |             "height_percent": (3, 4),
- 90 |             "center_x_px": (4, 8),
- 91 |             "bottom_px": (3, 6),
- 92 |             "upper_core_percent": (8, None),
- 93 |         },
- 94 |         "food": {
- 95 |             # Eating is often seated; whole-canvas height is not body scale.
- 96 |             "center_x_px": (4, 8),
- 97 |             "bottom_px": (3, 6),
- 98 |             "upper_core_percent": (5, None),
- 99 |         },
+"""Audit the *installed* desktop-pet action endpoints against installed idle.
+
+Only reads production config and generated RGBA PNG endpoints. It never changes
+videos, gameplay config, alpha frames, scale curves, or approved visual baselines.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+import numpy as np
+from PIL import Image, ImageDraw
+
+ROOT = Path(__file__).resolve().parents[1]
+GODOT = ROOT / "godot"
+CONFIG = GODOT / "config" / "pet_behavior.json"
+SLEEP_IDS = {"sleep_down", "sleep_loop", "wake_up"}
+ALPHA_THRESHOLD = 72
+
+
+def installed_directory(resource_path: str) -> Path:
+    if not resource_path.startswith("res://"):
+        raise ValueError(f"Expected Godot resource path: {resource_path}")
+    directory = (GODOT / resource_path[len("res://"):]).resolve()
+    if not directory.is_relative_to(GODOT.resolve()):
+        raise ValueError(f"Frames directory escapes Godot project: {resource_path}")
+    if not directory.is_dir():
+        raise FileNotFoundError(directory)
+    return directory
+
+
+def endpoint(directory: Path, index: int) -> tuple[Path, dict]:
+    path = directory / f"{index:03d}.png"
+    with Image.open(path) as image:
+        rgba = np.asarray(image.convert("RGBA"), dtype=np.uint8)
+    mask = rgba[..., 3] >= ALPHA_THRESHOLD
+    ys, xs = np.nonzero(mask)
+    if not xs.size:
+        raise ValueError(f"Empty visible character at {path}")
+    x1, x2 = int(xs.min()), int(xs.max()) + 1
+    y1, y2 = int(ys.min()), int(ys.max()) + 1
+
+    # Upper silhouette core is an intentionally lightweight *proxy* for the
+    # character's head/upper body; it is not object recognition. Props can
+    # still contaminate the proxy. Such measurements are review-only.
+    band_top = max(y1, round(y1 + (y2 - y1) * 0.08))
+    band_bottom = min(y2, round(y1 + (y2 - y1) * 0.42))
+    runs = []
+    for y in range(band_top, band_bottom):
+        padded = np.pad(mask[y, x1:x2].astype(np.int8), (1, 1))
+        changes = np.diff(padded)
+        lefts = np.flatnonzero(changes == 1)
+        rights = np.flatnonzero(changes == -1)
+        if lefts.size:
+            runs.append(float((rights - lefts).max()))
+    return path, {
+        "bbox": [x1, y1, x2, y2],
+        "width": float(x2 - x1),
+        "height": float(y2 - y1),
+        "center_x": (x1 + x2) / 2.0,
+        "center_y": (y1 + y2) / 2.0,
+        "bottom": float(y2),
+        "upper_core_width": round(float(np.percentile(runs, 75)), 2) if runs else None,
+    }
+
+
+def difference(reference: dict, candidate: dict) -> dict:
+    diffs = {
+        "height_percent": round(100 * (candidate["height"] / reference["height"] - 1), 2),
+        "width_percent": round(100 * (candidate["width"] / reference["width"] - 1), 2),
+        "center_x_px": round(candidate["center_x"] - reference["center_x"], 2),
+        "center_y_px": round(candidate["center_y"] - reference["center_y"], 2),
+        "bottom_px": round(candidate["bottom"] - reference["bottom"], 2),
+    }
+    if reference["upper_core_width"] and candidate["upper_core_width"]:
+        diffs["upper_core_percent"] = round(
+            100 * (candidate["upper_core_width"] / reference["upper_core_width"] - 1), 2
+        )
+    return diffs
+
+
+def grade(diffs: dict, *, mode: str) -> dict:
+    # Thresholds describe visual *candidates*, not a guarantee of identical
+    # anatomy. A large prop or a change of pose needs human review.
+    thresholds = {
+        "standing": {
+            "height_percent": (3, 4),
+            "center_x_px": (4, 8),
+            "bottom_px": (3, 6),
+            "upper_core_percent": (8, None),
+        },
+        "food": {
+            # Eating is often seated; whole-canvas height is not body scale.
+            "center_x_px": (4, 8),
+            "bottom_px": (3, 6),
+            "upper_core_percent": (5, None),
+        },
         "self": {
             "height_percent": (3, 4),
             "center_x_px": (4, 8),

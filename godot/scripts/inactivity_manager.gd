@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | var enabled := true
- 4 | var long_idle_ms := 20 * 60 * 1000
- 5 | var rest_interval_min_ms := 90 * 1000
- 6 | var rest_interval_max_ms := 180 * 1000
- 7 | var sleepy_weight_multiplier := 4.0
- 8 | var rest_baseline_weight := 3.0
- 9 | var sleep_trigger_probability := 0.18
+extends RefCounted
+
+var enabled := true
+var long_idle_ms := 20 * 60 * 1000
+var rest_interval_min_ms := 90 * 1000
+var rest_interval_max_ms := 180 * 1000
+var sleepy_weight_multiplier := 4.0
+var rest_baseline_weight := 3.0
+var sleep_trigger_probability := 0.18
 var sleep_loop_cycles := 5
 
 var frozen := false

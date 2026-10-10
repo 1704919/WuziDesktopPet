@@ -1,102 +1,102 @@
-  1 | extends SceneTree
-  2 | 
-  3 | const EasterEgg = preload("res://scripts/easter_egg_manager.gd")
-  4 | const Dialogue = preload("res://scripts/dialogue_manager.gd")
-  5 | 
-  6 | var failures: Array[String] = []
-  7 | 
-  8 | 
-  9 | func check(condition: bool, label: String) -> void:
- 10 | 	if not condition:
- 11 | 		failures.append(label)
- 12 | 
- 13 | 
- 14 | func check_map(parser: RefCounted, input: String, expected_original: String, expected_mapped: String, label: String) -> void:
- 15 | 	var result: Dictionary = parser.match_first(input)
- 16 | 	check(bool(result.get("matched", false)), label + " matched")
- 17 | 	check(str(result.get("original", "")) == expected_original, label + " original")
- 18 | 	check(str(result.get("mapped", "")) == expected_mapped, label + " mapped")
- 19 | 
- 20 | 
- 21 | func check_miss(parser: RefCounted, input: String, label: String) -> void:
- 22 | 	var result: Dictionary = parser.match_first(input)
- 23 | 	check(not bool(result.get("matched", false)), label)
- 24 | 
- 25 | 
- 26 | func _init() -> void:
- 27 | 	var parser := EasterEgg.new()
- 28 | 
- 29 | 	var named_cases := [
- 30 | 		[
- 31 | 			"生日",
- 32 | 			"birthday",
- 33 | 			"今天是我生日！礼物呢？",
- 34 | 			"birthday_cake",
- 35 | 			"happy"
- 36 | 		],
- 37 | 		[
- 38 | 			"庄园",
- 39 | 			"manor",
- 40 | 			"梓友庄园施工中，给你留了门口的位置。",
- 41 | 			"",
- 42 | 			""
- 43 | 		],
- 44 | 		[
- 45 | 			"阿梓",
- 46 | 			"azi",
- 47 | 			"生疏了，你竟然不愿叫我一声梓神。",
- 48 | 			"click_angry_video",
- 49 | 			"angry"
- 50 | 		],
- 51 | 		[
- 52 | 			"梓神",
- 53 | 			"zishen",
- 54 | 			"喊这么大声干嘛，梓神也会害羞的。",
- 55 | 			"click_shy_video",
- 56 | 			"praise"
- 57 | 		],
- 58 | 		[
- 59 | 			"五杀",
- 60 | 			"penta_kill",
- 61 | 			"你赖姐牛不牛",
- 62 | 			"",
- 63 | 			"happy"
- 64 | 		]
- 65 | 	]
- 66 | 	for named_case in named_cases:
- 67 | 		var named := parser.match_first(named_case[0])
- 68 | 		check(bool(named.get("matched", false)), "named matched " + named_case[0])
- 69 | 		check(str(named.get("id", "")) == named_case[1], "named id " + named_case[0])
- 70 | 		check(parser.format_reply(named) == named_case[2], "named reply " + named_case[0])
- 71 | 		check(str(named.get("action_request", "")) == named_case[3], "named action " + named_case[0])
- 72 | 		check(str(named.get("mood_event", "")) == named_case[4], "named mood " + named_case[0])
- 73 | 	check_miss(parser, "今天生日快乐", "named eggs require exact input")
- 74 | 
- 75 | 	var birthday_auto := parser.auto_birthday_event(
- 76 | 		{"year": 2026, "month": 12, "day": 20},
- 77 | 		2025
- 78 | 	)
- 79 | 	check(bool(birthday_auto.get("matched", false)), "birthday auto on date")
- 80 | 	check(
- 81 | 		not bool(parser.auto_birthday_event(
- 82 | 			{"year": 2026, "month": 12, "day": 20},
- 83 | 			2026
- 84 | 		).get("matched", false)),
- 85 | 		"birthday auto once per year"
- 86 | 	)
- 87 | 	check(
- 88 | 		not bool(parser.auto_birthday_event(
- 89 | 			{"year": 2026, "month": 12, "day": 19},
- 90 | 			2025
- 91 | 		).get("matched", false)),
- 92 | 		"birthday auto only on december 20"
- 93 | 	)
- 94 | 
- 95 | 	for pair in [
- 96 | 		["29", "29", "92"],
- 97 | 		["92", "92", "29"],
- 98 | 		["290", "290", "920"],
- 99 | 		["920", "920", "290"],
+extends SceneTree
+
+const EasterEgg = preload("res://scripts/easter_egg_manager.gd")
+const Dialogue = preload("res://scripts/dialogue_manager.gd")
+
+var failures: Array[String] = []
+
+
+func check(condition: bool, label: String) -> void:
+	if not condition:
+		failures.append(label)
+
+
+func check_map(parser: RefCounted, input: String, expected_original: String, expected_mapped: String, label: String) -> void:
+	var result: Dictionary = parser.match_first(input)
+	check(bool(result.get("matched", false)), label + " matched")
+	check(str(result.get("original", "")) == expected_original, label + " original")
+	check(str(result.get("mapped", "")) == expected_mapped, label + " mapped")
+
+
+func check_miss(parser: RefCounted, input: String, label: String) -> void:
+	var result: Dictionary = parser.match_first(input)
+	check(not bool(result.get("matched", false)), label)
+
+
+func _init() -> void:
+	var parser := EasterEgg.new()
+
+	var named_cases := [
+		[
+			"生日",
+			"birthday",
+			"今天是我生日！礼物呢？",
+			"birthday_cake",
+			"happy"
+		],
+		[
+			"庄园",
+			"manor",
+			"梓友庄园施工中，给你留了门口的位置。",
+			"",
+			""
+		],
+		[
+			"阿梓",
+			"azi",
+			"生疏了，你竟然不愿叫我一声梓神。",
+			"click_angry_video",
+			"angry"
+		],
+		[
+			"梓神",
+			"zishen",
+			"喊这么大声干嘛，梓神也会害羞的。",
+			"click_shy_video",
+			"praise"
+		],
+		[
+			"五杀",
+			"penta_kill",
+			"你赖姐牛不牛",
+			"",
+			"happy"
+		]
+	]
+	for named_case in named_cases:
+		var named := parser.match_first(named_case[0])
+		check(bool(named.get("matched", false)), "named matched " + named_case[0])
+		check(str(named.get("id", "")) == named_case[1], "named id " + named_case[0])
+		check(parser.format_reply(named) == named_case[2], "named reply " + named_case[0])
+		check(str(named.get("action_request", "")) == named_case[3], "named action " + named_case[0])
+		check(str(named.get("mood_event", "")) == named_case[4], "named mood " + named_case[0])
+	check_miss(parser, "今天生日快乐", "named eggs require exact input")
+
+	var birthday_auto := parser.auto_birthday_event(
+		{"year": 2026, "month": 12, "day": 20},
+		2025
+	)
+	check(bool(birthday_auto.get("matched", false)), "birthday auto on date")
+	check(
+		not bool(parser.auto_birthday_event(
+			{"year": 2026, "month": 12, "day": 20},
+			2026
+		).get("matched", false)),
+		"birthday auto once per year"
+	)
+	check(
+		not bool(parser.auto_birthday_event(
+			{"year": 2026, "month": 12, "day": 19},
+			2025
+		).get("matched", false)),
+		"birthday auto only on december 20"
+	)
+
+	for pair in [
+		["29", "29", "92"],
+		["92", "92", "29"],
+		["290", "290", "920"],
+		["920", "920", "290"],
 		["29000", "29000", "92000"],
 		["92000", "92000", "29000"],
 		["编号29000结束", "29000", "92000"],

@@ -1,102 +1,102 @@
-  1 | [gd_scene load_steps=7 format=3]
-  2 | 
-  3 | [ext_resource type="Script" path="res://scripts/nickname_card.gd" id="1_nickname"]
-  4 | 
-  5 | [sub_resource type="StyleBoxFlat" id="InputBubbleCard"]
-  6 | bg_color = Color(0.945, 0.965, 0.995, 0.99)
-  7 | border_width_left = 1
-  8 | border_width_top = 1
-  9 | border_width_right = 1
- 10 | border_width_bottom = 1
- 11 | border_color = Color(0.67, 0.62, 0.84, 0.88)
- 12 | corner_radius_top_left = 26
- 13 | corner_radius_top_right = 26
- 14 | corner_radius_bottom_right = 26
- 15 | corner_radius_bottom_left = 26
- 16 | shadow_color = Color(0.08, 0.06, 0.14, 0.20)
- 17 | shadow_size = 8
- 18 | shadow_offset = Vector2(0, 4)
- 19 | 
- 20 | [sub_resource type="StyleBoxFlat" id="InputNormal"]
- 21 | bg_color = Color(0.93, 0.91, 0.96, 1)
- 22 | border_width_left = 1
- 23 | border_width_top = 1
- 24 | border_width_right = 1
- 25 | border_width_bottom = 1
- 26 | border_color = Color(0.76, 0.72, 0.84, 0.9)
- 27 | corner_radius_top_left = 20
- 28 | corner_radius_top_right = 20
- 29 | corner_radius_bottom_right = 20
- 30 | corner_radius_bottom_left = 20
- 31 | content_margin_left = 16.0
- 32 | content_margin_right = 16.0
- 33 | content_margin_top = 12.0
- 34 | content_margin_bottom = 12.0
- 35 | 
- 36 | [sub_resource type="StyleBoxFlat" id="InputFocus"]
- 37 | bg_color = Color(0.97, 0.96, 0.995, 1)
- 38 | border_width_left = 2
- 39 | border_width_top = 2
- 40 | border_width_right = 2
- 41 | border_width_bottom = 2
- 42 | border_color = Color(0.40, 0.31, 0.68, 1)
- 43 | corner_radius_top_left = 20
- 44 | corner_radius_top_right = 20
- 45 | corner_radius_bottom_right = 20
- 46 | corner_radius_bottom_left = 20
- 47 | content_margin_left = 15.0
- 48 | content_margin_right = 15.0
- 49 | content_margin_top = 11.0
- 50 | content_margin_bottom = 11.0
- 51 | 
- 52 | [sub_resource type="StyleBoxFlat" id="PrimaryButton"]
- 53 | bg_color = Color(0.40, 0.31, 0.68, 1)
- 54 | corner_radius_top_left = 20
- 55 | corner_radius_top_right = 20
- 56 | corner_radius_bottom_right = 20
- 57 | corner_radius_bottom_left = 20
- 58 | content_margin_left = 20.0
- 59 | content_margin_right = 20.0
- 60 | content_margin_top = 10.0
- 61 | content_margin_bottom = 10.0
- 62 | 
- 63 | [sub_resource type="StyleBoxFlat" id="SecondaryButton"]
- 64 | bg_color = Color(0.91, 0.88, 0.96, 1)
- 65 | corner_radius_top_left = 20
- 66 | corner_radius_top_right = 20
- 67 | corner_radius_bottom_right = 20
- 68 | corner_radius_bottom_left = 20
- 69 | content_margin_left = 20.0
- 70 | content_margin_right = 20.0
- 71 | content_margin_top = 10.0
- 72 | content_margin_bottom = 10.0
- 73 | 
- 74 | [node name="NicknameCard" type="Control"]
- 75 | visible = false
- 76 | z_index = 120
- 77 | offset_left = 34.0
- 78 | offset_top = 122.0
- 79 | offset_right = 406.0
- 80 | offset_bottom = 342.0
- 81 | mouse_filter = 0
- 82 | script = ExtResource("1_nickname")
- 83 | 
- 84 | [node name="Card" type="PanelContainer" parent="."]
- 85 | anchors_preset = 15
- 86 | anchor_right = 1.0
- 87 | anchor_bottom = 1.0
- 88 | grow_horizontal = 2
- 89 | grow_vertical = 2
- 90 | theme_override_styles/panel = SubResource("InputBubbleCard")
- 91 | 
- 92 | [node name="Margin" type="MarginContainer" parent="Card"]
- 93 | layout_mode = 2
- 94 | theme_override_constants/margin_left = 16
- 95 | theme_override_constants/margin_top = 12
- 96 | theme_override_constants/margin_right = 16
- 97 | theme_override_constants/margin_bottom = 12
- 98 | 
- 99 | [node name="Content" type="VBoxContainer" parent="Card/Margin"]
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/nickname_card.gd" id="1_nickname"]
+
+[sub_resource type="StyleBoxFlat" id="InputBubbleCard"]
+bg_color = Color(0.945, 0.965, 0.995, 0.99)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.67, 0.62, 0.84, 0.88)
+corner_radius_top_left = 26
+corner_radius_top_right = 26
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 26
+shadow_color = Color(0.08, 0.06, 0.14, 0.20)
+shadow_size = 8
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="InputNormal"]
+bg_color = Color(0.93, 0.91, 0.96, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.76, 0.72, 0.84, 0.9)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="InputFocus"]
+bg_color = Color(0.97, 0.96, 0.995, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.40, 0.31, 0.68, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+content_margin_left = 15.0
+content_margin_right = 15.0
+content_margin_top = 11.0
+content_margin_bottom = 11.0
+
+[sub_resource type="StyleBoxFlat" id="PrimaryButton"]
+bg_color = Color(0.40, 0.31, 0.68, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+content_margin_left = 20.0
+content_margin_right = 20.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="SecondaryButton"]
+bg_color = Color(0.91, 0.88, 0.96, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+content_margin_left = 20.0
+content_margin_right = 20.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+
+[node name="NicknameCard" type="Control"]
+visible = false
+z_index = 120
+offset_left = 34.0
+offset_top = 122.0
+offset_right = 406.0
+offset_bottom = 342.0
+mouse_filter = 0
+script = ExtResource("1_nickname")
+
+[node name="Card" type="PanelContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("InputBubbleCard")
+
+[node name="Margin" type="MarginContainer" parent="Card"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="Card/Margin"]
 layout_mode = 2
 theme_override_constants/separation = 8
 

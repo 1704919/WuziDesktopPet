@@ -1,102 +1,102 @@
-  1 | extends RefCounted
-  2 | 
-  3 | const ARABIC_DIGITS := "0123456789"
-  4 | const CHINESE_NUMERALS := "零〇一二两三四五六七八九十百千万亿兆"
-  5 | const ARABIC_LIMIT := 40
-  6 | const CHINESE_LIMIT := 20
-  7 | const MAX_TARGET_POWER := 16
-  8 | const BIRTHDAY_MONTH := 12
-  9 | const BIRTHDAY_DAY := 20
- 10 | 
- 11 | const NAMED_EASTER_EGGS := {
- 12 | 	"生日": {
- 13 | 		"id": "birthday",
- 14 | 		"reply": "今天是我生日！礼物呢？",
- 15 | 		"mood_event": "happy",
- 16 | 		"action_request": "birthday_cake"
- 17 | 	},
- 18 | 	"庄园": {
- 19 | 		"id": "manor",
- 20 | 		"reply": "梓友庄园施工中，给你留了门口的位置。",
- 21 | 		"mood_event": "",
- 22 | 		"action_request": ""
- 23 | 	},
- 24 | 	"阿梓": {
- 25 | 		"id": "azi",
- 26 | 		"reply": "生疏了，你竟然不愿叫我一声梓神。",
- 27 | 		"mood_event": "angry",
- 28 | 		"action_request": "click_angry_video"
- 29 | 	},
- 30 | 	"梓神": {
- 31 | 		"id": "zishen",
- 32 | 		"reply": "喊这么大声干嘛，梓神也会害羞的。",
- 33 | 		"mood_event": "praise",
- 34 | 		"action_request": "click_shy_video"
- 35 | 	},
- 36 | 	"五杀": {
- 37 | 		"id": "penta_kill",
- 38 | 		"reply": "你赖姐牛不牛",
- 39 | 		"mood_event": "happy",
- 40 | 		"action_request": ""
- 41 | 	}
- 42 | }
- 43 | 
- 44 | const DIGIT_VALUES := {
- 45 | 	"零": 0,
- 46 | 	"〇": 0,
- 47 | 	"一": 1,
- 48 | 	"二": 2,
- 49 | 	"两": 2,
- 50 | 	"三": 3,
- 51 | 	"四": 4,
- 52 | 	"五": 5,
- 53 | 	"六": 6,
- 54 | 	"七": 7,
- 55 | 	"八": 8,
- 56 | 	"九": 9,
- 57 | }
- 58 | const SMALL_UNITS := {
- 59 | 	"十": 10,
- 60 | 	"百": 100,
- 61 | 	"千": 1000,
- 62 | }
- 63 | const BIG_UNITS := {
- 64 | 	"万": 10000,
- 65 | 	"亿": 100000000,
- 66 | 	"兆": 1000000000000,
- 67 | }
- 68 | 
- 69 | 
- 70 | func match_first(raw: Variant) -> Dictionary:
- 71 | 	if not raw is String:
- 72 | 		return _miss()
- 73 | 
- 74 | 	var text: String = raw
- 75 | 	var named := _match_named(text.strip_edges())
- 76 | 	if bool(named.get("matched", false)):
- 77 | 		return named
- 78 | 
- 79 | 	var index := 0
- 80 | 	while index < text.length():
- 81 | 		var current := text.substr(index, 1)
- 82 | 		if ARABIC_DIGITS.contains(current):
- 83 | 			var end := index + 1
- 84 | 			while end < text.length() and ARABIC_DIGITS.contains(text.substr(end, 1)):
- 85 | 				end += 1
- 86 | 			var token := text.substr(index, end - index)
- 87 | 			if token.length() <= ARABIC_LIMIT:
- 88 | 				var mapped := _map_arabic(token)
- 89 | 				if not mapped.is_empty():
- 90 | 					return _hit(token, mapped, "arabic", index)
- 91 | 			index = end
- 92 | 			continue
- 93 | 
- 94 | 		if CHINESE_NUMERALS.contains(current):
- 95 | 			var end := index + 1
- 96 | 			while end < text.length() and CHINESE_NUMERALS.contains(text.substr(end, 1)):
- 97 | 				end += 1
- 98 | 			var token := text.substr(index, end - index)
- 99 | 			if token.length() <= CHINESE_LIMIT:
+extends RefCounted
+
+const ARABIC_DIGITS := "0123456789"
+const CHINESE_NUMERALS := "零〇一二两三四五六七八九十百千万亿兆"
+const ARABIC_LIMIT := 40
+const CHINESE_LIMIT := 20
+const MAX_TARGET_POWER := 16
+const BIRTHDAY_MONTH := 12
+const BIRTHDAY_DAY := 20
+
+const NAMED_EASTER_EGGS := {
+	"生日": {
+		"id": "birthday",
+		"reply": "今天是我生日！礼物呢？",
+		"mood_event": "happy",
+		"action_request": "birthday_cake"
+	},
+	"庄园": {
+		"id": "manor",
+		"reply": "梓友庄园施工中，给你留了门口的位置。",
+		"mood_event": "",
+		"action_request": ""
+	},
+	"阿梓": {
+		"id": "azi",
+		"reply": "生疏了，你竟然不愿叫我一声梓神。",
+		"mood_event": "angry",
+		"action_request": "click_angry_video"
+	},
+	"梓神": {
+		"id": "zishen",
+		"reply": "喊这么大声干嘛，梓神也会害羞的。",
+		"mood_event": "praise",
+		"action_request": "click_shy_video"
+	},
+	"五杀": {
+		"id": "penta_kill",
+		"reply": "你赖姐牛不牛",
+		"mood_event": "happy",
+		"action_request": ""
+	}
+}
+
+const DIGIT_VALUES := {
+	"零": 0,
+	"〇": 0,
+	"一": 1,
+	"二": 2,
+	"两": 2,
+	"三": 3,
+	"四": 4,
+	"五": 5,
+	"六": 6,
+	"七": 7,
+	"八": 8,
+	"九": 9,
+}
+const SMALL_UNITS := {
+	"十": 10,
+	"百": 100,
+	"千": 1000,
+}
+const BIG_UNITS := {
+	"万": 10000,
+	"亿": 100000000,
+	"兆": 1000000000000,
+}
+
+
+func match_first(raw: Variant) -> Dictionary:
+	if not raw is String:
+		return _miss()
+
+	var text: String = raw
+	var named := _match_named(text.strip_edges())
+	if bool(named.get("matched", false)):
+		return named
+
+	var index := 0
+	while index < text.length():
+		var current := text.substr(index, 1)
+		if ARABIC_DIGITS.contains(current):
+			var end := index + 1
+			while end < text.length() and ARABIC_DIGITS.contains(text.substr(end, 1)):
+				end += 1
+			var token := text.substr(index, end - index)
+			if token.length() <= ARABIC_LIMIT:
+				var mapped := _map_arabic(token)
+				if not mapped.is_empty():
+					return _hit(token, mapped, "arabic", index)
+			index = end
+			continue
+
+		if CHINESE_NUMERALS.contains(current):
+			var end := index + 1
+			while end < text.length() and CHINESE_NUMERALS.contains(text.substr(end, 1)):
+				end += 1
+			var token := text.substr(index, end - index)
+			if token.length() <= CHINESE_LIMIT:
 				var mapped := _map_chinese(token)
 				if not mapped.is_empty():
 					return _hit(token, mapped, "chinese", index)

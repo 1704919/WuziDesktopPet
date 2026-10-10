@@ -1,102 +1,102 @@
-  1 | // MIT. Small Windows-only bridge; codecs remain supplied by Windows.
-  2 | #include <windows.h>
-  3 | #include <wincodec.h>
-  4 | #include <shlwapi.h>
-  5 | #include <wrl/client.h>
-  6 | #include <cstdio>
-  7 | #include <string>
-  8 | #include <vector>
-  9 | using Microsoft::WRL::ComPtr;
- 10 | 
- 11 | static HRESULT transcode(IWICImagingFactory* factory, const wchar_t* source,
- 12 |                          const wchar_t* target, bool heic, float quality) {
- 13 |     ComPtr<IWICBitmapDecoder> decoder;
- 14 |     HRESULT hr = factory->CreateDecoderFromFilename(source, nullptr, GENERIC_READ,
- 15 |         WICDecodeMetadataCacheOnLoad, &decoder);
- 16 |     if (FAILED(hr)) return hr;
- 17 |     ComPtr<IWICBitmapFrameDecode> input;
- 18 |     if (FAILED(hr = decoder->GetFrame(0, &input))) return hr;
- 19 |     ComPtr<IWICBitmapEncoder> encoder;
- 20 |     if (FAILED(hr = factory->CreateEncoder(heic ? GUID_ContainerFormatHeif : GUID_ContainerFormatPng,
- 21 |                                           nullptr, &encoder))) return hr;
- 22 |     // Reserve the output exclusively. WIC writes through this exact handle-backed stream.
- 23 |     HANDLE file = CreateFileW(target, GENERIC_WRITE | GENERIC_READ, 0, nullptr,
- 24 |                               CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
- 25 |     if (file == INVALID_HANDLE_VALUE) return HRESULT_FROM_WIN32(GetLastError());
- 26 |     ComPtr<IStream> memory;
- 27 |     hr = CreateStreamOnHGlobal(nullptr, TRUE, &memory);
- 28 |     if (SUCCEEDED(hr)) hr = encoder->Initialize(memory.Get(), WICBitmapEncoderNoCache);
- 29 |     ComPtr<IWICBitmapFrameEncode> frame;
- 30 |     ComPtr<IPropertyBag2> options;
- 31 |     if (SUCCEEDED(hr)) hr = encoder->CreateNewFrame(&frame, &options);
- 32 |     if (SUCCEEDED(hr) && heic && options) {
- 33 |         PROPBAG2 prop = {}; prop.pstrName = const_cast<wchar_t*>(L"ImageQuality");
- 34 |         VARIANT value; VariantInit(&value); value.vt = VT_R4; value.fltVal = quality;
- 35 |         HRESULT optionResult = options->Write(1, &prop, &value);
- 36 |         if (FAILED(optionResult) && optionResult != WINCODEC_ERR_PROPERTYNOTSUPPORTED) hr = optionResult;
- 37 |     }
- 38 |     UINT width = 0, height = 0;
- 39 |     if (SUCCEEDED(hr)) hr = input->GetSize(&width, &height);
- 40 |     if (SUCCEEDED(hr)) hr = frame->Initialize(options.Get());
- 41 |     if (SUCCEEDED(hr)) hr = frame->SetSize(width, height);
- 42 |     WICPixelFormatGUID format = heic ? GUID_WICPixelFormat24bppBGR : GUID_WICPixelFormat32bppBGRA;
- 43 |     if (SUCCEEDED(hr)) hr = frame->SetPixelFormat(&format);
- 44 |     ComPtr<IWICFormatConverter> converter;
- 45 |     if (SUCCEEDED(hr)) hr = factory->CreateFormatConverter(&converter);
- 46 |     if (SUCCEEDED(hr)) hr = converter->Initialize(input.Get(), format,
- 47 |         WICBitmapDitherTypeNone, nullptr, 0, WICBitmapPaletteTypeCustom);
- 48 |     if (SUCCEEDED(hr)) hr = frame->WriteSource(converter.Get(), nullptr);
- 49 |     if (SUCCEEDED(hr)) hr = frame->Commit();
- 50 |     if (SUCCEEDED(hr)) hr = encoder->Commit();
- 51 |     if (SUCCEEDED(hr)) {
- 52 |         LARGE_INTEGER zero = {}; hr = memory->Seek(zero, STREAM_SEEK_SET, nullptr);
- 53 |         std::vector<BYTE> buffer(1024 * 1024);
- 54 |         while (SUCCEEDED(hr)) {
- 55 |             ULONG read = 0; hr = memory->Read(buffer.data(), (ULONG)buffer.size(), &read);
- 56 |             if (FAILED(hr) || read == 0) break;
- 57 |             DWORD written = 0;
- 58 |             if (!WriteFile(file, buffer.data(), read, &written, nullptr) || written != read) {
- 59 |                 hr = HRESULT_FROM_WIN32(GetLastError() ? GetLastError() : ERROR_WRITE_FAULT); break;
- 60 |             }
- 61 |         }
- 62 |         if (SUCCEEDED(hr) && !FlushFileBuffers(file)) hr = HRESULT_FROM_WIN32(GetLastError());
- 63 |     }
- 64 |     CloseHandle(file);
- 65 |     if (FAILED(hr)) DeleteFileW(target); // Only the file this invocation created.
- 66 |     return hr;
- 67 | }
- 68 | 
- 69 | static bool decoderAvailable(IWICImagingFactory* factory) {
- 70 |     ComPtr<IEnumUnknown> codecs;
- 71 |     if (FAILED(factory->CreateComponentEnumerator(WICDecoder, WICComponentEnumerateDefault, &codecs))) return false;
- 72 |     ComPtr<IUnknown> item;
- 73 |     ULONG fetched = 0;
- 74 |     while (codecs->Next(1, &item, &fetched) == S_OK) {
- 75 |         ComPtr<IWICBitmapDecoderInfo> info;
- 76 |         GUID container = {};
- 77 |         if (SUCCEEDED(item.As(&info)) && SUCCEEDED(info->GetContainerFormat(&container))
- 78 |             && container == GUID_ContainerFormatHeif) {
- 79 |             ComPtr<IWICBitmapDecoder> decoder;
- 80 |             if (SUCCEEDED(info->CreateInstance(&decoder))) return true;
- 81 |         }
- 82 |         item.Reset();
- 83 |     }
- 84 |     return false;
- 85 | }
- 86 | 
- 87 | int wmain(int argc, wchar_t** argv) {
- 88 |     HRESULT init = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
- 89 |     HRESULT hr = E_INVALIDARG;
- 90 |     std::wstring op = argc > 1 ? argv[1] : L"";
- 91 |     if (op == L"move" && argc == 4) {
- 92 |         // Deliberately omit MOVEFILE_REPLACE_EXISTING and COPY_ALLOWED.
- 93 |         hr = MoveFileExW(argv[2], argv[3], MOVEFILE_WRITE_THROUGH) ? S_OK : HRESULT_FROM_WIN32(GetLastError());
- 94 |     } else if (op == L"copy" && argc == 4) {
- 95 |         hr = CopyFileW(argv[2], argv[3], TRUE) ? S_OK : HRESULT_FROM_WIN32(GetLastError());
- 96 |     } else if (op == L"probe" && argc == 3) {
- 97 |         GUID id; CoCreateGuid(&id); wchar_t guid[40]; StringFromGUID2(id, guid, 40);
- 98 |         std::wstring path = std::wstring(argv[2]) + L"\\.wuzi-probe-" + guid;
- 99 |         HANDLE handle = CreateFileW(path.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_NEW,
+// MIT. Small Windows-only bridge; codecs remain supplied by Windows.
+#include <windows.h>
+#include <wincodec.h>
+#include <shlwapi.h>
+#include <wrl/client.h>
+#include <cstdio>
+#include <string>
+#include <vector>
+using Microsoft::WRL::ComPtr;
+
+static HRESULT transcode(IWICImagingFactory* factory, const wchar_t* source,
+                         const wchar_t* target, bool heic, float quality) {
+    ComPtr<IWICBitmapDecoder> decoder;
+    HRESULT hr = factory->CreateDecoderFromFilename(source, nullptr, GENERIC_READ,
+        WICDecodeMetadataCacheOnLoad, &decoder);
+    if (FAILED(hr)) return hr;
+    ComPtr<IWICBitmapFrameDecode> input;
+    if (FAILED(hr = decoder->GetFrame(0, &input))) return hr;
+    ComPtr<IWICBitmapEncoder> encoder;
+    if (FAILED(hr = factory->CreateEncoder(heic ? GUID_ContainerFormatHeif : GUID_ContainerFormatPng,
+                                          nullptr, &encoder))) return hr;
+    // Reserve the output exclusively. WIC writes through this exact handle-backed stream.
+    HANDLE file = CreateFileW(target, GENERIC_WRITE | GENERIC_READ, 0, nullptr,
+                              CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (file == INVALID_HANDLE_VALUE) return HRESULT_FROM_WIN32(GetLastError());
+    ComPtr<IStream> memory;
+    hr = CreateStreamOnHGlobal(nullptr, TRUE, &memory);
+    if (SUCCEEDED(hr)) hr = encoder->Initialize(memory.Get(), WICBitmapEncoderNoCache);
+    ComPtr<IWICBitmapFrameEncode> frame;
+    ComPtr<IPropertyBag2> options;
+    if (SUCCEEDED(hr)) hr = encoder->CreateNewFrame(&frame, &options);
+    if (SUCCEEDED(hr) && heic && options) {
+        PROPBAG2 prop = {}; prop.pstrName = const_cast<wchar_t*>(L"ImageQuality");
+        VARIANT value; VariantInit(&value); value.vt = VT_R4; value.fltVal = quality;
+        HRESULT optionResult = options->Write(1, &prop, &value);
+        if (FAILED(optionResult) && optionResult != WINCODEC_ERR_PROPERTYNOTSUPPORTED) hr = optionResult;
+    }
+    UINT width = 0, height = 0;
+    if (SUCCEEDED(hr)) hr = input->GetSize(&width, &height);
+    if (SUCCEEDED(hr)) hr = frame->Initialize(options.Get());
+    if (SUCCEEDED(hr)) hr = frame->SetSize(width, height);
+    WICPixelFormatGUID format = heic ? GUID_WICPixelFormat24bppBGR : GUID_WICPixelFormat32bppBGRA;
+    if (SUCCEEDED(hr)) hr = frame->SetPixelFormat(&format);
+    ComPtr<IWICFormatConverter> converter;
+    if (SUCCEEDED(hr)) hr = factory->CreateFormatConverter(&converter);
+    if (SUCCEEDED(hr)) hr = converter->Initialize(input.Get(), format,
+        WICBitmapDitherTypeNone, nullptr, 0, WICBitmapPaletteTypeCustom);
+    if (SUCCEEDED(hr)) hr = frame->WriteSource(converter.Get(), nullptr);
+    if (SUCCEEDED(hr)) hr = frame->Commit();
+    if (SUCCEEDED(hr)) hr = encoder->Commit();
+    if (SUCCEEDED(hr)) {
+        LARGE_INTEGER zero = {}; hr = memory->Seek(zero, STREAM_SEEK_SET, nullptr);
+        std::vector<BYTE> buffer(1024 * 1024);
+        while (SUCCEEDED(hr)) {
+            ULONG read = 0; hr = memory->Read(buffer.data(), (ULONG)buffer.size(), &read);
+            if (FAILED(hr) || read == 0) break;
+            DWORD written = 0;
+            if (!WriteFile(file, buffer.data(), read, &written, nullptr) || written != read) {
+                hr = HRESULT_FROM_WIN32(GetLastError() ? GetLastError() : ERROR_WRITE_FAULT); break;
+            }
+        }
+        if (SUCCEEDED(hr) && !FlushFileBuffers(file)) hr = HRESULT_FROM_WIN32(GetLastError());
+    }
+    CloseHandle(file);
+    if (FAILED(hr)) DeleteFileW(target); // Only the file this invocation created.
+    return hr;
+}
+
+static bool decoderAvailable(IWICImagingFactory* factory) {
+    ComPtr<IEnumUnknown> codecs;
+    if (FAILED(factory->CreateComponentEnumerator(WICDecoder, WICComponentEnumerateDefault, &codecs))) return false;
+    ComPtr<IUnknown> item;
+    ULONG fetched = 0;
+    while (codecs->Next(1, &item, &fetched) == S_OK) {
+        ComPtr<IWICBitmapDecoderInfo> info;
+        GUID container = {};
+        if (SUCCEEDED(item.As(&info)) && SUCCEEDED(info->GetContainerFormat(&container))
+            && container == GUID_ContainerFormatHeif) {
+            ComPtr<IWICBitmapDecoder> decoder;
+            if (SUCCEEDED(info->CreateInstance(&decoder))) return true;
+        }
+        item.Reset();
+    }
+    return false;
+}
+
+int wmain(int argc, wchar_t** argv) {
+    HRESULT init = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    HRESULT hr = E_INVALIDARG;
+    std::wstring op = argc > 1 ? argv[1] : L"";
+    if (op == L"move" && argc == 4) {
+        // Deliberately omit MOVEFILE_REPLACE_EXISTING and COPY_ALLOWED.
+        hr = MoveFileExW(argv[2], argv[3], MOVEFILE_WRITE_THROUGH) ? S_OK : HRESULT_FROM_WIN32(GetLastError());
+    } else if (op == L"copy" && argc == 4) {
+        hr = CopyFileW(argv[2], argv[3], TRUE) ? S_OK : HRESULT_FROM_WIN32(GetLastError());
+    } else if (op == L"probe" && argc == 3) {
+        GUID id; CoCreateGuid(&id); wchar_t guid[40]; StringFromGUID2(id, guid, 40);
+        std::wstring path = std::wstring(argv[2]) + L"\\.wuzi-probe-" + guid;
+        HANDLE handle = CreateFileW(path.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_NEW,
                                    FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, nullptr);
         hr = handle == INVALID_HANDLE_VALUE ? HRESULT_FROM_WIN32(GetLastError()) : S_OK;
         if (handle != INVALID_HANDLE_VALUE) {

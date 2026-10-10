@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | func _init() -> void:
- 4 | 	var failures: Array[String] = []
- 5 | 
- 6 | 	var settings_script = load("res://scripts/settings_store.gd")
- 7 | 	var settings = settings_script.new()
- 8 | 	root.add_child(settings)
- 9 | 	settings.load_settings()
+extends SceneTree
+
+func _init() -> void:
+	var failures: Array[String] = []
+
+	var settings_script = load("res://scripts/settings_store.gd")
+	var settings = settings_script.new()
+	root.add_child(settings)
+	settings.load_settings()
 	settings.set_value("smoke_test_value", 29, false)
 	if int(settings.get_value("smoke_test_value", 0)) != 29:
 		failures.append("settings_store")

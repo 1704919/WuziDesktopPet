@@ -1,12 +1,12 @@
- 1 | from pathlib import Path
- 2 | from PIL import Image
- 3 | import json
- 4 | 
- 5 | ROOT = Path(__file__).resolve().parents[1]
- 6 | MEDIA_ROOT = ROOT / "分享区" / "Q版" / "绿幕视频"
- 7 | items = []
- 8 | 
- 9 | for path in MEDIA_ROOT.rglob("*"):
+from pathlib import Path
+from PIL import Image
+import json
+
+ROOT = Path(__file__).resolve().parents[1]
+MEDIA_ROOT = ROOT / "分享区" / "Q版" / "绿幕视频"
+items = []
+
+for path in MEDIA_ROOT.rglob("*"):
     if not path.is_file():
         continue
     try:

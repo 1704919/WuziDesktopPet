@@ -1,102 +1,102 @@
-  1 | {
-  2 |   "window": {
-  3 |     "width": 760,
-  4 |     "height": 420,
-  5 |     "margin_right": 28,
-  6 |     "margin_bottom": 28,
-  7 |     "always_on_top": true
-  8 |   },
-  9 |   "sprite_scale": 1,
- 10 |   "master_texture": "res://assets_display/wuzi_chibi/video_idle/frames/000.png",
- 11 |   "idle_video": {
- 12 |     "enabled": true,
- 13 |     "frames_dir": "res://assets_display/wuzi_chibi/video_idle/frames",
- 14 |     "frame_count": 121,
- 15 |     "fps": 12,
- 16 |     "start_frame": 0,
- 17 |     "end_frame": 120
- 18 |   },
- 19 |   "video_runtime": {
- 20 |     "enabled": true
- 21 |   },
- 22 |   "reduce_motion": false,
- 23 |   "manual_action_categories": [
- 24 |     {
- 25 |       "id": "click",
- 26 |       "label": "点击动作"
- 27 |     },
- 28 |     {
- 29 |       "id": "daily",
- 30 |       "label": "日常动作"
- 31 |     },
- 32 |     {
- 33 |       "id": "entertainment",
- 34 |       "label": "娱乐动作"
- 35 |     },
- 36 |     {
- 37 |       "id": "leisure_work",
- 38 |       "label": "休闲与工作"
- 39 |     },
- 40 |     {
- 41 |       "id": "rest",
- 42 |       "label": "休息与睡眠"
- 43 |     },
- 44 |     {
- 45 |       "id": "food",
- 46 |       "label": "吃饭动作"
- 47 |     }
- 48 |   ],
- 49 |   "manual_actions": [
- 50 |     {
- 51 |       "id": "idle",
- 52 |       "label": "待机",
- 53 |       "kind": "idle",
- 54 |       "category": "daily"
- 55 |     },
- 56 |     {
- 57 |       "id": "click_happy_video",
- 58 |       "label": "开心",
- 59 |       "kind": "clip",
- 60 |       "category": "click"
- 61 |     },
- 62 |     {
- 63 |       "id": "click_shy_video",
- 64 |       "label": "害羞",
- 65 |       "kind": "clip",
- 66 |       "category": "click"
- 67 |     },
- 68 |     {
- 69 |       "id": "click_angry_video",
- 70 |       "label": "傲娇生气",
- 71 |       "kind": "clip",
- 72 |       "category": "click"
- 73 |     },
- 74 |     {
- 75 |       "id": "march_in_place_video",
- 76 |       "label": "原地踏步",
- 77 |       "kind": "clip",
- 78 |       "category": "daily"
- 79 |     },
- 80 |     {
- 81 |       "id": "sleepy_video",
- 82 |       "label": "打瞌睡",
- 83 |       "kind": "clip",
- 84 |       "category": "rest"
- 85 |     },
- 86 |     {
- 87 |       "id": "yawn_video",
- 88 |       "label": "打哈欠",
- 89 |       "kind": "clip",
- 90 |       "category": "rest"
- 91 |     },
- 92 |     {
- 93 |       "id": "yawn_small_video",
- 94 |       "label": "小幅打哈欠",
- 95 |       "kind": "clip",
- 96 |       "category": "rest"
- 97 |     },
- 98 |     {
- 99 |       "id": "click_wave_video",
+{
+  "window": {
+    "width": 760,
+    "height": 420,
+    "margin_right": 28,
+    "margin_bottom": 28,
+    "always_on_top": true
+  },
+  "sprite_scale": 1,
+  "master_texture": "res://assets_display/wuzi_chibi/video_idle/frames/000.png",
+  "idle_video": {
+    "enabled": true,
+    "frames_dir": "res://assets_display/wuzi_chibi/video_idle/frames",
+    "frame_count": 121,
+    "fps": 12,
+    "start_frame": 0,
+    "end_frame": 120
+  },
+  "video_runtime": {
+    "enabled": true
+  },
+  "reduce_motion": false,
+  "manual_action_categories": [
+    {
+      "id": "click",
+      "label": "点击动作"
+    },
+    {
+      "id": "daily",
+      "label": "日常动作"
+    },
+    {
+      "id": "entertainment",
+      "label": "娱乐动作"
+    },
+    {
+      "id": "leisure_work",
+      "label": "休闲与工作"
+    },
+    {
+      "id": "rest",
+      "label": "休息与睡眠"
+    },
+    {
+      "id": "food",
+      "label": "吃饭动作"
+    }
+  ],
+  "manual_actions": [
+    {
+      "id": "idle",
+      "label": "待机",
+      "kind": "idle",
+      "category": "daily"
+    },
+    {
+      "id": "click_happy_video",
+      "label": "开心",
+      "kind": "clip",
+      "category": "click"
+    },
+    {
+      "id": "click_shy_video",
+      "label": "害羞",
+      "kind": "clip",
+      "category": "click"
+    },
+    {
+      "id": "click_angry_video",
+      "label": "傲娇生气",
+      "kind": "clip",
+      "category": "click"
+    },
+    {
+      "id": "march_in_place_video",
+      "label": "原地踏步",
+      "kind": "clip",
+      "category": "daily"
+    },
+    {
+      "id": "sleepy_video",
+      "label": "打瞌睡",
+      "kind": "clip",
+      "category": "rest"
+    },
+    {
+      "id": "yawn_video",
+      "label": "打哈欠",
+      "kind": "clip",
+      "category": "rest"
+    },
+    {
+      "id": "yawn_small_video",
+      "label": "小幅打哈欠",
+      "kind": "clip",
+      "category": "rest"
+    },
+    {
+      "id": "click_wave_video",
       "label": "打招呼",
       "kind": "clip",
       "category": "click"

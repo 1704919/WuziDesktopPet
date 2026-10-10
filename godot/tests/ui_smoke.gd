@@ -1,102 +1,102 @@
-  1 | extends SceneTree
-  2 | 
-  3 | const WINDOW_SIZE := Vector2(760.0, 420.0)
-  4 | const PET_VISIBLE_LEFT := 424.0
-  5 | const REPLY_CARD_BOTTOM_RIGHT := Vector2(468.0, 158.0)
-  6 | 
-  7 | func _init() -> void:
-  8 | 	call_deferred("_run")
-  9 | 
- 10 | 
- 11 | func _run() -> void:
- 12 | 	var scene = load("res://scenes/main.tscn").instantiate()
- 13 | 	root.add_child(scene)
- 14 | 	await process_frame
- 15 | 	await process_frame
- 16 | 
- 17 | 	var failures: Array[String] = []
- 18 | 
- 19 | 	var context_menu: Control = scene.get_node("ContextBubble")
- 20 | 	var expected_fixed_anchor := scene.CONTEXT_MENU_FIXED_ANCHOR as Vector2
- 21 | 	for click_position in [Vector2(240, 20), Vector2(740, 20), Vector2(240, 400), Vector2(740, 400)]:
- 22 | 		var right_click := InputEventMouseButton.new()
- 23 | 		right_click.button_index = MOUSE_BUTTON_RIGHT
- 24 | 		right_click.pressed = true
- 25 | 		right_click.position = click_position
- 26 | 		scene.call("_input", right_click)
- 27 | 		await create_timer(0.16).timeout
- 28 | 
- 29 | 		if not context_menu.visible:
- 30 | 			failures.append("context_menu_not_visible")
- 31 | 			continue
- 32 | 		if (scene.context_menu_anchor as Vector2).distance_to(expected_fixed_anchor) > 0.1:
- 33 | 			failures.append("context_menu_anchor_not_fixed")
- 34 | 		if (context_menu.get("_base_position") as Vector2).distance_to(expected_fixed_anchor) > 0.1:
- 35 | 			failures.append("context_menu_base_not_fixed")
- 36 | 		if context_menu.position.distance_to(expected_fixed_anchor) > 0.1:
- 37 | 			failures.append("context_menu_visual_position_not_fixed")
- 38 | 		if context_menu.position.x + context_menu.size.x > WINDOW_SIZE.x + 0.1:
- 39 | 			failures.append("context_menu_overflow_x")
- 40 | 		if context_menu.position.y + context_menu.size.y > WINDOW_SIZE.y + 0.1:
- 41 | 			failures.append("context_menu_overflow_y")
- 42 | 
- 43 | 		context_menu.call("hide_menu", false)
- 44 | 
- 45 | 	scene.call("_open_action_picker")
- 46 | 	await process_frame
- 47 | 	if not context_menu.visible:
- 48 | 		failures.append("action_picker_not_visible")
- 49 | 	if scene.manual_category_map.size() != 6:
- 50 | 		failures.append("action_category_count")
- 51 | 	if not scene.manual_action_map.is_empty():
- 52 | 		failures.append("action_picker_should_show_categories_first")
- 53 | 
- 54 | 	scene.call("_open_action_category", "click")
- 55 | 	await process_frame
- 56 | 	if scene.manual_action_map.size() != 4:
- 57 | 		failures.append("click_action_count")
- 58 | 	scene.call("_open_action_category", "daily")
- 59 | 	await process_frame
- 60 | 	if scene.manual_action_map.size() != 6:
- 61 | 		failures.append("daily_action_count")
- 62 | 	scene.call("_open_action_category", "entertainment")
- 63 | 	await process_frame
- 64 | 	if scene.manual_action_map.size() != 5:
- 65 | 		failures.append("entertainment_action_count")
- 66 | 	scene.call("_open_action_category", "leisure_work")
- 67 | 	await process_frame
- 68 | 	if scene.manual_action_map.size() != 4:
- 69 | 		failures.append("leisure_work_action_count")
- 70 | 	scene.call("_open_action_category", "food")
- 71 | 	await process_frame
- 72 | 	# The food category now has eight real clips: six on the first
- 73 | 	# page and two on the next. Both pages must remain reachable.
- 74 | 	if scene.manual_action_map.size() != scene.PetContextMenu.ACTION_PAGE_SIZE:
- 75 | 		failures.append("food_action_count")
- 76 | 	if not scene.manual_category_map.has(scene.MENU_ACTION_PAGE_DOWN):
- 77 | 		failures.append("food_action_next_page_missing")
- 78 | 	scene.call("_open_action_category", "food", 1)
- 79 | 	await process_frame
- 80 | 	if scene.manual_action_map.size() != 2:
- 81 | 		failures.append("food_action_second_page_count")
- 82 | 	if not scene.manual_category_map.has(scene.MENU_ACTION_PAGE_UP):
- 83 | 		failures.append("food_action_previous_page_missing")
- 84 | 	var second_food_ids: Array[String] = []
- 85 | 	for food_action in scene.manual_action_map.values():
- 86 | 		second_food_ids.append(str((food_action as Dictionary).get("id", "")))
- 87 | 	if not second_food_ids.has("eat_fries") or not second_food_ids.has("eat_bullfrog"):
- 88 | 		failures.append("food_action_second_page_content")
- 89 | 	scene.call("_open_action_category", "rest")
- 90 | 	await process_frame
- 91 | 	if scene.manual_action_map.size() != 4:
- 92 | 		failures.append("rest_action_count")
- 93 | 
- 94 | 	var manual_actions := scene.config.get("manual_actions", []) as Array
- 95 | 	for index in range(3):
- 96 | 		manual_actions.append({
- 97 | 			"id": "pagination_test_%d" % index,
- 98 | 			"label": "分页测试 %d" % index,
- 99 | 			"kind": "idle",
+extends SceneTree
+
+const WINDOW_SIZE := Vector2(760.0, 420.0)
+const PET_VISIBLE_LEFT := 424.0
+const REPLY_CARD_BOTTOM_RIGHT := Vector2(468.0, 158.0)
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	var scene = load("res://scenes/main.tscn").instantiate()
+	root.add_child(scene)
+	await process_frame
+	await process_frame
+
+	var failures: Array[String] = []
+
+	var context_menu: Control = scene.get_node("ContextBubble")
+	var expected_fixed_anchor := scene.CONTEXT_MENU_FIXED_ANCHOR as Vector2
+	for click_position in [Vector2(240, 20), Vector2(740, 20), Vector2(240, 400), Vector2(740, 400)]:
+		var right_click := InputEventMouseButton.new()
+		right_click.button_index = MOUSE_BUTTON_RIGHT
+		right_click.pressed = true
+		right_click.position = click_position
+		scene.call("_input", right_click)
+		await create_timer(0.16).timeout
+
+		if not context_menu.visible:
+			failures.append("context_menu_not_visible")
+			continue
+		if (scene.context_menu_anchor as Vector2).distance_to(expected_fixed_anchor) > 0.1:
+			failures.append("context_menu_anchor_not_fixed")
+		if (context_menu.get("_base_position") as Vector2).distance_to(expected_fixed_anchor) > 0.1:
+			failures.append("context_menu_base_not_fixed")
+		if context_menu.position.distance_to(expected_fixed_anchor) > 0.1:
+			failures.append("context_menu_visual_position_not_fixed")
+		if context_menu.position.x + context_menu.size.x > WINDOW_SIZE.x + 0.1:
+			failures.append("context_menu_overflow_x")
+		if context_menu.position.y + context_menu.size.y > WINDOW_SIZE.y + 0.1:
+			failures.append("context_menu_overflow_y")
+
+		context_menu.call("hide_menu", false)
+
+	scene.call("_open_action_picker")
+	await process_frame
+	if not context_menu.visible:
+		failures.append("action_picker_not_visible")
+	if scene.manual_category_map.size() != 6:
+		failures.append("action_category_count")
+	if not scene.manual_action_map.is_empty():
+		failures.append("action_picker_should_show_categories_first")
+
+	scene.call("_open_action_category", "click")
+	await process_frame
+	if scene.manual_action_map.size() != 4:
+		failures.append("click_action_count")
+	scene.call("_open_action_category", "daily")
+	await process_frame
+	if scene.manual_action_map.size() != 6:
+		failures.append("daily_action_count")
+	scene.call("_open_action_category", "entertainment")
+	await process_frame
+	if scene.manual_action_map.size() != 5:
+		failures.append("entertainment_action_count")
+	scene.call("_open_action_category", "leisure_work")
+	await process_frame
+	if scene.manual_action_map.size() != 4:
+		failures.append("leisure_work_action_count")
+	scene.call("_open_action_category", "food")
+	await process_frame
+	# The food category now has eight real clips: six on the first
+	# page and two on the next. Both pages must remain reachable.
+	if scene.manual_action_map.size() != scene.PetContextMenu.ACTION_PAGE_SIZE:
+		failures.append("food_action_count")
+	if not scene.manual_category_map.has(scene.MENU_ACTION_PAGE_DOWN):
+		failures.append("food_action_next_page_missing")
+	scene.call("_open_action_category", "food", 1)
+	await process_frame
+	if scene.manual_action_map.size() != 2:
+		failures.append("food_action_second_page_count")
+	if not scene.manual_category_map.has(scene.MENU_ACTION_PAGE_UP):
+		failures.append("food_action_previous_page_missing")
+	var second_food_ids: Array[String] = []
+	for food_action in scene.manual_action_map.values():
+		second_food_ids.append(str((food_action as Dictionary).get("id", "")))
+	if not second_food_ids.has("eat_fries") or not second_food_ids.has("eat_bullfrog"):
+		failures.append("food_action_second_page_content")
+	scene.call("_open_action_category", "rest")
+	await process_frame
+	if scene.manual_action_map.size() != 4:
+		failures.append("rest_action_count")
+
+	var manual_actions := scene.config.get("manual_actions", []) as Array
+	for index in range(3):
+		manual_actions.append({
+			"id": "pagination_test_%d" % index,
+			"label": "分页测试 %d" % index,
+			"kind": "idle",
 			"category": "daily"
 		})
 	scene.call("_open_action_category", "daily", 0)

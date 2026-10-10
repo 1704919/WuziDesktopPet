@@ -1,12 +1,12 @@
- 1 | # 当前目录说明
- 2 | 
- 3 | ## 正式运行
- 4 | 
- 5 | ```text
- 6 | godot/
- 7 | ├─ assets_display/wuzi_chibi/
- 8 | │  ├─ video_idle/              待机视频处理帧
- 9 | │  ├─ video_click_happy/       点击开心处理帧
+# 当前目录说明
+
+## 正式运行
+
+```text
+godot/
+├─ assets_display/wuzi_chibi/
+│  ├─ video_idle/              待机视频处理帧
+│  ├─ video_click_happy/       点击开心处理帧
 │  ├─ video_click_shy/         点击害羞处理帧
 │  ├─ video_march_in_place/    原地踏步处理帧
 │  └─ video_sleepy/            打瞌睡处理帧

@@ -1,12 +1,12 @@
- 1 | extends Node
- 2 | 
- 3 | const CATALOG_PATH := "res://config/action_catalog.json"
- 4 | 
- 5 | var catalog: Dictionary = {}
- 6 | 
- 7 | 
- 8 | func load_catalog() -> Dictionary:
- 9 | 	var file := FileAccess.open(CATALOG_PATH, FileAccess.READ)
+extends Node
+
+const CATALOG_PATH := "res://config/action_catalog.json"
+
+var catalog: Dictionary = {}
+
+
+func load_catalog() -> Dictionary:
+	var file := FileAccess.open(CATALOG_PATH, FileAccess.READ)
 	if file == null:
 		catalog = {}
 		return catalog

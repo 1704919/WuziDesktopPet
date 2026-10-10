@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | const MovementCatalogLoader = preload("res://scripts/pet_movement_catalog_loader.gd")
- 4 | 
- 5 | 
- 6 | func _init() -> void:
- 7 | 	var failures: Array[String] = []
- 8 | 
- 9 | 	var disabled := MovementCatalogLoader.load_catalog({
+extends SceneTree
+
+const MovementCatalogLoader = preload("res://scripts/pet_movement_catalog_loader.gd")
+
+
+func _init() -> void:
+	var failures: Array[String] = []
+
+	var disabled := MovementCatalogLoader.load_catalog({
 		"roaming": {
 			"enabled": false,
 			"movement_catalog": "user://should_not_be_read.json"

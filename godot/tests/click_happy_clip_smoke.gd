@@ -1,102 +1,102 @@
-  1 | extends SceneTree
-  2 | 
-  3 | func _init() -> void:
-  4 | 	call_deferred("_run")
-  5 | 
-  6 | 
-  7 | func _run() -> void:
-  8 | 	var scene = load("res://scenes/main.tscn").instantiate()
-  9 | 	root.add_child(scene)
- 10 | 	await process_frame
- 11 | 	await process_frame
- 12 | 
- 13 | 	var failures: Array[String] = []
- 14 | 	var clips: Dictionary = scene.clips
- 15 | 	if not clips.has("click_happy_video"):
- 16 | 		failures.append("click_happy_clip_missing")
- 17 | 	else:
- 18 | 		var clip := clips["click_happy_video"] as Dictionary
- 19 | 		var frame_paths := clip.get("frame_paths", []) as Array
- 20 | 		var timings := clip.get("timing_ms", []) as Array
- 21 | 		if frame_paths.size() != 121:
- 22 | 			failures.append("click_happy_frame_count:%d" % frame_paths.size())
- 23 | 		if timings.size() != 121:
- 24 | 			failures.append("click_happy_timing_count:%d" % timings.size())
- 25 | 		if clip.has("textures"):
- 26 | 			failures.append("click_happy_preloaded_textures")
- 27 | 		if not timings.is_empty() and abs(int(timings[0]) - 83) > 1:
- 28 | 			failures.append("click_happy_wrong_frame_timing")
- 29 | 		if str(clip.get("source_type", "")) != "green_screen_video":
- 30 | 			failures.append("click_happy_not_video")
- 31 | 		if str(clip.get("render_mode", "")) != "direct":
- 32 | 			failures.append("click_happy_not_direct")
- 33 | 		if not str(clip.get("frames_dir", "")).begins_with(
- 34 | 			"res://assets_display/wuzi_chibi/video_"
- 35 | 		):
- 36 | 			failures.append("click_happy_legacy_path")
- 37 | 
- 38 | 	# The long click-reaction clip keeps its cooldown, but Q-bounce must respond
- 39 | 	# to every click. Exercise the bounce deterministically at 60 fps so the
- 40 | 	# regression test does not depend on headless frame timing.
- 41 | 	scene.call("_trigger_click_reaction")
- 42 | 	await process_frame
- 43 | 	var first_token := int(scene.sequence_token)
- 44 | 	if scene.active_clip_uses_visual_fade:
- 45 | 		failures.append("click_reaction_should_not_use_action_fade")
- 46 | 	if absf(float(scene.body_pivot.modulate.a) - 1.0) > 0.001:
- 47 | 		failures.append("click_reaction_changed_body_alpha")
- 48 | 	if not scene.sequence_running:
- 49 | 		failures.append("first_click_not_running")
- 50 | 	if not scene.click_squash_active:
- 51 | 		failures.append("first_click_q_bounce_not_started")
- 52 | 	var start_texture: Texture2D = scene.pet_sprite.texture
- 53 | 	var runtime_mode := bool(scene.video_runtime_enabled and scene._runtime_video_is_active())
- 54 | 
- 55 | 	# Reach the rebound phase.
- 56 | 	for _i in range(7):
- 57 | 		scene.call("_update_click_squash", 1.0 / 60.0)
- 58 | 	var before_retrigger_y: float = float(scene.body_pivot.scale.y)
- 59 | 	if before_retrigger_y <= scene.CLICK_SQUASH_SCALE_Y + 0.03:
- 60 | 		failures.append("click_squash_never_entered_rebound")
- 61 | 
- 62 | 	# A rapid second click must NOT restart/cancel the video clip, and must NOT
- 63 | 	# snap the body directly back to 55%. It restarts compression from the
- 64 | 	# current visual scale.
- 65 | 	scene.call("_trigger_click_reaction")
- 66 | 	var after_retrigger_y: float = float(scene.body_pivot.scale.y)
- 67 | 	if int(scene.sequence_token) != first_token:
- 68 | 		failures.append("double_click_restarted_clip")
- 69 | 	if not scene.sequence_running:
- 70 | 		failures.append("double_click_cancelled_clip")
- 71 | 	if not scene.click_squash_active or int(scene.click_squash_phase) != 0:
- 72 | 		failures.append("double_click_did_not_retrigger_q_bounce")
- 73 | 	if absf(after_retrigger_y - before_retrigger_y) > 0.001:
- 74 | 		failures.append("double_click_q_bounce_snapped")
- 75 | 	if absf(float(scene.click_squash_from_y) - before_retrigger_y) > 0.001:
- 76 | 		failures.append("double_click_q_bounce_wrong_restart_scale")
- 77 | 
- 78 | 	for _i in range(3):
- 79 | 		scene.call("_update_click_squash", 1.0 / 60.0)
- 80 | 	if scene.body_pivot.scale.y >= before_retrigger_y - 0.02:
- 81 | 		failures.append("double_click_q_bounce_not_recompressing")
- 82 | 
- 83 | 	# Four more rapid clicks cross the stage-four mood tiers: click 3 switches
- 84 | 	# to shy and click 6 switches to angry. Those two video upgrades may replace
- 85 | 	# the running clip, but the Q-bounce transform must remain continuous.
- 86 | 	var max_retrigger_jump := 0.0
- 87 | 	var max_scale_x_error := 0.0
- 88 | 	var max_pivot_error := 0.0
- 89 | 	for click_index in range(4):
- 90 | 		for _frame_index in range(2):
- 91 | 			scene.call("_update_click_squash", 1.0 / 60.0)
- 92 | 		var before_y: float = float(scene.body_pivot.scale.y)
- 93 | 		var token_before := int(scene.sequence_token)
- 94 | 		scene.call("_trigger_click_reaction")
- 95 | 		var token_after := int(scene.sequence_token)
- 96 | 		var after_y: float = float(scene.body_pivot.scale.y)
- 97 | 		max_retrigger_jump = maxf(max_retrigger_jump, absf(after_y - before_y))
- 98 | 		max_scale_x_error = maxf(
- 99 | 			max_scale_x_error,
+extends SceneTree
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	var scene = load("res://scenes/main.tscn").instantiate()
+	root.add_child(scene)
+	await process_frame
+	await process_frame
+
+	var failures: Array[String] = []
+	var clips: Dictionary = scene.clips
+	if not clips.has("click_happy_video"):
+		failures.append("click_happy_clip_missing")
+	else:
+		var clip := clips["click_happy_video"] as Dictionary
+		var frame_paths := clip.get("frame_paths", []) as Array
+		var timings := clip.get("timing_ms", []) as Array
+		if frame_paths.size() != 121:
+			failures.append("click_happy_frame_count:%d" % frame_paths.size())
+		if timings.size() != 121:
+			failures.append("click_happy_timing_count:%d" % timings.size())
+		if clip.has("textures"):
+			failures.append("click_happy_preloaded_textures")
+		if not timings.is_empty() and abs(int(timings[0]) - 83) > 1:
+			failures.append("click_happy_wrong_frame_timing")
+		if str(clip.get("source_type", "")) != "green_screen_video":
+			failures.append("click_happy_not_video")
+		if str(clip.get("render_mode", "")) != "direct":
+			failures.append("click_happy_not_direct")
+		if not str(clip.get("frames_dir", "")).begins_with(
+			"res://assets_display/wuzi_chibi/video_"
+		):
+			failures.append("click_happy_legacy_path")
+
+	# The long click-reaction clip keeps its cooldown, but Q-bounce must respond
+	# to every click. Exercise the bounce deterministically at 60 fps so the
+	# regression test does not depend on headless frame timing.
+	scene.call("_trigger_click_reaction")
+	await process_frame
+	var first_token := int(scene.sequence_token)
+	if scene.active_clip_uses_visual_fade:
+		failures.append("click_reaction_should_not_use_action_fade")
+	if absf(float(scene.body_pivot.modulate.a) - 1.0) > 0.001:
+		failures.append("click_reaction_changed_body_alpha")
+	if not scene.sequence_running:
+		failures.append("first_click_not_running")
+	if not scene.click_squash_active:
+		failures.append("first_click_q_bounce_not_started")
+	var start_texture: Texture2D = scene.pet_sprite.texture
+	var runtime_mode := bool(scene.video_runtime_enabled and scene._runtime_video_is_active())
+
+	# Reach the rebound phase.
+	for _i in range(7):
+		scene.call("_update_click_squash", 1.0 / 60.0)
+	var before_retrigger_y: float = float(scene.body_pivot.scale.y)
+	if before_retrigger_y <= scene.CLICK_SQUASH_SCALE_Y + 0.03:
+		failures.append("click_squash_never_entered_rebound")
+
+	# A rapid second click must NOT restart/cancel the video clip, and must NOT
+	# snap the body directly back to 55%. It restarts compression from the
+	# current visual scale.
+	scene.call("_trigger_click_reaction")
+	var after_retrigger_y: float = float(scene.body_pivot.scale.y)
+	if int(scene.sequence_token) != first_token:
+		failures.append("double_click_restarted_clip")
+	if not scene.sequence_running:
+		failures.append("double_click_cancelled_clip")
+	if not scene.click_squash_active or int(scene.click_squash_phase) != 0:
+		failures.append("double_click_did_not_retrigger_q_bounce")
+	if absf(after_retrigger_y - before_retrigger_y) > 0.001:
+		failures.append("double_click_q_bounce_snapped")
+	if absf(float(scene.click_squash_from_y) - before_retrigger_y) > 0.001:
+		failures.append("double_click_q_bounce_wrong_restart_scale")
+
+	for _i in range(3):
+		scene.call("_update_click_squash", 1.0 / 60.0)
+	if scene.body_pivot.scale.y >= before_retrigger_y - 0.02:
+		failures.append("double_click_q_bounce_not_recompressing")
+
+	# Four more rapid clicks cross the stage-four mood tiers: click 3 switches
+	# to shy and click 6 switches to angry. Those two video upgrades may replace
+	# the running clip, but the Q-bounce transform must remain continuous.
+	var max_retrigger_jump := 0.0
+	var max_scale_x_error := 0.0
+	var max_pivot_error := 0.0
+	for click_index in range(4):
+		for _frame_index in range(2):
+			scene.call("_update_click_squash", 1.0 / 60.0)
+		var before_y: float = float(scene.body_pivot.scale.y)
+		var token_before := int(scene.sequence_token)
+		scene.call("_trigger_click_reaction")
+		var token_after := int(scene.sequence_token)
+		var after_y: float = float(scene.body_pivot.scale.y)
+		max_retrigger_jump = maxf(max_retrigger_jump, absf(after_y - before_y))
+		max_scale_x_error = maxf(
+			max_scale_x_error,
 			absf(scene.body_pivot.scale.x - 1.0)
 		)
 		max_pivot_error = maxf(

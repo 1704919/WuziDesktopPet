@@ -1,12 +1,12 @@
- 1 | $ErrorActionPreference = 'Stop'
- 2 | $taskRoot = Split-Path $PSScriptRoot -Parent
- 3 | $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
- 4 | $vsRoot = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
- 5 | if (-not $vsRoot) { throw '需要 Visual Studio C++ Build Tools 和 Windows SDK。' }
- 6 | $buildDir = Join-Path $taskRoot 'work/file_bridge_build'
- 7 | $outDir = Join-Path $taskRoot 'godot/native'
- 8 | New-Item -ItemType Directory -Force -Path $buildDir, $outDir | Out-Null
- 9 | $source = Join-Path $PSScriptRoot 'native/file_bridge.cpp'
+$ErrorActionPreference = 'Stop'
+$taskRoot = Split-Path $PSScriptRoot -Parent
+$vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+$vsRoot = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+if (-not $vsRoot) { throw '需要 Visual Studio C++ Build Tools 和 Windows SDK。' }
+$buildDir = Join-Path $taskRoot 'work/file_bridge_build'
+$outDir = Join-Path $taskRoot 'godot/native'
+New-Item -ItemType Directory -Force -Path $buildDir, $outDir | Out-Null
+$source = Join-Path $PSScriptRoot 'native/file_bridge.cpp'
 $output = Join-Path $outDir 'wuzi_file_bridge.exe'
 $vcvars = Join-Path $vsRoot 'VC/Auxiliary/Build/vcvars64.bat'
 Push-Location $buildDir

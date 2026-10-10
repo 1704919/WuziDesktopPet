@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | const Picker = preload("res://scripts/pet_idle_action_picker.gd")
- 4 | const InactivityManager = preload("res://scripts/inactivity_manager.gd")
- 5 | var failures: Array[String] = []
- 6 | 
- 7 | 
- 8 | func check(value: bool, label: String) -> void:
- 9 | 	if not value:
+extends SceneTree
+
+const Picker = preload("res://scripts/pet_idle_action_picker.gd")
+const InactivityManager = preload("res://scripts/inactivity_manager.gd")
+var failures: Array[String] = []
+
+
+func check(value: bool, label: String) -> void:
+	if not value:
 		failures.append(label)
 
 

@@ -1,102 +1,102 @@
-  1 | {
-  2 |   "schema_version": 10,
-  3 |   "source": "分享区/Q版/绿幕视频/拆卡.mp4",
-  4 |   "source_size": [
-  5 |     1280,
-  6 |     720
-  7 |   ],
-  8 |   "source_fps": 24.0,
-  9 |   "source_frame_count": 241,
- 10 |   "output_fps": 12.0,
- 11 |   "frame_count": 121,
- 12 |   "duration_sec": 10.083333333333334,
- 13 |   "canvas": [
- 14 |     480,
- 15 |     360
- 16 |   ],
- 17 |   "watermark_cleanup": {
- 18 |     "clear_left_margin_px": 0,
- 19 |     "clear_right_margin_px": 0,
- 20 |     "component_filter_grid": [
- 21 |       160,
- 22 |       90
- 23 |     ],
- 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
- 25 |   },
- 26 |   "key": {
- 27 |     "method": "edge_median_distance_initial",
- 28 |     "alpha_start": 18.0,
- 29 |     "alpha_range": 30.0,
- 30 |     "background_rule": "single edge-median background color; per-action exceptions are handled separately"
- 31 |   },
- 32 |   "transform": {
- 33 |     "source_center_x": 672.5,
- 34 |     "source_bottom_y": 704.0,
- 35 |     "source_visible_height": 692.0,
- 36 |     "source_visible_width": 532.0,
- 37 |     "identity_core_width": 284.0,
- 38 |     "target_identity_core_width": 87.71704180064309,
- 39 |     "scale_x": 0.31697922178354837,
- 40 |     "scale_y": 0.31697922178354837,
- 41 |     "target_visible_width": 168.63294598884772,
- 42 |     "target_visible_height": 219.34962147421547,
- 43 |     "target_center_x": 245.0,
- 44 |     "target_bottom_y": 338.0,
- 45 |     "manual_scale_multiplier": 1.045,
- 46 |     "source_face_height": 316.0,
- 47 |     "target_face_height": 95.85209003215435,
- 48 |     "fixed_scale": 0.31697922178354837
- 49 |   },
- 50 |   "visual_scale_normalization": {
- 51 |     "mode": "fixed_action_face_height",
- 52 |     "target_face_height": 95.85209003215435,
- 53 |     "multiplier_min": 1.0,
- 54 |     "multiplier_max": 1.0,
- 55 |     "multiplier_median": 1.0,
- 56 |     "sleep_chain_scales": {}
- 57 |   },
- 58 |   "canvas_fit": {
- 59 |     "scale": 1.0,
- 60 |     "shift": [
- 61 |       0,
- 62 |       0
- 63 |     ],
- 64 |     "margin": 8
- 65 |   },
- 66 |   "endpoint_alignment": {},
- 67 |   "color_normalization": {
- 68 |     "reference_action": "idle",
- 69 |     "source_palette": {
- 70 |       "all": [
- 71 |         142.990966796875,
- 72 |         124.98773956298828,
- 73 |         162.8067169189453
- 74 |       ],
- 75 |       "blue": [
- 76 |         113.10799407958984,
- 77 |         125.9580307006836,
- 78 |         214.36557006835938
- 79 |       ],
- 80 |       "pink": [
- 81 |         179.1483154296875,
- 82 |         116.8608627319336,
- 83 |         119.50959014892578
- 84 |       ],
- 85 |       "pale": [
- 86 |         221.40379333496094,
- 87 |         184.4921112060547,
- 88 |         186.16600036621094
- 89 |       ]
- 90 |     },
- 91 |     "correction": {
- 92 |       "enabled": true,
- 93 |       "slope": [
- 94 |         1.0147720575332642,
- 95 |         1.0277080535888672,
- 96 |         1.0140742063522339
- 97 |       ],
- 98 |       "offset": [
- 99 |         0.04740108922123909,
+{
+  "schema_version": 10,
+  "source": "分享区/Q版/绿幕视频/拆卡.mp4",
+  "source_size": [
+    1280,
+    720
+  ],
+  "source_fps": 24.0,
+  "source_frame_count": 241,
+  "output_fps": 12.0,
+  "frame_count": 121,
+  "duration_sec": 10.083333333333334,
+  "canvas": [
+    480,
+    360
+  ],
+  "watermark_cleanup": {
+    "clear_left_margin_px": 0,
+    "clear_right_margin_px": 0,
+    "component_filter_grid": [
+      160,
+      90
+    ],
+    "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+  },
+  "key": {
+    "method": "edge_median_distance_initial",
+    "alpha_start": 18.0,
+    "alpha_range": 30.0,
+    "background_rule": "single edge-median background color; per-action exceptions are handled separately"
+  },
+  "transform": {
+    "source_center_x": 672.5,
+    "source_bottom_y": 704.0,
+    "source_visible_height": 692.0,
+    "source_visible_width": 532.0,
+    "identity_core_width": 284.0,
+    "target_identity_core_width": 87.71704180064309,
+    "scale_x": 0.31697922178354837,
+    "scale_y": 0.31697922178354837,
+    "target_visible_width": 168.63294598884772,
+    "target_visible_height": 219.34962147421547,
+    "target_center_x": 245.0,
+    "target_bottom_y": 338.0,
+    "manual_scale_multiplier": 1.045,
+    "source_face_height": 316.0,
+    "target_face_height": 95.85209003215435,
+    "fixed_scale": 0.31697922178354837
+  },
+  "visual_scale_normalization": {
+    "mode": "fixed_action_face_height",
+    "target_face_height": 95.85209003215435,
+    "multiplier_min": 1.0,
+    "multiplier_max": 1.0,
+    "multiplier_median": 1.0,
+    "sleep_chain_scales": {}
+  },
+  "canvas_fit": {
+    "scale": 1.0,
+    "shift": [
+      0,
+      0
+    ],
+    "margin": 8
+  },
+  "endpoint_alignment": {},
+  "color_normalization": {
+    "reference_action": "idle",
+    "source_palette": {
+      "all": [
+        142.990966796875,
+        124.98773956298828,
+        162.8067169189453
+      ],
+      "blue": [
+        113.10799407958984,
+        125.9580307006836,
+        214.36557006835938
+      ],
+      "pink": [
+        179.1483154296875,
+        116.8608627319336,
+        119.50959014892578
+      ],
+      "pale": [
+        221.40379333496094,
+        184.4921112060547,
+        186.16600036621094
+      ]
+    },
+    "correction": {
+      "enabled": true,
+      "slope": [
+        1.0147720575332642,
+        1.0277080535888672,
+        1.0140742063522339
+      ],
+      "offset": [
+        0.04740108922123909,
         -2.873396396636963,
         -1.4776527881622314
       ],

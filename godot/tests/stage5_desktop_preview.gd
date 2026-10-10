@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | 
- 4 | func _init() -> void:
- 5 | 	call_deferred("_run")
- 6 | 
- 7 | 
- 8 | func _run() -> void:
- 9 | 	if not OS.get_user_data_dir().contains("WuziPetBaseline"):
+extends SceneTree
+
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	if not OS.get_user_data_dir().contains("WuziPetBaseline"):
 		push_error("Desktop preview requires an isolated baseline project.")
 		quit(2)
 		return

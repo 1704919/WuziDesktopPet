@@ -1,102 +1,102 @@
-  1 | {
-  2 |   "schema_version": 10,
-  3 |   "source": "分享区/Q版/绿幕视频/不小心踢到猫.mp4",
-  4 |   "source_size": [
-  5 |     1280,
-  6 |     720
-  7 |   ],
-  8 |   "source_fps": 24.0,
-  9 |   "source_frame_count": 241,
- 10 |   "output_fps": 12.0,
- 11 |   "frame_count": 121,
- 12 |   "duration_sec": 10.083333333333334,
- 13 |   "canvas": [
- 14 |     480,
- 15 |     360
- 16 |   ],
- 17 |   "watermark_cleanup": {
- 18 |     "clear_left_margin_px": 0,
- 19 |     "clear_right_margin_px": 0,
- 20 |     "component_filter_grid": [
- 21 |       160,
- 22 |       90
- 23 |     ],
- 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
- 25 |   },
- 26 |   "key": {
- 27 |     "method": "idle_protected_adaptive_green_chroma",
- 28 |     "background_rule": "green-dominant source colours only; neutral/gray colours are not background by themselves; approved processed-idle colours are protected",
- 29 |     "green_profile": {
- 30 |       "sample_frames": 9,
- 31 |       "sample_stride": 3,
- 32 |       "edge_ratio": 0.08,
- 33 |       "sampled_pixels": 922320,
- 34 |       "greenish_pixel_ratio": 0.7663413999479574,
- 35 |       "edge_greenish_pixel_ratio": 0.9634121292967048,
- 36 |       "green_strength_quantiles": {
- 37 |         "q05": 38.0,
- 38 |         "q10": 40.0,
- 39 |         "q25": 42.0,
- 40 |         "q50": 43.0,
- 41 |         "q75": 46.0,
- 42 |         "q90": 48.0,
- 43 |         "q95": 50.0
- 44 |       },
- 45 |       "soft_green_strength": 4.0,
- 46 |       "hard_green_strength": 12.0,
- 47 |       "palette_start_distance": 7.0,
- 48 |       "palette_range": 20.0,
- 49 |       "background_palette_rgb": [
- 50 |         [
- 51 |           72.0,
- 52 |           120.0,
- 53 |           72.0
- 54 |         ],
- 55 |         [
- 56 |           88.0,
- 57 |           136.0,
- 58 |           88.0
- 59 |         ],
- 60 |         [
- 61 |           72.0,
- 62 |           120.0,
- 63 |           88.0
- 64 |         ],
- 65 |         [
- 66 |           104.0,
- 67 |           152.0,
- 68 |           104.0
- 69 |         ],
- 70 |         [
- 71 |           136.0,
- 72 |           184.0,
- 73 |           136.0
- 74 |         ],
- 75 |         [
- 76 |           120.0,
- 77 |           168.0,
- 78 |           120.0
- 79 |         ],
- 80 |         [
- 81 |           104.0,
- 82 |           136.0,
- 83 |           104.0
- 84 |         ],
- 85 |         [
- 86 |           88.0,
- 87 |           136.0,
- 88 |           104.0
- 89 |         ],
- 90 |         [
- 91 |           72.0,
- 92 |           136.0,
- 93 |           88.0
- 94 |         ],
- 95 |         [
- 96 |           120.0,
- 97 |           152.0,
- 98 |           120.0
- 99 |         ],
+{
+  "schema_version": 10,
+  "source": "分享区/Q版/绿幕视频/不小心踢到猫.mp4",
+  "source_size": [
+    1280,
+    720
+  ],
+  "source_fps": 24.0,
+  "source_frame_count": 241,
+  "output_fps": 12.0,
+  "frame_count": 121,
+  "duration_sec": 10.083333333333334,
+  "canvas": [
+    480,
+    360
+  ],
+  "watermark_cleanup": {
+    "clear_left_margin_px": 0,
+    "clear_right_margin_px": 0,
+    "component_filter_grid": [
+      160,
+      90
+    ],
+    "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+  },
+  "key": {
+    "method": "idle_protected_adaptive_green_chroma",
+    "background_rule": "green-dominant source colours only; neutral/gray colours are not background by themselves; approved processed-idle colours are protected",
+    "green_profile": {
+      "sample_frames": 9,
+      "sample_stride": 3,
+      "edge_ratio": 0.08,
+      "sampled_pixels": 922320,
+      "greenish_pixel_ratio": 0.7663413999479574,
+      "edge_greenish_pixel_ratio": 0.9634121292967048,
+      "green_strength_quantiles": {
+        "q05": 38.0,
+        "q10": 40.0,
+        "q25": 42.0,
+        "q50": 43.0,
+        "q75": 46.0,
+        "q90": 48.0,
+        "q95": 50.0
+      },
+      "soft_green_strength": 4.0,
+      "hard_green_strength": 12.0,
+      "palette_start_distance": 7.0,
+      "palette_range": 20.0,
+      "background_palette_rgb": [
+        [
+          72.0,
+          120.0,
+          72.0
+        ],
+        [
+          88.0,
+          136.0,
+          88.0
+        ],
+        [
+          72.0,
+          120.0,
+          88.0
+        ],
+        [
+          104.0,
+          152.0,
+          104.0
+        ],
+        [
+          136.0,
+          184.0,
+          136.0
+        ],
+        [
+          120.0,
+          168.0,
+          120.0
+        ],
+        [
+          104.0,
+          136.0,
+          104.0
+        ],
+        [
+          88.0,
+          136.0,
+          104.0
+        ],
+        [
+          72.0,
+          136.0,
+          88.0
+        ],
+        [
+          120.0,
+          152.0,
+          120.0
+        ],
         [
           88.0,
           120.0,

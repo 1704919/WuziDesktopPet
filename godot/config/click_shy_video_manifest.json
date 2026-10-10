@@ -1,102 +1,102 @@
-  1 | {
-  2 |   "schema_version": 10,
-  3 |   "source": "分享区/Q版/绿幕视频/点击害羞.mp4",
-  4 |   "source_size": [
-  5 |     1280,
-  6 |     720
-  7 |   ],
-  8 |   "source_fps": 24.0,
-  9 |   "source_frame_count": 241,
- 10 |   "output_fps": 12.0,
- 11 |   "frame_count": 121,
- 12 |   "duration_sec": 10.083333333333334,
- 13 |   "canvas": [
- 14 |     480,
- 15 |     360
- 16 |   ],
- 17 |   "watermark_cleanup": {
- 18 |     "clear_left_margin_px": 0,
- 19 |     "clear_right_margin_px": 0,
- 20 |     "component_filter_grid": [
- 21 |       160,
- 22 |       90
- 23 |     ],
- 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
- 25 |   },
- 26 |   "key": {
- 27 |     "method": "edge_median_distance_initial",
- 28 |     "alpha_start": 18.0,
- 29 |     "alpha_range": 30.0,
- 30 |     "background_rule": "single edge-median background color; per-action exceptions are handled separately"
- 31 |   },
- 32 |   "transform": {
- 33 |     "source_center_x": 644.0,
- 34 |     "source_bottom_y": 720.0,
- 35 |     "source_visible_height": 708.0,
- 36 |     "source_visible_width": 528.0,
- 37 |     "identity_core_width": 289.25,
- 38 |     "target_identity_core_width": 87.71704180064309,
- 39 |     "scale_x": 0.3069081116171503,
- 40 |     "scale_y": 0.3069081116171503,
- 41 |     "target_visible_width": 162.04748293385538,
- 42 |     "target_visible_height": 217.29094302494244,
- 43 |     "target_center_x": 240.0,
- 44 |     "target_bottom_y": 338.0,
- 45 |     "manual_scale_multiplier": 1.015,
- 46 |     "source_face_height": 317.0,
- 47 |     "target_face_height": 95.85209003215435,
- 48 |     "fixed_scale": 0.3069081116171503
- 49 |   },
- 50 |   "visual_scale_normalization": {
- 51 |     "mode": "fixed_action_face_height",
- 52 |     "target_face_height": 95.85209003215435,
- 53 |     "multiplier_min": 1.0,
- 54 |     "multiplier_max": 1.0,
- 55 |     "multiplier_median": 1.0,
- 56 |     "sleep_chain_scales": {}
- 57 |   },
- 58 |   "canvas_fit": {
- 59 |     "scale": 1.0,
- 60 |     "shift": [
- 61 |       0,
- 62 |       0
- 63 |     ],
- 64 |     "margin": 8
- 65 |   },
- 66 |   "color_normalization": {
- 67 |     "reference_action": "idle",
- 68 |     "source_palette": {
- 69 |       "all": [
- 70 |         145.7696533203125,
- 71 |         125.20203399658203,
- 72 |         165.79864501953125
- 73 |       ],
- 74 |       "blue": [
- 75 |         111.90872192382812,
- 76 |         126.09358978271484,
- 77 |         218.6031036376953
- 78 |       ],
- 79 |       "pink": [
- 80 |         188.31556701660156,
- 81 |         114.21539306640625,
- 82 |         121.63146209716797
- 83 |       ],
- 84 |       "pale": [
- 85 |         228.01364135742188,
- 86 |         192.53028869628906,
- 87 |         199.24844360351562
- 88 |       ]
- 89 |     },
- 90 |     "correction": {
- 91 |       "enabled": true,
- 92 |       "slope": [
- 93 |         0.9382419586181641,
- 94 |         0.8972858190536499,
- 95 |         0.9549359083175659
- 96 |       ],
- 97 |       "offset": [
- 98 |         8.539643287658691,
- 99 |         13.846437454223633,
+{
+  "schema_version": 10,
+  "source": "分享区/Q版/绿幕视频/点击害羞.mp4",
+  "source_size": [
+    1280,
+    720
+  ],
+  "source_fps": 24.0,
+  "source_frame_count": 241,
+  "output_fps": 12.0,
+  "frame_count": 121,
+  "duration_sec": 10.083333333333334,
+  "canvas": [
+    480,
+    360
+  ],
+  "watermark_cleanup": {
+    "clear_left_margin_px": 0,
+    "clear_right_margin_px": 0,
+    "component_filter_grid": [
+      160,
+      90
+    ],
+    "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+  },
+  "key": {
+    "method": "edge_median_distance_initial",
+    "alpha_start": 18.0,
+    "alpha_range": 30.0,
+    "background_rule": "single edge-median background color; per-action exceptions are handled separately"
+  },
+  "transform": {
+    "source_center_x": 644.0,
+    "source_bottom_y": 720.0,
+    "source_visible_height": 708.0,
+    "source_visible_width": 528.0,
+    "identity_core_width": 289.25,
+    "target_identity_core_width": 87.71704180064309,
+    "scale_x": 0.3069081116171503,
+    "scale_y": 0.3069081116171503,
+    "target_visible_width": 162.04748293385538,
+    "target_visible_height": 217.29094302494244,
+    "target_center_x": 240.0,
+    "target_bottom_y": 338.0,
+    "manual_scale_multiplier": 1.015,
+    "source_face_height": 317.0,
+    "target_face_height": 95.85209003215435,
+    "fixed_scale": 0.3069081116171503
+  },
+  "visual_scale_normalization": {
+    "mode": "fixed_action_face_height",
+    "target_face_height": 95.85209003215435,
+    "multiplier_min": 1.0,
+    "multiplier_max": 1.0,
+    "multiplier_median": 1.0,
+    "sleep_chain_scales": {}
+  },
+  "canvas_fit": {
+    "scale": 1.0,
+    "shift": [
+      0,
+      0
+    ],
+    "margin": 8
+  },
+  "color_normalization": {
+    "reference_action": "idle",
+    "source_palette": {
+      "all": [
+        145.7696533203125,
+        125.20203399658203,
+        165.79864501953125
+      ],
+      "blue": [
+        111.90872192382812,
+        126.09358978271484,
+        218.6031036376953
+      ],
+      "pink": [
+        188.31556701660156,
+        114.21539306640625,
+        121.63146209716797
+      ],
+      "pale": [
+        228.01364135742188,
+        192.53028869628906,
+        199.24844360351562
+      ]
+    },
+    "correction": {
+      "enabled": true,
+      "slope": [
+        0.9382419586181641,
+        0.8972858190536499,
+        0.9549359083175659
+      ],
+      "offset": [
+        8.539643287658691,
+        13.846437454223633,
         3.2622509002685547
       ],
       "labels": [

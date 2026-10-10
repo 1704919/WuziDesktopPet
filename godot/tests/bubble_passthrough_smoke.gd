@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | func _polygon_rect(points: PackedVector2Array) -> Rect2:
- 4 | 	if points.is_empty():
- 5 | 		return Rect2()
- 6 | 	var min_x := points[0].x
- 7 | 	var min_y := points[0].y
- 8 | 	var max_x := points[0].x
- 9 | 	var max_y := points[0].y
+extends SceneTree
+
+func _polygon_rect(points: PackedVector2Array) -> Rect2:
+	if points.is_empty():
+		return Rect2()
+	var min_x := points[0].x
+	var min_y := points[0].y
+	var max_x := points[0].x
+	var max_y := points[0].y
 	for p in points:
 		min_x = minf(min_x, p.x)
 		min_y = minf(min_y, p.y)

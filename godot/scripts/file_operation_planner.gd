@@ -1,102 +1,102 @@
-  1 | extends RefCounted
-  2 | 
-  3 | const IMAGE_EXTENSIONS := ["png", "jpg", "jpeg", "webp", "heic", "heif", "bmp", "tga"]
-  4 | const RESERVED_WINDOWS_NAMES := [
-  5 | 	"CON", "PRN", "AUX", "NUL",
-  6 | 	"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
-  7 | 	"LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
-  8 | ]
-  9 | const INVALID_WINDOWS_CHARS := ["<", ">", ":", "/", "\\", "|", "?", "*"]
- 10 | 
- 11 | 
- 12 | func build_plan(paths: PackedStringArray, raw_params: Dictionary, capabilities: Dictionary = {}) -> Dictionary:
- 13 | 	var params := _normalized_params(raw_params)
- 14 | 	var source_keys: Dictionary = {}
- 15 | 	for path in paths:
- 16 | 		source_keys[_path_key(path)] = true
- 17 | 
- 18 | 	var items: Array = []
- 19 | 	var target_counts: Dictionary = {}
- 20 | 	var global_issues: Array[String] = []
- 21 | 	var regex: RegEx = null
- 22 | 
- 23 | 	if bool(params.regex_enabled) and not str(params.find_text).is_empty():
- 24 | 		var pattern := str(params.find_text)
- 25 | 		if not _regex_is_complete_enough(pattern):
- 26 | 			global_issues.append("正则表达式无效或尚未输入完整。")
- 27 | 		else:
- 28 | 			regex = RegEx.new()
- 29 | 			if regex.compile(pattern) != OK:
- 30 | 				global_issues.append("正则表达式无效。")
- 31 | 				regex = null
- 32 | 
- 33 | 	if str(params.output_mode) == "custom" and str(params.output_dir).strip_edges().is_empty():
- 34 | 		global_issues.append("请选择指定输出目录。")
- 35 | 
- 36 | 	for index in range(paths.size()):
- 37 | 		var source := str(paths[index])
- 38 | 		var item := _build_item(source, index, params, regex, source_keys)
- 39 | 		items.append(item)
- 40 | 		var target_key := _path_key(str(item.target))
- 41 | 		target_counts[target_key] = int(target_counts.get(target_key, 0)) + 1
- 42 | 
- 43 | 	for index in range(items.size()):
- 44 | 		var item := items[index] as Dictionary
- 45 | 		var issues := item.issues as Array
- 46 | 		if int(target_counts.get(_path_key(str(item.target)), 0)) > 1:
- 47 | 			issues.append("批内有多个文件生成同一目标路径。")
- 48 | 		for issue in global_issues:
- 49 | 			issues.append(issue)
- 50 | 		item.issues = _unique_strings(issues)
- 51 | 		item.can_execute = (item.issues as Array).is_empty()
- 52 | 		item.status = "ready" if bool(item.can_execute) else "blocked"
- 53 | 		items[index] = item
- 54 | 		if item.operation == "convert":
- 55 | 			if source_needs_heic(str(item.source)) and not bool(capabilities.get("read", true)):
- 56 | 				item.issues.append("当前 Windows 未提供所需 HEIC 读取支持。")
- 57 | 			if params.image_format == "heic" and not bool(capabilities.get("write", true)):
- 58 | 				item.issues.append("当前 Windows 未提供所需 HEIC 写入支持。")
- 59 | 	# An occupied target is safe only when a valid rename will vacate it.
- 60 | 	propagate_dependencies(items)
- 61 | 
- 62 | 	var valid_count := 0
- 63 | 	var conflict_count := 0
- 64 | 	for item in items:
- 65 | 		if bool((item as Dictionary).can_execute):
- 66 | 			valid_count += 1
- 67 | 		else:
- 68 | 			conflict_count += 1
- 69 | 
- 70 | 	var plan := {
- 71 | 		"params": params,
- 72 | 		"items": items,
- 73 | 		"valid_count": valid_count,
- 74 | 		"conflict_count": conflict_count,
- 75 | 		"total": items.size(),
- 76 | 		"global_issues": global_issues,
- 77 | 		"preview_only": true,
- 78 | 		"can_execute": valid_count > 0
- 79 | 	}
- 80 | 	plan["plan_version"] = version_for(plan)
- 81 | 	return plan
- 82 | 
- 83 | 
- 84 | func _build_item(
- 85 | 	source: String,
- 86 | 	index: int,
- 87 | 	params: Dictionary,
- 88 | 	regex: RegEx,
- 89 | 	source_keys: Dictionary
- 90 | ) -> Dictionary:
- 91 | 	var issues: Array[String] = []
- 92 | 	var warnings: Array[String] = []
- 93 | 	var source_name := source.get_file()
- 94 | 	var source_ext := source_name.get_extension().to_lower()
- 95 | 	var source_stem := _stem_from_name(source_name)
- 96 | 	var renamed_stem := source_stem
- 97 | 	var find_text := str(params.find_text)
- 98 | 
- 99 | 	if not find_text.is_empty():
+extends RefCounted
+
+const IMAGE_EXTENSIONS := ["png", "jpg", "jpeg", "webp", "heic", "heif", "bmp", "tga"]
+const RESERVED_WINDOWS_NAMES := [
+	"CON", "PRN", "AUX", "NUL",
+	"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+	"LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
+]
+const INVALID_WINDOWS_CHARS := ["<", ">", ":", "/", "\\", "|", "?", "*"]
+
+
+func build_plan(paths: PackedStringArray, raw_params: Dictionary, capabilities: Dictionary = {}) -> Dictionary:
+	var params := _normalized_params(raw_params)
+	var source_keys: Dictionary = {}
+	for path in paths:
+		source_keys[_path_key(path)] = true
+
+	var items: Array = []
+	var target_counts: Dictionary = {}
+	var global_issues: Array[String] = []
+	var regex: RegEx = null
+
+	if bool(params.regex_enabled) and not str(params.find_text).is_empty():
+		var pattern := str(params.find_text)
+		if not _regex_is_complete_enough(pattern):
+			global_issues.append("正则表达式无效或尚未输入完整。")
+		else:
+			regex = RegEx.new()
+			if regex.compile(pattern) != OK:
+				global_issues.append("正则表达式无效。")
+				regex = null
+
+	if str(params.output_mode) == "custom" and str(params.output_dir).strip_edges().is_empty():
+		global_issues.append("请选择指定输出目录。")
+
+	for index in range(paths.size()):
+		var source := str(paths[index])
+		var item := _build_item(source, index, params, regex, source_keys)
+		items.append(item)
+		var target_key := _path_key(str(item.target))
+		target_counts[target_key] = int(target_counts.get(target_key, 0)) + 1
+
+	for index in range(items.size()):
+		var item := items[index] as Dictionary
+		var issues := item.issues as Array
+		if int(target_counts.get(_path_key(str(item.target)), 0)) > 1:
+			issues.append("批内有多个文件生成同一目标路径。")
+		for issue in global_issues:
+			issues.append(issue)
+		item.issues = _unique_strings(issues)
+		item.can_execute = (item.issues as Array).is_empty()
+		item.status = "ready" if bool(item.can_execute) else "blocked"
+		items[index] = item
+		if item.operation == "convert":
+			if source_needs_heic(str(item.source)) and not bool(capabilities.get("read", true)):
+				item.issues.append("当前 Windows 未提供所需 HEIC 读取支持。")
+			if params.image_format == "heic" and not bool(capabilities.get("write", true)):
+				item.issues.append("当前 Windows 未提供所需 HEIC 写入支持。")
+	# An occupied target is safe only when a valid rename will vacate it.
+	propagate_dependencies(items)
+
+	var valid_count := 0
+	var conflict_count := 0
+	for item in items:
+		if bool((item as Dictionary).can_execute):
+			valid_count += 1
+		else:
+			conflict_count += 1
+
+	var plan := {
+		"params": params,
+		"items": items,
+		"valid_count": valid_count,
+		"conflict_count": conflict_count,
+		"total": items.size(),
+		"global_issues": global_issues,
+		"preview_only": true,
+		"can_execute": valid_count > 0
+	}
+	plan["plan_version"] = version_for(plan)
+	return plan
+
+
+func _build_item(
+	source: String,
+	index: int,
+	params: Dictionary,
+	regex: RegEx,
+	source_keys: Dictionary
+) -> Dictionary:
+	var issues: Array[String] = []
+	var warnings: Array[String] = []
+	var source_name := source.get_file()
+	var source_ext := source_name.get_extension().to_lower()
+	var source_stem := _stem_from_name(source_name)
+	var renamed_stem := source_stem
+	var find_text := str(params.find_text)
+
+	if not find_text.is_empty():
 		if bool(params.regex_enabled):
 			if regex != null:
 				renamed_stem = regex.sub(renamed_stem, str(params.replace_text), true)

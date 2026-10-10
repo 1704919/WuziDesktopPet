@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | var failures: Array[String] = []
- 4 | 
- 5 | 
- 6 | func check(condition: bool, label: String) -> void:
- 7 | 	if not condition:
- 8 | 		failures.append(label)
- 9 | 
+extends SceneTree
+
+var failures: Array[String] = []
+
+
+func check(condition: bool, label: String) -> void:
+	if not condition:
+		failures.append(label)
+
 
 func _init() -> void:
 	call_deferred("_run")

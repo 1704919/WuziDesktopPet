@@ -1,12 +1,12 @@
- 1 | {
- 2 |   "schema_version": 1,
- 3 |   "ready": true,
- 4 |   "clips": {
- 5 |     "walk_left": {
- 6 |       "action_id": "walk_left",
- 7 |       "runtime_action_id": "walk_left_video",
- 8 |       "frames_dir": "res://assets_display/wuzi_chibi/video_walk_left/frames",
- 9 |       "frame_count": 121,
+{
+  "schema_version": 1,
+  "ready": true,
+  "clips": {
+    "walk_left": {
+      "action_id": "walk_left",
+      "runtime_action_id": "walk_left_video",
+      "frames_dir": "res://assets_display/wuzi_chibi/video_walk_left/frames",
+      "frame_count": 121,
       "fps": 12.0,
       "duration_sec": 10.083333333333334,
       "direction": -1,

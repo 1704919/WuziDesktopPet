@@ -1,102 +1,102 @@
-  1 | extends RefCounted
-  2 | 
-  3 | const InputGuard = preload("res://scripts/input_guard.gd")
-  4 | const ResponseManager = preload("res://scripts/response_manager.gd")
-  5 | const EasterEggManager = preload("res://scripts/easter_egg_manager.gd")
-  6 | const CONTEXT_TTL_MS := 120000
-  7 | const CONTEXT_LIMIT := 3
-  8 | const NEGATIVE_PREFIXES := ["不", "别", "没", "不要", "不想", "不能", "没有", "不是", "不太", "并不", "别再", "不要再", "不是很", "不怎么", "不够", "不算", "不再"]
-  9 | 
- 10 | var responses := ResponseManager.new()
- 11 | var easter_eggs := EasterEggManager.new()
- 12 | var rules: Array[Dictionary] = []
- 13 | # Only topic + timestamp, never the user's messages; session-local, no disk writes.
- 14 | var recent_topics: Array[Dictionary] = []
- 15 | var fallback: Dictionary = {}
- 16 | var negated: Dictionary = {}
- 17 | var event_feedback: Dictionary = {}
- 18 | var mood_state_responses: Dictionary = {}
- 19 | 
- 20 | 
- 21 | func load_config(path: String = "res://config/dialogue.json") -> void:
- 22 | 	var file := FileAccess.open(path, FileAccess.READ)
- 23 | 	if file == null:
- 24 | 		configure(null)
- 25 | 		return
- 26 | 	var parser := JSON.new()
- 27 | 	if parser.parse(file.get_as_text()) != OK:
- 28 | 		configure(null)
- 29 | 		return
- 30 | 	configure(parser.data)
- 31 | 
- 32 | 
- 33 | func configure(raw: Variant) -> void:
- 34 | 	rules.clear()
- 35 | 	recent_topics.clear()
- 36 | 	fallback = {}
- 37 | 	negated = {}
- 38 | 	event_feedback = {}
- 39 | 	mood_state_responses = {}
- 40 | 	if not raw is Dictionary:
- 41 | 		return
- 42 | 	if raw.get("fallback") is Dictionary:
- 43 | 		fallback = raw["fallback"]
- 44 | 	if raw.get("negated") is Dictionary:
- 45 | 		negated = raw["negated"]
- 46 | 	if raw.get("event_feedback") is Dictionary:
- 47 | 		event_feedback = raw["event_feedback"]
- 48 | 	if raw.get("mood_state_responses") is Dictionary:
- 49 | 		mood_state_responses = raw["mood_state_responses"]
- 50 | 	if not raw.get("rules") is Array:
- 51 | 		return
- 52 | 	for spec in raw["rules"]:
- 53 | 		if not spec is Dictionary or not spec.get("id") is String or not spec.get("topic") is String:
- 54 | 			continue
- 55 | 		if spec["id"].is_empty() or spec["topic"].is_empty() or responses.valid_pool(spec.get("responses")).is_empty():
- 56 | 			continue
- 57 | 		var rule: Dictionary = spec.duplicate(true)
- 58 | 		for field in ["exact", "keywords", "exclude", "followups"]:
- 59 | 			rule[field] = _strings(spec.get(field))
- 60 | 		rules.append(rule)
- 61 | 
- 62 | 
- 63 | func submit_message(raw: Variant, nickname: Variant = "", now_ms: int = -1) -> Dictionary:
- 64 | 	var checked := InputGuard.check(raw, InputGuard.MESSAGE_LIMIT)
- 65 | 	if not checked.ok:
- 66 | 		return {"accepted": false, "error": checked.error, "text": "说短一点嘛，最多 50 个字符哦。" if checked.error == "too_long" else "", "intent": "", "topic": "", "action_request": "", "mood_event": ""}
- 67 | 	var now := Time.get_ticks_msec() if now_ms < 0 else now_ms
- 68 | 	var clean: String = checked.text
- 69 | 	var match_text := clean.to_lower().strip_edges().trim_suffix("。").trim_suffix("！").trim_suffix("!").trim_suffix("？").trim_suffix("?")
- 70 | 	var name_check := InputGuard.check(nickname, InputGuard.NICKNAME_LIMIT, true)
- 71 | 	var safe_name: String = name_check.text if name_check.ok else ""
- 72 | 	var easter_egg := easter_eggs.match_first(clean)
- 73 | 	if bool(easter_egg.get("matched", false)):
- 74 | 		recent_topics.clear()
- 75 | 		return _easter_egg_result(easter_egg)
- 76 | 	while not recent_topics.is_empty() and now - int(recent_topics[0].at_ms) >= CONTEXT_TTL_MS:
- 77 | 		recent_topics.pop_front()
- 78 | 	var selected: Dictionary = {}
- 79 | 	var is_followup := false
- 80 | 	# Exact rules win, then explicit continuations, then ordered keyword rules.
- 81 | 	for rule in rules:
- 82 | 		if rule.exact.has(match_text):
- 83 | 			selected = rule
- 84 | 			break
- 85 | 	if selected.is_empty() and not recent_topics.is_empty():
- 86 | 		for rule in rules:
- 87 | 			if rule.topic == recent_topics.back().topic and rule.followups.has(match_text):
- 88 | 				selected = rule
- 89 | 				is_followup = true
- 90 | 				break
- 91 | 	var saw_negation := false
- 92 | 	if selected.is_empty():
- 93 | 		for rule in rules:
- 94 | 			if _contains_any(match_text, rule.exclude):
- 95 | 				saw_negation = true
- 96 | 				continue
- 97 | 			for keyword in rule.keywords:
- 98 | 				var offset := match_text.find(keyword)
- 99 | 				while offset >= 0:
+extends RefCounted
+
+const InputGuard = preload("res://scripts/input_guard.gd")
+const ResponseManager = preload("res://scripts/response_manager.gd")
+const EasterEggManager = preload("res://scripts/easter_egg_manager.gd")
+const CONTEXT_TTL_MS := 120000
+const CONTEXT_LIMIT := 3
+const NEGATIVE_PREFIXES := ["不", "别", "没", "不要", "不想", "不能", "没有", "不是", "不太", "并不", "别再", "不要再", "不是很", "不怎么", "不够", "不算", "不再"]
+
+var responses := ResponseManager.new()
+var easter_eggs := EasterEggManager.new()
+var rules: Array[Dictionary] = []
+# Only topic + timestamp, never the user's messages; session-local, no disk writes.
+var recent_topics: Array[Dictionary] = []
+var fallback: Dictionary = {}
+var negated: Dictionary = {}
+var event_feedback: Dictionary = {}
+var mood_state_responses: Dictionary = {}
+
+
+func load_config(path: String = "res://config/dialogue.json") -> void:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		configure(null)
+		return
+	var parser := JSON.new()
+	if parser.parse(file.get_as_text()) != OK:
+		configure(null)
+		return
+	configure(parser.data)
+
+
+func configure(raw: Variant) -> void:
+	rules.clear()
+	recent_topics.clear()
+	fallback = {}
+	negated = {}
+	event_feedback = {}
+	mood_state_responses = {}
+	if not raw is Dictionary:
+		return
+	if raw.get("fallback") is Dictionary:
+		fallback = raw["fallback"]
+	if raw.get("negated") is Dictionary:
+		negated = raw["negated"]
+	if raw.get("event_feedback") is Dictionary:
+		event_feedback = raw["event_feedback"]
+	if raw.get("mood_state_responses") is Dictionary:
+		mood_state_responses = raw["mood_state_responses"]
+	if not raw.get("rules") is Array:
+		return
+	for spec in raw["rules"]:
+		if not spec is Dictionary or not spec.get("id") is String or not spec.get("topic") is String:
+			continue
+		if spec["id"].is_empty() or spec["topic"].is_empty() or responses.valid_pool(spec.get("responses")).is_empty():
+			continue
+		var rule: Dictionary = spec.duplicate(true)
+		for field in ["exact", "keywords", "exclude", "followups"]:
+			rule[field] = _strings(spec.get(field))
+		rules.append(rule)
+
+
+func submit_message(raw: Variant, nickname: Variant = "", now_ms: int = -1) -> Dictionary:
+	var checked := InputGuard.check(raw, InputGuard.MESSAGE_LIMIT)
+	if not checked.ok:
+		return {"accepted": false, "error": checked.error, "text": "说短一点嘛，最多 50 个字符哦。" if checked.error == "too_long" else "", "intent": "", "topic": "", "action_request": "", "mood_event": ""}
+	var now := Time.get_ticks_msec() if now_ms < 0 else now_ms
+	var clean: String = checked.text
+	var match_text := clean.to_lower().strip_edges().trim_suffix("。").trim_suffix("！").trim_suffix("!").trim_suffix("？").trim_suffix("?")
+	var name_check := InputGuard.check(nickname, InputGuard.NICKNAME_LIMIT, true)
+	var safe_name: String = name_check.text if name_check.ok else ""
+	var easter_egg := easter_eggs.match_first(clean)
+	if bool(easter_egg.get("matched", false)):
+		recent_topics.clear()
+		return _easter_egg_result(easter_egg)
+	while not recent_topics.is_empty() and now - int(recent_topics[0].at_ms) >= CONTEXT_TTL_MS:
+		recent_topics.pop_front()
+	var selected: Dictionary = {}
+	var is_followup := false
+	# Exact rules win, then explicit continuations, then ordered keyword rules.
+	for rule in rules:
+		if rule.exact.has(match_text):
+			selected = rule
+			break
+	if selected.is_empty() and not recent_topics.is_empty():
+		for rule in rules:
+			if rule.topic == recent_topics.back().topic and rule.followups.has(match_text):
+				selected = rule
+				is_followup = true
+				break
+	var saw_negation := false
+	if selected.is_empty():
+		for rule in rules:
+			if _contains_any(match_text, rule.exclude):
+				saw_negation = true
+				continue
+			for keyword in rule.keywords:
+				var offset := match_text.find(keyword)
+				while offset >= 0:
 					if not _is_negated(match_text, offset):
 						selected = rule
 						break

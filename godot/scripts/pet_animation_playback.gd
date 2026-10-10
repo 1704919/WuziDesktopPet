@@ -1,102 +1,102 @@
-  1 | extends Node
-  2 | 
-  3 | const CLIP_PREFETCH_LOOKAHEAD := 12
-  4 | 
-  5 | var pet_sprite: Sprite2D
-  6 | var pet_sprite_next: Sprite2D
-  7 | var pet_video: VideoStreamPlayer
-  8 | var body_pivot: Node2D
-  9 | 
- 10 | var token_is_current: Callable
- 11 | var show_runtime_video: Callable
- 12 | var hide_runtime_video: Callable
- 13 | var set_active_hit_frame: Callable
- 14 | 
- 15 | var visual_fade_tween: Tween
- 16 | 
- 17 | 
- 18 | func configure(
- 19 | 	sprite: Sprite2D,
- 20 | 	next_sprite: Sprite2D,
- 21 | 	video: VideoStreamPlayer,
- 22 | 	pivot: Node2D,
- 23 | 	token_checker: Callable,
- 24 | 	runtime_show: Callable,
- 25 | 	runtime_hide: Callable,
- 26 | 	hit_frame_setter: Callable
- 27 | ) -> void:
- 28 | 	pet_sprite = sprite
- 29 | 	pet_sprite_next = next_sprite
- 30 | 	pet_video = video
- 31 | 	body_pivot = pivot
- 32 | 	token_is_current = token_checker
- 33 | 	show_runtime_video = runtime_show
- 34 | 	hide_runtime_video = runtime_hide
- 35 | 	set_active_hit_frame = hit_frame_setter
- 36 | 
- 37 | 
- 38 | func cancel_visual_fade(restore_alpha: bool = true) -> void:
- 39 | 	if visual_fade_tween != null and visual_fade_tween.is_valid():
- 40 | 		visual_fade_tween.kill()
- 41 | 	visual_fade_tween = null
- 42 | 	if restore_alpha and is_instance_valid(body_pivot):
- 43 | 		body_pivot.modulate.a = 1.0
- 44 | 
- 45 | 
- 46 | func fade_visual_alpha(
- 47 | 	target_alpha: float,
- 48 | 	duration_sec: float,
- 49 | 	token: int,
- 50 | 	reduce_motion: bool
- 51 | ) -> bool:
- 52 | 	if not _token_matches(token):
- 53 | 		return false
- 54 | 
- 55 | 	cancel_visual_fade(false)
- 56 | 	var target := clampf(target_alpha, 0.0, 1.0)
- 57 | 	if (
- 58 | 		reduce_motion
- 59 | 		or duration_sec <= 0.0
- 60 | 		or is_equal_approx(body_pivot.modulate.a, target)
- 61 | 	):
- 62 | 		body_pivot.modulate.a = target
- 63 | 		return _token_matches(token)
- 64 | 
- 65 | 	var tween := create_tween()
- 66 | 	visual_fade_tween = tween
- 67 | 	tween.set_trans(Tween.TRANS_QUAD)
- 68 | 	tween.set_ease(Tween.EASE_IN_OUT)
- 69 | 	tween.tween_property(body_pivot, "modulate:a", target, duration_sec)
- 70 | 
- 71 | 	# A cancelled tween does not provide a reliable finished signal. Keep the
- 72 | 	# cancellation check independent from the tween itself.
- 73 | 	await get_tree().create_timer(duration_sec).timeout
- 74 | 
- 75 | 	if not _token_matches(token):
- 76 | 		return false
- 77 | 	if visual_fade_tween == tween:
- 78 | 		if tween.is_valid():
- 79 | 			tween.kill()
- 80 | 		visual_fade_tween = null
- 81 | 	body_pivot.modulate.a = target
- 82 | 	return true
- 83 | 
- 84 | 
- 85 | func transition_to_texture(texture: Texture2D, token: int) -> void:
- 86 | 	if texture == null or not _token_matches(token):
- 87 | 		return
- 88 | 
- 89 | 	# Keep the outgoing frame visible until the replacement is ready. Blending
- 90 | 	# two transparent character frames can create bright/ghosted edges.
- 91 | 	pet_sprite_next.texture = null
- 92 | 	pet_sprite_next.modulate.a = 0.0
- 93 | 	pet_sprite.modulate = Color.WHITE
- 94 | 	pet_sprite.texture = texture
- 95 | 
- 96 | 	# Preserve coroutine behaviour for callers without delaying the swap.
- 97 | 	await get_tree().process_frame
- 98 | 
- 99 | 
+extends Node
+
+const CLIP_PREFETCH_LOOKAHEAD := 12
+
+var pet_sprite: Sprite2D
+var pet_sprite_next: Sprite2D
+var pet_video: VideoStreamPlayer
+var body_pivot: Node2D
+
+var token_is_current: Callable
+var show_runtime_video: Callable
+var hide_runtime_video: Callable
+var set_active_hit_frame: Callable
+
+var visual_fade_tween: Tween
+
+
+func configure(
+	sprite: Sprite2D,
+	next_sprite: Sprite2D,
+	video: VideoStreamPlayer,
+	pivot: Node2D,
+	token_checker: Callable,
+	runtime_show: Callable,
+	runtime_hide: Callable,
+	hit_frame_setter: Callable
+) -> void:
+	pet_sprite = sprite
+	pet_sprite_next = next_sprite
+	pet_video = video
+	body_pivot = pivot
+	token_is_current = token_checker
+	show_runtime_video = runtime_show
+	hide_runtime_video = runtime_hide
+	set_active_hit_frame = hit_frame_setter
+
+
+func cancel_visual_fade(restore_alpha: bool = true) -> void:
+	if visual_fade_tween != null and visual_fade_tween.is_valid():
+		visual_fade_tween.kill()
+	visual_fade_tween = null
+	if restore_alpha and is_instance_valid(body_pivot):
+		body_pivot.modulate.a = 1.0
+
+
+func fade_visual_alpha(
+	target_alpha: float,
+	duration_sec: float,
+	token: int,
+	reduce_motion: bool
+) -> bool:
+	if not _token_matches(token):
+		return false
+
+	cancel_visual_fade(false)
+	var target := clampf(target_alpha, 0.0, 1.0)
+	if (
+		reduce_motion
+		or duration_sec <= 0.0
+		or is_equal_approx(body_pivot.modulate.a, target)
+	):
+		body_pivot.modulate.a = target
+		return _token_matches(token)
+
+	var tween := create_tween()
+	visual_fade_tween = tween
+	tween.set_trans(Tween.TRANS_QUAD)
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(body_pivot, "modulate:a", target, duration_sec)
+
+	# A cancelled tween does not provide a reliable finished signal. Keep the
+	# cancellation check independent from the tween itself.
+	await get_tree().create_timer(duration_sec).timeout
+
+	if not _token_matches(token):
+		return false
+	if visual_fade_tween == tween:
+		if tween.is_valid():
+			tween.kill()
+		visual_fade_tween = null
+	body_pivot.modulate.a = target
+	return true
+
+
+func transition_to_texture(texture: Texture2D, token: int) -> void:
+	if texture == null or not _token_matches(token):
+		return
+
+	# Keep the outgoing frame visible until the replacement is ready. Blending
+	# two transparent character frames can create bright/ghosted edges.
+	pet_sprite_next.texture = null
+	pet_sprite_next.modulate.a = 0.0
+	pet_sprite.modulate = Color.WHITE
+	pet_sprite.texture = texture
+
+	# Preserve coroutine behaviour for callers without delaying the swap.
+	await get_tree().process_frame
+
+
 func play_clip(
 	clip: Dictionary,
 	token: int,

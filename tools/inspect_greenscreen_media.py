@@ -1,12 +1,12 @@
- 1 | from __future__ import annotations
- 2 | 
- 3 | import json
- 4 | from pathlib import Path
- 5 | 
- 6 | ROOT = Path(__file__).resolve().parents[1]
- 7 | MEDIA_ROOT = ROOT / "分享区" / "Q版" / "绿幕视频"
- 8 | OUT = ROOT / "work" / "greenscreen_debug"
- 9 | OUT.mkdir(parents=True, exist_ok=True)
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+MEDIA_ROOT = ROOT / "分享区" / "Q版" / "绿幕视频"
+OUT = ROOT / "work" / "greenscreen_debug"
+OUT.mkdir(parents=True, exist_ok=True)
 
 def detect_kind(path: Path) -> str | None:
     try:

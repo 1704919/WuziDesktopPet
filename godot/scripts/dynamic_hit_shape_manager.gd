@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | var catalog: Dictionary = {}
- 4 | var actions: Dictionary = {}
- 5 | var canvas_size := Vector2(360.0, 360.0)
- 6 | 
- 7 | 
- 8 | func load_catalog(path: String = "res://config/video_hit_shapes.json") -> bool:
- 9 | 	var file := FileAccess.open(path, FileAccess.READ)
+extends RefCounted
+
+var catalog: Dictionary = {}
+var actions: Dictionary = {}
+var canvas_size := Vector2(360.0, 360.0)
+
+
+func load_catalog(path: String = "res://config/video_hit_shapes.json") -> bool:
+	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		catalog = {}
 		actions = {}

@@ -1,102 +1,102 @@
-  1 | extends RefCounted
-  2 | 
-  3 | const Planner = preload("res://scripts/file_operation_planner.gd")
-  4 | const Bridge = preload("res://scripts/windows_file_bridge.gd")
-  5 | const FileDrop = preload("res://scripts/file_drop_manager.gd")
-  6 | 
-  7 | var _mutex := Mutex.new()
-  8 | var _cancelled := false
-  9 | var _snapshot: Dictionary = {}
- 10 | var _revision := 0
- 11 | 
- 12 | 
- 13 | func cancel() -> void:
- 14 | 	_mutex.lock()
- 15 | 	_cancelled = true
- 16 | 	_mutex.unlock()
- 17 | 
- 18 | 
- 19 | func is_cancelled() -> bool:
- 20 | 	_mutex.lock()
- 21 | 	var value := _cancelled
- 22 | 	_mutex.unlock()
- 23 | 	return value
- 24 | 
- 25 | 
- 26 | func snapshot() -> Dictionary:
- 27 | 	_mutex.lock()
- 28 | 	var value := _snapshot.duplicate(true)
- 29 | 	_mutex.unlock()
- 30 | 	return value
- 31 | 
- 32 | 
- 33 | func revision() -> int:
- 34 | 	_mutex.lock()
- 35 | 	var value := _revision
- 36 | 	_mutex.unlock()
- 37 | 	return value
- 38 | 
- 39 | 
- 40 | func _publish(plan: Dictionary) -> void:
- 41 | 	_mutex.lock()
- 42 | 	_snapshot = plan.duplicate(true)
- 43 | 	_revision += 1
- 44 | 	_mutex.unlock()
- 45 | 
- 46 | 
- 47 | func execute(frozen: Dictionary, expected_version: String, quality: float = 0.92) -> Dictionary:
- 48 | 	var plan := frozen.duplicate(true)
- 49 | 	var planner := Planner.new()
- 50 | 	var items: Array = plan.get("items", [])
- 51 | 	if expected_version.is_empty() or str(plan.get("plan_version", "")) != expected_version or planner.version_for(plan) != expected_version:
- 52 | 		for item: Dictionary in items:
- 53 | 			_set_status(item, "failed", "预览计划已失效，请重新预览。")
- 54 | 		plan["error"] = "预览计划已失效，请重新预览。"
- 55 | 		return _finish(plan)
- 56 | 	var caps := Bridge.run("caps")
- 57 | 	var directory_checks: Dictionary = {}
- 58 | 	# Revalidate these exact paths; never run rename rules again.
- 59 | 	for item: Dictionary in items:
- 60 | 		if not (item.issues as Array).is_empty():
- 61 | 			_set_status(item, "skipped", str(item.issues[0]))
- 62 | 			continue
- 63 | 		var issue := _check_source(item)
- 64 | 		if issue.is_empty() and item.operation == "convert":
- 65 | 			if Planner.source_needs_heic(str(item.source)) and not bool(caps.get("read", false)):
- 66 | 				issue = "当前 Windows 未提供所需 HEIC 读取支持。"
- 67 | 			if str(plan.params.image_format) == "heic" and not bool(caps.get("write", false)):
- 68 | 				issue = "当前 Windows 未提供所需 HEIC 写入支持。"
- 69 | 		var directory := str(item.target).get_base_dir()
- 70 | 		if issue.is_empty():
- 71 | 			if not directory_checks.has(directory):
- 72 | 				directory_checks[directory] = Bridge.run("probe", [directory])
- 73 | 			if not bool(directory_checks[directory].get("ok", false)):
- 74 | 				issue = "目标目录不可写或已失效：%s（%s）" % [directory, directory_checks[directory].get("error", "")]
- 75 | 		if not issue.is_empty():
- 76 | 			item.issues.append(issue)
- 77 | 		_set_status(item, "waiting" if issue.is_empty() else "failed", issue)
- 78 | 	planner.propagate_dependencies(items)
- 79 | 	for item: Dictionary in items:
- 80 | 		if not (item.issues as Array).is_empty() and str(item.get("result_status", "")) != "skipped":
- 81 | 			_set_status(item, "failed", str(item.issues[0]))
- 82 | 		else:
- 83 | 			item.status = item.get("result_status", "waiting")
- 84 | 	_publish(plan)
- 85 | 	# Connected rename components preserve A<->B and longer cycles. A component,
- 86 | 	# once started, finishes both phases before honoring cancellation.
- 87 | 	var groups := _rename_groups(items)
- 88 | 	for group: Array in groups:
- 89 | 		if is_cancelled():
- 90 | 			for item: Dictionary in group:
- 91 | 				_set_status(item, "cancelled", "尚未开始，已取消。")
- 92 | 		else:
- 93 | 			_rename_group(group, plan)
- 94 | 		_publish(plan)
- 95 | 	for item: Dictionary in items:
- 96 | 		if item.status != "waiting":
- 97 | 			continue
- 98 | 		if is_cancelled():
- 99 | 			_set_status(item, "cancelled", "尚未开始，已取消。")
+extends RefCounted
+
+const Planner = preload("res://scripts/file_operation_planner.gd")
+const Bridge = preload("res://scripts/windows_file_bridge.gd")
+const FileDrop = preload("res://scripts/file_drop_manager.gd")
+
+var _mutex := Mutex.new()
+var _cancelled := false
+var _snapshot: Dictionary = {}
+var _revision := 0
+
+
+func cancel() -> void:
+	_mutex.lock()
+	_cancelled = true
+	_mutex.unlock()
+
+
+func is_cancelled() -> bool:
+	_mutex.lock()
+	var value := _cancelled
+	_mutex.unlock()
+	return value
+
+
+func snapshot() -> Dictionary:
+	_mutex.lock()
+	var value := _snapshot.duplicate(true)
+	_mutex.unlock()
+	return value
+
+
+func revision() -> int:
+	_mutex.lock()
+	var value := _revision
+	_mutex.unlock()
+	return value
+
+
+func _publish(plan: Dictionary) -> void:
+	_mutex.lock()
+	_snapshot = plan.duplicate(true)
+	_revision += 1
+	_mutex.unlock()
+
+
+func execute(frozen: Dictionary, expected_version: String, quality: float = 0.92) -> Dictionary:
+	var plan := frozen.duplicate(true)
+	var planner := Planner.new()
+	var items: Array = plan.get("items", [])
+	if expected_version.is_empty() or str(plan.get("plan_version", "")) != expected_version or planner.version_for(plan) != expected_version:
+		for item: Dictionary in items:
+			_set_status(item, "failed", "预览计划已失效，请重新预览。")
+		plan["error"] = "预览计划已失效，请重新预览。"
+		return _finish(plan)
+	var caps := Bridge.run("caps")
+	var directory_checks: Dictionary = {}
+	# Revalidate these exact paths; never run rename rules again.
+	for item: Dictionary in items:
+		if not (item.issues as Array).is_empty():
+			_set_status(item, "skipped", str(item.issues[0]))
+			continue
+		var issue := _check_source(item)
+		if issue.is_empty() and item.operation == "convert":
+			if Planner.source_needs_heic(str(item.source)) and not bool(caps.get("read", false)):
+				issue = "当前 Windows 未提供所需 HEIC 读取支持。"
+			if str(plan.params.image_format) == "heic" and not bool(caps.get("write", false)):
+				issue = "当前 Windows 未提供所需 HEIC 写入支持。"
+		var directory := str(item.target).get_base_dir()
+		if issue.is_empty():
+			if not directory_checks.has(directory):
+				directory_checks[directory] = Bridge.run("probe", [directory])
+			if not bool(directory_checks[directory].get("ok", false)):
+				issue = "目标目录不可写或已失效：%s（%s）" % [directory, directory_checks[directory].get("error", "")]
+		if not issue.is_empty():
+			item.issues.append(issue)
+		_set_status(item, "waiting" if issue.is_empty() else "failed", issue)
+	planner.propagate_dependencies(items)
+	for item: Dictionary in items:
+		if not (item.issues as Array).is_empty() and str(item.get("result_status", "")) != "skipped":
+			_set_status(item, "failed", str(item.issues[0]))
+		else:
+			item.status = item.get("result_status", "waiting")
+	_publish(plan)
+	# Connected rename components preserve A<->B and longer cycles. A component,
+	# once started, finishes both phases before honoring cancellation.
+	var groups := _rename_groups(items)
+	for group: Array in groups:
+		if is_cancelled():
+			for item: Dictionary in group:
+				_set_status(item, "cancelled", "尚未开始，已取消。")
+		else:
+			_rename_group(group, plan)
+		_publish(plan)
+	for item: Dictionary in items:
+		if item.status != "waiting":
+			continue
+		if is_cancelled():
+			_set_status(item, "cancelled", "尚未开始，已取消。")
 		else:
 			_set_status(item, "processing")
 			_publish(plan)

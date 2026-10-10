@@ -1,12 +1,12 @@
- 1 | {
- 2 |   "reminders": {
- 3 |     "enabled": true,
- 4 |     "water_interval_minutes": 90,
- 5 |     "meal_times": [
- 6 |       {
- 7 |         "time": "11:45",
- 8 |         "text": "快到午饭时间了，想想今天吃什么？"
- 9 |       },
+{
+  "reminders": {
+    "enabled": true,
+    "water_interval_minutes": 90,
+    "meal_times": [
+      {
+        "time": "11:45",
+        "text": "快到午饭时间了，想想今天吃什么？"
+      },
       {
         "time": "18:00",
         "text": "到晚饭时间啦，别忘了吃东西。"

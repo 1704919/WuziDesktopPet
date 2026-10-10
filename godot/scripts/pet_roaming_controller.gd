@@ -1,102 +1,102 @@
-  1 | extends RefCounted
-  2 | 
-  3 | const LEFT_ACTION_ID := "walk_left"
-  4 | const RIGHT_ACTION_ID := "walk_right"
-  5 | 
-  6 | var _config: Dictionary = {}
-  7 | var _catalog: Dictionary = {}
-  8 | var _rng := RandomNumberGenerator.new()
-  9 | 
- 10 | var _user_enabled := true
- 11 | var _ready := false
- 12 | var _pause_remaining_sec := 0.0
- 13 | 
- 14 | var _active_action_id := ""
- 15 | var _active_elapsed_sec := 0.0
- 16 | var _active_center_x := 0.0
- 17 | var _active_position_initialized := false
- 18 | 
- 19 | 
- 20 | func configure(
- 21 | 	roaming_config: Dictionary,
- 22 | 	movement_catalog: Dictionary,
- 23 | 	user_enabled: bool
- 24 | ) -> void:
- 25 | 	_config = roaming_config.duplicate(true)
- 26 | 	_catalog = movement_catalog.duplicate(true)
- 27 | 	_user_enabled = user_enabled
- 28 | 	_ready = bool(_config.get("enabled", false)) and bool(_catalog.get("ready", false))
- 29 | 	_rng.randomize()
- 30 | 	_clear_active()
- 31 | 	_schedule_next_pause()
- 32 | 
- 33 | 
- 34 | func is_available() -> bool:
- 35 | 	return _ready
- 36 | 
- 37 | 
- 38 | func is_enabled() -> bool:
- 39 | 	return _ready and _user_enabled
- 40 | 
- 41 | 
- 42 | func set_enabled(value: bool) -> void:
- 43 | 	_user_enabled = value
- 44 | 	_clear_active()
- 45 | 	_schedule_next_pause()
- 46 | 
- 47 | 
- 48 | func is_active() -> bool:
- 49 | 	return not _active_action_id.is_empty()
- 50 | 
- 51 | 
- 52 | func active_action_id() -> String:
- 53 | 	return _active_action_id
- 54 | 
- 55 | 
- 56 | func cancel(schedule_next: bool = true) -> bool:
- 57 | 	var was_active := is_active()
- 58 | 	_clear_active()
- 59 | 	if schedule_next:
- 60 | 		_schedule_next_pause()
- 61 | 	return was_active
- 62 | 
- 63 | 
- 64 | func request_if_due(
- 65 | 	delta: float,
- 66 | 	can_start: bool,
- 67 | 	window_position: Vector2i,
- 68 | 	pet_anchor: Vector2,
- 69 | 	usable_rect: Rect2i
- 70 | ) -> String:
- 71 | 	if not is_enabled() or is_active() or not can_start:
- 72 | 		return ""
- 73 | 
- 74 | 	_pause_remaining_sec = maxf(0.0, _pause_remaining_sec - maxf(0.0, delta))
- 75 | 	if _pause_remaining_sec > 0.0:
- 76 | 		return ""
- 77 | 
- 78 | 	return _choose_direction(window_position, pet_anchor, usable_rect)
- 79 | 
- 80 | 
- 81 | func mark_started(action_id: String) -> bool:
- 82 | 	var spec := _clip_spec(action_id)
- 83 | 	if spec.is_empty() or action_id not in [LEFT_ACTION_ID, RIGHT_ACTION_ID]:
- 84 | 		_schedule_next_pause()
- 85 | 		return false
- 86 | 
- 87 | 	_active_action_id = action_id
- 88 | 	_active_elapsed_sec = 0.0
- 89 | 	return true
- 90 | 
- 91 | 
- 92 | func step_active(
- 93 | 	delta: float,
- 94 | 	window_position: Vector2i,
- 95 | 	pet_anchor: Vector2,
- 96 | 	usable_rect: Rect2i,
- 97 | 	animation_time_sec: float = -1.0
- 98 | ) -> Dictionary:
- 99 | 	if not is_active():
+extends RefCounted
+
+const LEFT_ACTION_ID := "walk_left"
+const RIGHT_ACTION_ID := "walk_right"
+
+var _config: Dictionary = {}
+var _catalog: Dictionary = {}
+var _rng := RandomNumberGenerator.new()
+
+var _user_enabled := true
+var _ready := false
+var _pause_remaining_sec := 0.0
+
+var _active_action_id := ""
+var _active_elapsed_sec := 0.0
+var _active_center_x := 0.0
+var _active_position_initialized := false
+
+
+func configure(
+	roaming_config: Dictionary,
+	movement_catalog: Dictionary,
+	user_enabled: bool
+) -> void:
+	_config = roaming_config.duplicate(true)
+	_catalog = movement_catalog.duplicate(true)
+	_user_enabled = user_enabled
+	_ready = bool(_config.get("enabled", false)) and bool(_catalog.get("ready", false))
+	_rng.randomize()
+	_clear_active()
+	_schedule_next_pause()
+
+
+func is_available() -> bool:
+	return _ready
+
+
+func is_enabled() -> bool:
+	return _ready and _user_enabled
+
+
+func set_enabled(value: bool) -> void:
+	_user_enabled = value
+	_clear_active()
+	_schedule_next_pause()
+
+
+func is_active() -> bool:
+	return not _active_action_id.is_empty()
+
+
+func active_action_id() -> String:
+	return _active_action_id
+
+
+func cancel(schedule_next: bool = true) -> bool:
+	var was_active := is_active()
+	_clear_active()
+	if schedule_next:
+		_schedule_next_pause()
+	return was_active
+
+
+func request_if_due(
+	delta: float,
+	can_start: bool,
+	window_position: Vector2i,
+	pet_anchor: Vector2,
+	usable_rect: Rect2i
+) -> String:
+	if not is_enabled() or is_active() or not can_start:
+		return ""
+
+	_pause_remaining_sec = maxf(0.0, _pause_remaining_sec - maxf(0.0, delta))
+	if _pause_remaining_sec > 0.0:
+		return ""
+
+	return _choose_direction(window_position, pet_anchor, usable_rect)
+
+
+func mark_started(action_id: String) -> bool:
+	var spec := _clip_spec(action_id)
+	if spec.is_empty() or action_id not in [LEFT_ACTION_ID, RIGHT_ACTION_ID]:
+		_schedule_next_pause()
+		return false
+
+	_active_action_id = action_id
+	_active_elapsed_sec = 0.0
+	return true
+
+
+func step_active(
+	delta: float,
+	window_position: Vector2i,
+	pet_anchor: Vector2,
+	usable_rect: Rect2i,
+	animation_time_sec: float = -1.0
+) -> Dictionary:
+	if not is_active():
 		return {}
 
 	var spec := _clip_spec(_active_action_id)

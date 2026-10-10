@@ -1,12 +1,12 @@
- 1 | from pathlib import Path
- 2 | from PIL import Image
- 3 | import numpy as np
- 4 | import json
- 5 | 
- 6 | ROOT=Path(__file__).resolve().parents[1]
- 7 | D=ROOT/"godot/assets_display/wuzi_chibi/video_idle/frames"
- 8 | 
- 9 | frames=[]
+from pathlib import Path
+from PIL import Image
+import numpy as np
+import json
+
+ROOT=Path(__file__).resolve().parents[1]
+D=ROOT/"godot/assets_display/wuzi_chibi/video_idle/frames"
+
+frames=[]
 for p in sorted(D.glob("*.png")):
     frames.append(np.asarray(Image.open(p).convert("RGBA"), dtype=np.int16))
 

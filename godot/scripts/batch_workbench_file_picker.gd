@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | 
- 4 | static func create_files_dialog(callback: Callable) -> FileDialog:
- 5 | 	var dialog := FileDialog.new()
- 6 | 	dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILES
- 7 | 	dialog.access = FileDialog.ACCESS_FILESYSTEM
- 8 | 	dialog.use_native_dialog = true
- 9 | 	dialog.files_selected.connect(callback)
+extends RefCounted
+
+
+static func create_files_dialog(callback: Callable) -> FileDialog:
+	var dialog := FileDialog.new()
+	dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILES
+	dialog.access = FileDialog.ACCESS_FILESYSTEM
+	dialog.use_native_dialog = true
+	dialog.files_selected.connect(callback)
 	return dialog
 
 

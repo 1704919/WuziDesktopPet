@@ -1,12 +1,12 @@
- 1 | # Godot generated cache
- 2 | godot/.godot/
- 3 | godot/test_output/
- 4 | 
- 5 | # Generated runtime animation frames and compiled native helper
- 6 | godot/assets_display/
- 7 | godot/native/*.exe
- 8 | 
- 9 | # Local work / build outputs
+# Godot generated cache
+godot/.godot/
+godot/test_output/
+
+# Generated runtime animation frames and compiled native helper
+godot/assets_display/
+godot/native/*.exe
+
+# Local work / build outputs
 work/
 tools/__pycache__/
 **/__pycache__/

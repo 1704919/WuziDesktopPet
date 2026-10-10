@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | 
- 4 | static func build(summary: Dictionary) -> String:
- 5 | 	var location := str(summary.get("location", ""))
- 6 | 	var city := location
- 7 | 	var parts := location.split("·")
- 8 | 	if not parts.is_empty():
- 9 | 		city = str(parts[0]).strip_edges()
+extends RefCounted
+
+
+static func build(summary: Dictionary) -> String:
+	var location := str(summary.get("location", ""))
+	var city := location
+	var parts := location.split("·")
+	if not parts.is_empty():
+		city = str(parts[0]).strip_edges()
 
 	var condition := str(summary.get("today_condition", ""))
 	var current := float(summary.get("temperature_c", 0.0))

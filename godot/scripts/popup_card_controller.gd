@@ -1,12 +1,12 @@
- 1 | extends Control
- 2 | 
- 3 | signal interactive_changed(enabled: bool)
- 4 | 
- 5 | @export var appear_offset_y := 3.0
- 6 | @export var appear_scale := 0.985
- 7 | @export var appear_duration := 0.07
- 8 | @export var hide_duration := 0.05
- 9 | 
+extends Control
+
+signal interactive_changed(enabled: bool)
+
+@export var appear_offset_y := 3.0
+@export var appear_scale := 0.985
+@export var appear_duration := 0.07
+@export var hide_duration := 0.05
+
 var _base_position := Vector2.ZERO
 var _active_tween: Tween
 var _generation := 0

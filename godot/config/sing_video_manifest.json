@@ -1,102 +1,102 @@
-  1 | {
-  2 |   "schema_version": 10,
-  3 |   "source": "分享区/Q版/绿幕视频/悠闲唱歌.mp4",
-  4 |   "source_size": [
-  5 |     1280,
-  6 |     720
-  7 |   ],
-  8 |   "source_fps": 24.0,
-  9 |   "source_frame_count": 241,
- 10 |   "output_fps": 12.0,
- 11 |   "frame_count": 121,
- 12 |   "duration_sec": 10.083333333333334,
- 13 |   "canvas": [
- 14 |     480,
- 15 |     360
- 16 |   ],
- 17 |   "watermark_cleanup": {
- 18 |     "clear_left_margin_px": 0,
- 19 |     "clear_right_margin_px": 0,
- 20 |     "component_filter_grid": [
- 21 |       160,
- 22 |       90
- 23 |     ],
- 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
- 25 |   },
- 26 |   "key": {
- 27 |     "method": "edge_median_distance_initial",
- 28 |     "alpha_start": 18.0,
- 29 |     "alpha_range": 30.0,
- 30 |     "background_rule": "single edge-median background color; per-action exceptions are handled separately"
- 31 |   },
- 32 |   "transform": {
- 33 |     "source_center_x": 647.25,
- 34 |     "source_bottom_y": 702.0,
- 35 |     "source_visible_height": 642.5,
- 36 |     "source_visible_width": 505.5,
- 37 |     "identity_core_width": 262.5,
- 38 |     "target_identity_core_width": 87.71704180064309,
- 39 |     "scale_x": 0.34855305466237946,
- 40 |     "scale_y": 0.34855305466237946,
- 41 |     "target_visible_width": 176.19356913183282,
- 42 |     "target_visible_height": 223.9453376205788,
- 43 |     "target_center_x": 240.0,
- 44 |     "target_bottom_y": 338.0,
- 45 |     "manual_scale_multiplier": 1.0,
- 46 |     "source_face_height": 275.0,
- 47 |     "target_face_height": 95.85209003215435,
- 48 |     "fixed_scale": 0.34855305466237946
- 49 |   },
- 50 |   "visual_scale_normalization": {
- 51 |     "mode": "fixed_action_face_height",
- 52 |     "target_face_height": 95.85209003215435,
- 53 |     "multiplier_min": 1.0,
- 54 |     "multiplier_max": 1.0,
- 55 |     "multiplier_median": 1.0,
- 56 |     "sleep_chain_scales": {}
- 57 |   },
- 58 |   "canvas_fit": {
- 59 |     "scale": 1.0,
- 60 |     "shift": [
- 61 |       0,
- 62 |       0
- 63 |     ],
- 64 |     "margin": 8
- 65 |   },
- 66 |   "color_normalization": {
- 67 |     "reference_action": "idle",
- 68 |     "source_palette": {
- 69 |       "all": [
- 70 |         148.35292053222656,
- 71 |         127.75105285644531,
- 72 |         161.73162841796875
- 73 |       ],
- 74 |       "blue": [
- 75 |         115.68608856201172,
- 76 |         128.50726318359375,
- 77 |         215.72508239746094
- 78 |       ],
- 79 |       "pink": [
- 80 |         183.21868896484375,
- 81 |         118.87518310546875,
- 82 |         123.4515609741211
- 83 |       ],
- 84 |       "pale": [
- 85 |         223.43081665039062,
- 86 |         184.08258056640625,
- 87 |         187.39382934570312
- 88 |       ]
- 89 |     },
- 90 |     "correction": {
- 91 |       "enabled": true,
- 92 |       "slope": [
- 93 |         1.0250663757324219,
- 94 |         1.0751516819000244,
- 95 |         1.0388590097427368
- 96 |       ],
- 97 |       "offset": [
- 98 |         -5.239877700805664,
- 99 |         -11.283452033996582,
+{
+  "schema_version": 10,
+  "source": "分享区/Q版/绿幕视频/悠闲唱歌.mp4",
+  "source_size": [
+    1280,
+    720
+  ],
+  "source_fps": 24.0,
+  "source_frame_count": 241,
+  "output_fps": 12.0,
+  "frame_count": 121,
+  "duration_sec": 10.083333333333334,
+  "canvas": [
+    480,
+    360
+  ],
+  "watermark_cleanup": {
+    "clear_left_margin_px": 0,
+    "clear_right_margin_px": 0,
+    "component_filter_grid": [
+      160,
+      90
+    ],
+    "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+  },
+  "key": {
+    "method": "edge_median_distance_initial",
+    "alpha_start": 18.0,
+    "alpha_range": 30.0,
+    "background_rule": "single edge-median background color; per-action exceptions are handled separately"
+  },
+  "transform": {
+    "source_center_x": 647.25,
+    "source_bottom_y": 702.0,
+    "source_visible_height": 642.5,
+    "source_visible_width": 505.5,
+    "identity_core_width": 262.5,
+    "target_identity_core_width": 87.71704180064309,
+    "scale_x": 0.34855305466237946,
+    "scale_y": 0.34855305466237946,
+    "target_visible_width": 176.19356913183282,
+    "target_visible_height": 223.9453376205788,
+    "target_center_x": 240.0,
+    "target_bottom_y": 338.0,
+    "manual_scale_multiplier": 1.0,
+    "source_face_height": 275.0,
+    "target_face_height": 95.85209003215435,
+    "fixed_scale": 0.34855305466237946
+  },
+  "visual_scale_normalization": {
+    "mode": "fixed_action_face_height",
+    "target_face_height": 95.85209003215435,
+    "multiplier_min": 1.0,
+    "multiplier_max": 1.0,
+    "multiplier_median": 1.0,
+    "sleep_chain_scales": {}
+  },
+  "canvas_fit": {
+    "scale": 1.0,
+    "shift": [
+      0,
+      0
+    ],
+    "margin": 8
+  },
+  "color_normalization": {
+    "reference_action": "idle",
+    "source_palette": {
+      "all": [
+        148.35292053222656,
+        127.75105285644531,
+        161.73162841796875
+      ],
+      "blue": [
+        115.68608856201172,
+        128.50726318359375,
+        215.72508239746094
+      ],
+      "pink": [
+        183.21868896484375,
+        118.87518310546875,
+        123.4515609741211
+      ],
+      "pale": [
+        223.43081665039062,
+        184.08258056640625,
+        187.39382934570312
+      ]
+    },
+    "correction": {
+      "enabled": true,
+      "slope": [
+        1.0250663757324219,
+        1.0751516819000244,
+        1.0388590097427368
+      ],
+      "offset": [
+        -5.239877700805664,
+        -11.283452033996582,
         -7.125269889831543
       ],
       "labels": [

@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | const FALLBACKS := ["嗯嗯，听到啦～你继续说。", "我在听呢，慢慢说。", "嗯，陪你聊一会儿。"]
- 4 | 
- 5 | var rng := RandomNumberGenerator.new()
- 6 | var last_text := ""
- 7 | 
- 8 | 
- 9 | func _init() -> void:
+extends RefCounted
+
+const FALLBACKS := ["嗯嗯，听到啦～你继续说。", "我在听呢，慢慢说。", "嗯，陪你聊一会儿。"]
+
+var rng := RandomNumberGenerator.new()
+var last_text := ""
+
+
+func _init() -> void:
 	rng.randomize()
 
 

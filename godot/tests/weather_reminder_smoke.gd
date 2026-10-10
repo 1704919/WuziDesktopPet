@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | var count := 0
- 4 | var last_text := ""
- 5 | 
- 6 | func _init() -> void:
- 7 | 	call_deferred("_run")
- 8 | 
- 9 | 
+extends SceneTree
+
+var count := 0
+var last_text := ""
+
+func _init() -> void:
+	call_deferred("_run")
+
+
 func _run() -> void:
 	var script = load("res://scripts/weather_manager.gd")
 	var manager = script.new()

@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | # String.length() and LineEdit.max_length both count Unicode code points.
- 4 | # A joined emoji or a combining mark can therefore occupy multiple characters.
- 5 | const MESSAGE_LIMIT := 50
- 6 | const NICKNAME_LIMIT := 12
- 7 | 
- 8 | 
- 9 | static func normalize(raw: String) -> String:
+extends RefCounted
+
+# String.length() and LineEdit.max_length both count Unicode code points.
+# A joined emoji or a combining mark can therefore occupy multiple characters.
+const MESSAGE_LIMIT := 50
+const NICKNAME_LIMIT := 12
+
+
+static func normalize(raw: String) -> String:
 	var result := ""
 	var space_pending := false
 	for index in range(raw.length()):

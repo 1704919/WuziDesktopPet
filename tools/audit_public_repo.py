@@ -1,12 +1,12 @@
- 1 | """Pre-publication audit of files staged for the source-only Git repository."""
- 2 | from __future__ import annotations
- 3 | 
- 4 | import re
- 5 | import subprocess
- 6 | import sys
- 7 | from pathlib import Path
- 8 | 
- 9 | ROOT = Path(__file__).resolve().parents[1]
+"""Pre-publication audit of files staged for the source-only Git repository."""
+from __future__ import annotations
+
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
 BINARY_SUFFIXES = {".exe", ".mp4", ".ogv", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".zip", ".pck", ".psd", ".pfx", ".p12"}
 PRIVATE_PREFIXES = ("assets/", "分享区/", "backups/", "archive/", "work/", "dist/", "godot/assets_display/", "godot/.godot/", "docs/baselines/", ".ai-bridge/")
 TOKENS = (

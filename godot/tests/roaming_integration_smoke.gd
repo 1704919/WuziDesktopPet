@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | 
- 4 | func _init() -> void:
- 5 | 	call_deferred("_run")
- 6 | 
- 7 | 
- 8 | func _run() -> void:
- 9 | 	var failures: Array[String] = []
+extends SceneTree
+
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	var failures: Array[String] = []
 	var scene = load("res://scenes/main.tscn").instantiate()
 	root.add_child(scene)
 	await process_frame

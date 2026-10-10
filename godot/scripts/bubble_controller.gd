@@ -1,102 +1,102 @@
-  1 | extends Control
-  2 | 
-  3 | signal action_selected(action_id: String)
-  4 | signal interactive_changed(enabled: bool)
-  5 | signal bounds_changed
-  6 | 
-  7 | @onready var card: PanelContainer = $Card
-  8 | @onready var message_label: Label = $Card/Margin/Content/Message
-  9 | @onready var actions_row: HBoxContainer = $Card/Margin/Content/Actions
- 10 | @onready var hide_timer: Timer = $HideTimer
- 11 | 
- 12 | const WINDOW_WIDTH := 760.0
- 13 | const WINDOW_HEIGHT := 420.0
- 14 | const MIN_TEXT_WIDTH := 104.0
- 15 | const MAX_TEXT_WIDTH := 270.0
- 16 | const CARD_HORIZONTAL_PADDING := 28.0
- 17 | const CARD_VERTICAL_PADDING := 20.0
- 18 | const ACTION_ROW_HEIGHT := 32.0
- 19 | const CONTENT_GAP := 8.0
- 20 | const WINDOW_MARGIN := 8.0
- 21 | # New 220 px character layout: keep the card close to the character's upper-left
- 22 | # edge without overlapping the face. The card grows up/left from this point.
- 23 | const BUBBLE_BOTTOM_RIGHT_ANCHOR := Vector2(468.0, 158.0)
- 24 | const MAX_LINES_PER_PAGE := 4
- 25 | const LINE_EXTRA_SPACING := 2.0
- 26 | const APPEAR_OFFSET_Y := 5.0
- 27 | const APPEAR_SCALE := 0.96
- 28 | const APPEAR_DURATION := 0.15
- 29 | const FADE_DURATION := 0.10
- 30 | const HIDE_DURATION := 0.08
- 31 | var current_text := ""
- 32 | var active_tween: Tween
- 33 | var interactive := false
- 34 | var target_position := Vector2.ZERO
- 35 | var show_generation := 0
- 36 | 
- 37 | var pages: Array[String] = []
- 38 | var page_index := 0
- 39 | var pending_actions: Array = []
- 40 | var requested_duration_sec := 3.8
- 41 | 
- 42 | 
- 43 | func _ready() -> void:
- 44 | 	hide_timer.timeout.connect(_on_hide_timer_timeout)
- 45 | 	hide()
- 46 | 
- 47 | 
- 48 | func say(text: String, duration_sec: float = 3.8) -> void:
- 49 | 	_prepare_content(text, [], duration_sec)
- 50 | 
- 51 | 
- 52 | func ask(text: String, actions: Array, duration_sec: float = 0.0) -> void:
- 53 | 	_prepare_content(text, actions, duration_sec)
- 54 | 
- 55 | 
- 56 | func dismiss(animated: bool = true) -> void:
- 57 | 	hide_timer.stop()
- 58 | 	pages.clear()
- 59 | 	page_index = 0
- 60 | 	pending_actions.clear()
- 61 | 
- 62 | 	if not visible:
- 63 | 		_set_interactive(false)
- 64 | 		return
- 65 | 
- 66 | 	if active_tween != null and active_tween.is_valid():
- 67 | 		active_tween.kill()
- 68 | 
- 69 | 	_set_interactive(false)
- 70 | 
- 71 | 	if not animated:
- 72 | 		hide()
- 73 | 		scale = Vector2.ONE
- 74 | 		modulate.a = 1.0
- 75 | 		bounds_changed.emit()
- 76 | 		return
- 77 | 
- 78 | 	active_tween = create_tween()
- 79 | 	active_tween.set_parallel(true)
- 80 | 	active_tween.set_trans(Tween.TRANS_QUAD)
- 81 | 	active_tween.set_ease(Tween.EASE_IN)
- 82 | 	active_tween.tween_property(self, "modulate:a", 0.0, HIDE_DURATION)
- 83 | 	active_tween.tween_property(
- 84 | 		self,
- 85 | 		"scale",
- 86 | 		Vector2(0.98, 0.98),
- 87 | 		HIDE_DURATION
- 88 | 	)
- 89 | 	active_tween.tween_property(
- 90 | 		self,
- 91 | 		"position",
- 92 | 		target_position + Vector2(0.0, -2.0),
- 93 | 		HIDE_DURATION
- 94 | 	)
- 95 | 	await active_tween.finished
- 96 | 	hide()
- 97 | 	scale = Vector2.ONE
- 98 | 	modulate.a = 1.0
- 99 | 	bounds_changed.emit()
+extends Control
+
+signal action_selected(action_id: String)
+signal interactive_changed(enabled: bool)
+signal bounds_changed
+
+@onready var card: PanelContainer = $Card
+@onready var message_label: Label = $Card/Margin/Content/Message
+@onready var actions_row: HBoxContainer = $Card/Margin/Content/Actions
+@onready var hide_timer: Timer = $HideTimer
+
+const WINDOW_WIDTH := 760.0
+const WINDOW_HEIGHT := 420.0
+const MIN_TEXT_WIDTH := 104.0
+const MAX_TEXT_WIDTH := 270.0
+const CARD_HORIZONTAL_PADDING := 28.0
+const CARD_VERTICAL_PADDING := 20.0
+const ACTION_ROW_HEIGHT := 32.0
+const CONTENT_GAP := 8.0
+const WINDOW_MARGIN := 8.0
+# New 220 px character layout: keep the card close to the character's upper-left
+# edge without overlapping the face. The card grows up/left from this point.
+const BUBBLE_BOTTOM_RIGHT_ANCHOR := Vector2(468.0, 158.0)
+const MAX_LINES_PER_PAGE := 4
+const LINE_EXTRA_SPACING := 2.0
+const APPEAR_OFFSET_Y := 5.0
+const APPEAR_SCALE := 0.96
+const APPEAR_DURATION := 0.15
+const FADE_DURATION := 0.10
+const HIDE_DURATION := 0.08
+var current_text := ""
+var active_tween: Tween
+var interactive := false
+var target_position := Vector2.ZERO
+var show_generation := 0
+
+var pages: Array[String] = []
+var page_index := 0
+var pending_actions: Array = []
+var requested_duration_sec := 3.8
+
+
+func _ready() -> void:
+	hide_timer.timeout.connect(_on_hide_timer_timeout)
+	hide()
+
+
+func say(text: String, duration_sec: float = 3.8) -> void:
+	_prepare_content(text, [], duration_sec)
+
+
+func ask(text: String, actions: Array, duration_sec: float = 0.0) -> void:
+	_prepare_content(text, actions, duration_sec)
+
+
+func dismiss(animated: bool = true) -> void:
+	hide_timer.stop()
+	pages.clear()
+	page_index = 0
+	pending_actions.clear()
+
+	if not visible:
+		_set_interactive(false)
+		return
+
+	if active_tween != null and active_tween.is_valid():
+		active_tween.kill()
+
+	_set_interactive(false)
+
+	if not animated:
+		hide()
+		scale = Vector2.ONE
+		modulate.a = 1.0
+		bounds_changed.emit()
+		return
+
+	active_tween = create_tween()
+	active_tween.set_parallel(true)
+	active_tween.set_trans(Tween.TRANS_QUAD)
+	active_tween.set_ease(Tween.EASE_IN)
+	active_tween.tween_property(self, "modulate:a", 0.0, HIDE_DURATION)
+	active_tween.tween_property(
+		self,
+		"scale",
+		Vector2(0.98, 0.98),
+		HIDE_DURATION
+	)
+	active_tween.tween_property(
+		self,
+		"position",
+		target_position + Vector2(0.0, -2.0),
+		HIDE_DURATION
+	)
+	await active_tween.finished
+	hide()
+	scale = Vector2.ONE
+	modulate.a = 1.0
+	bounds_changed.emit()
 
 
 func has_actions() -> bool:

@@ -1,102 +1,102 @@
-  1 | extends Node
-  2 | 
-  3 | signal weather_updated(summary: Dictionary)
-  4 | signal reminder_due(text: String)
-  5 | signal request_failed(message: String)
-  6 | 
-  7 | var location_query := ""
-  8 | var location_name := ""
-  9 | var latitude: Variant = null
- 10 | var longitude: Variant = null
- 11 | var enabled := false
- 12 | 
- 13 | var geocode_candidates := PackedStringArray()
- 14 | var geocode_candidate_index := 0
- 15 | 
- 16 | var check_interval_sec := 36000.0
- 17 | var check_countdown_sec := 0.0
- 18 | var rain_threshold := 50
- 19 | var hot_threshold_c := 35.0
- 20 | var cold_threshold_c := 5.0
- 21 | 
- 22 | var geocode_request: HTTPRequest
- 23 | var weather_request: HTTPRequest
- 24 | var last_reminder_signature := ""
- 25 | var last_reminder_unix := 0
- 26 | 
- 27 | 
- 28 | func _ready() -> void:
- 29 | 	geocode_request = HTTPRequest.new()
- 30 | 	weather_request = HTTPRequest.new()
- 31 | 	add_child(geocode_request)
- 32 | 	add_child(weather_request)
- 33 | 
- 34 | 	geocode_request.request_completed.connect(_on_geocode_completed)
- 35 | 	weather_request.request_completed.connect(_on_weather_completed)
- 36 | 	set_process(true)
- 37 | 
- 38 | 
- 39 | func configure(spec: Dictionary, stored: Dictionary = {}) -> void:
- 40 | 	location_name = str(
- 41 | 		stored.get("location_name", spec.get("location_name", ""))
- 42 | 	).strip_edges()
- 43 | 	location_query = str(
- 44 | 		stored.get("location_query", location_name)
- 45 | 	).strip_edges()
- 46 | 
- 47 | 	if "·" in location_query:
- 48 | 		location_query = str(location_query.split("·")[0]).strip_edges()
- 49 | 
- 50 | 	if location_name.is_empty():
- 51 | 		location_name = location_query
- 52 | 
- 53 | 	latitude = stored.get("latitude", spec.get("latitude"))
- 54 | 	longitude = stored.get("longitude", spec.get("longitude"))
- 55 | 	enabled = bool(stored.get("enabled", spec.get("enabled", false)))
- 56 | 
- 57 | 	check_interval_sec = maxf(
- 58 | 		300.0,
- 59 | 		float(spec.get("check_interval_minutes", 600.0)) * 60.0
- 60 | 	)
- 61 | 	rain_threshold = int(spec.get("rain_probability_threshold", 50))
- 62 | 	hot_threshold_c = float(spec.get("hot_threshold_c", 35.0))
- 63 | 	cold_threshold_c = float(spec.get("cold_threshold_c", 5.0))
- 64 | 	# Check once on the first process frame after startup, then wait for
- 65 | 	# the configured interval (10 hours in the default feature config).
- 66 | 	check_countdown_sec = 0.0
- 67 | 
- 68 | 
- 69 | func set_location(new_location_name: String, new_enabled: bool) -> void:
- 70 | 	var clean := new_location_name.strip_edges()
- 71 | 	location_query = clean
- 72 | 	location_name = clean
- 73 | 	enabled = new_enabled
- 74 | 	latitude = null
- 75 | 	longitude = null
- 76 | 	check_countdown_sec = 2.0
- 77 | 	last_reminder_signature = ""
- 78 | 
- 79 | 
- 80 | func export_settings() -> Dictionary:
- 81 | 	return {
- 82 | 		"location_query": location_query,
- 83 | 		"location_name": location_name,
- 84 | 		"latitude": latitude,
- 85 | 		"longitude": longitude,
- 86 | 		"enabled": enabled
- 87 | 	}
- 88 | 
- 89 | 
- 90 | func _process(delta: float) -> void:
- 91 | 	if not enabled or location_query.is_empty():
- 92 | 		return
- 93 | 
- 94 | 	check_countdown_sec -= delta
- 95 | 	if check_countdown_sec <= 0.0:
- 96 | 		check_countdown_sec = check_interval_sec
- 97 | 		refresh()
- 98 | 
- 99 | 
+extends Node
+
+signal weather_updated(summary: Dictionary)
+signal reminder_due(text: String)
+signal request_failed(message: String)
+
+var location_query := ""
+var location_name := ""
+var latitude: Variant = null
+var longitude: Variant = null
+var enabled := false
+
+var geocode_candidates := PackedStringArray()
+var geocode_candidate_index := 0
+
+var check_interval_sec := 36000.0
+var check_countdown_sec := 0.0
+var rain_threshold := 50
+var hot_threshold_c := 35.0
+var cold_threshold_c := 5.0
+
+var geocode_request: HTTPRequest
+var weather_request: HTTPRequest
+var last_reminder_signature := ""
+var last_reminder_unix := 0
+
+
+func _ready() -> void:
+	geocode_request = HTTPRequest.new()
+	weather_request = HTTPRequest.new()
+	add_child(geocode_request)
+	add_child(weather_request)
+
+	geocode_request.request_completed.connect(_on_geocode_completed)
+	weather_request.request_completed.connect(_on_weather_completed)
+	set_process(true)
+
+
+func configure(spec: Dictionary, stored: Dictionary = {}) -> void:
+	location_name = str(
+		stored.get("location_name", spec.get("location_name", ""))
+	).strip_edges()
+	location_query = str(
+		stored.get("location_query", location_name)
+	).strip_edges()
+
+	if "·" in location_query:
+		location_query = str(location_query.split("·")[0]).strip_edges()
+
+	if location_name.is_empty():
+		location_name = location_query
+
+	latitude = stored.get("latitude", spec.get("latitude"))
+	longitude = stored.get("longitude", spec.get("longitude"))
+	enabled = bool(stored.get("enabled", spec.get("enabled", false)))
+
+	check_interval_sec = maxf(
+		300.0,
+		float(spec.get("check_interval_minutes", 600.0)) * 60.0
+	)
+	rain_threshold = int(spec.get("rain_probability_threshold", 50))
+	hot_threshold_c = float(spec.get("hot_threshold_c", 35.0))
+	cold_threshold_c = float(spec.get("cold_threshold_c", 5.0))
+	# Check once on the first process frame after startup, then wait for
+	# the configured interval (10 hours in the default feature config).
+	check_countdown_sec = 0.0
+
+
+func set_location(new_location_name: String, new_enabled: bool) -> void:
+	var clean := new_location_name.strip_edges()
+	location_query = clean
+	location_name = clean
+	enabled = new_enabled
+	latitude = null
+	longitude = null
+	check_countdown_sec = 2.0
+	last_reminder_signature = ""
+
+
+func export_settings() -> Dictionary:
+	return {
+		"location_query": location_query,
+		"location_name": location_name,
+		"latitude": latitude,
+		"longitude": longitude,
+		"enabled": enabled
+	}
+
+
+func _process(delta: float) -> void:
+	if not enabled or location_query.is_empty():
+		return
+
+	check_countdown_sec -= delta
+	if check_countdown_sec <= 0.0:
+		check_countdown_sec = check_interval_sec
+		refresh()
+
+
 func refresh() -> void:
 	if location_query.is_empty():
 		request_failed.emit("请先设置天气城市。")

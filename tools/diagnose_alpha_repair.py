@@ -1,12 +1,12 @@
- 1 | from __future__ import annotations
- 2 | 
- 3 | import zipfile
- 4 | from pathlib import Path
- 5 | 
- 6 | ROOT = Path(__file__).resolve().parents[1]
- 7 | OUT = ROOT / "work" / "video_review" / "alpha_repair_preview"
- 8 | ARCHIVE = ROOT / "backups" / "stage3_20261004_152500" / "baseline.zip"
- 9 | 
+from __future__ import annotations
+
+import zipfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "work" / "video_review" / "alpha_repair_preview"
+ARCHIVE = ROOT / "backups" / "stage3_20261004_152500" / "baseline.zip"
+
 TARGETS = [
     "godot/assets_display/wuzi_chibi/video_idle/frames/000.png",
     "godot/assets_display/wuzi_chibi/video_idle/frames/060.png",

@@ -1,12 +1,12 @@
- 1 | from __future__ import annotations
- 2 | 
- 3 | from pathlib import Path
- 4 | 
- 5 | import imageio_ffmpeg
- 6 | import numpy as np
- 7 | from PIL import Image, ImageDraw
- 8 | 
- 9 | ROOT = Path(__file__).resolve().parents[1]
+from __future__ import annotations
+
+from pathlib import Path
+
+import imageio_ffmpeg
+import numpy as np
+from PIL import Image, ImageDraw
+
+ROOT = Path(__file__).resolve().parents[1]
 VIDEO_ROOT = ROOT / "分享区" / "Q版" / "绿幕视频"
 NEW_VIDEO_ROOT = ROOT / "分享区" / "Q版" / "新视频"
 OUT_ROOT = ROOT / "work" / "video_review" / "source"

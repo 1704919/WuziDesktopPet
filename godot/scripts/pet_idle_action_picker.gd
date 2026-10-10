@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | # Stateless sampler: callers pass *effective* weights after inactivity and
- 4 | # availability filters. The same weights must define both total and buckets.
- 5 | # roll_fraction belongs to [0, 1), allowing deterministic boundary tests.
- 6 | static func choose(
- 7 | 	candidates: Array[Dictionary],
- 8 | 	roll_fraction: float,
- 9 | 	previous_id: String = "",
+extends RefCounted
+
+# Stateless sampler: callers pass *effective* weights after inactivity and
+# availability filters. The same weights must define both total and buckets.
+# roll_fraction belongs to [0, 1), allowing deterministic boundary tests.
+static func choose(
+	candidates: Array[Dictionary],
+	roll_fraction: float,
+	previous_id: String = "",
 	blocked_category: String = ""
 ) -> String:
 	var valid: Array[Dictionary] = []

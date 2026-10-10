@@ -1,102 +1,102 @@
-  1 | extends RefCounted
-  2 | 
-  3 | const DEFAULT_CHAT := [
-  4 | 	"唔，我听见了。",
-  5 | 	"再让我睡一会儿。",
-  6 | 	"嗯，我还在听。",
-  7 | 	"刚才梦到什么来着。",
-  8 | ]
-  9 | const DEFAULT_REMINDER_PREFIX := ["唔，好像有什么事。"]
- 10 | const DEFAULT_WEATHER_PREFIX := ["外面，是天气的事吗。"]
- 11 | 
- 12 | var rng := RandomNumberGenerator.new()
- 13 | var chat_responses: Array[String] = []
- 14 | var chat_nickname_responses: Array[String] = []
- 15 | var reminder_prefixes: Array[String] = []
- 16 | var weather_prefixes: Array[String] = []
- 17 | var fallback_prefixes: Array[String] = []
- 18 | 
- 19 | 
- 20 | func _init() -> void:
- 21 | 	rng.randomize()
- 22 | 
- 23 | 
- 24 | func load_config(path: String = "res://config/dialogue.json") -> void:
- 25 | 	var file := FileAccess.open(path, FileAccess.READ)
- 26 | 	if file == null:
- 27 | 		configure({})
- 28 | 		return
- 29 | 	var parsed: Variant = JSON.parse_string(file.get_as_text())
- 30 | 	if not parsed is Dictionary:
- 31 | 		configure({})
- 32 | 		return
- 33 | 	configure((parsed as Dictionary).get("dream_talk", {}) as Dictionary)
- 34 | 
- 35 | 
- 36 | func configure(raw: Dictionary) -> void:
- 37 | 	chat_responses = _strings((raw.get("chat", {}) as Dictionary).get("responses", []))
- 38 | 	chat_nickname_responses = _strings((raw.get("chat", {}) as Dictionary).get("nickname_responses", []))
- 39 | 	reminder_prefixes = _strings((raw.get("reminder", {}) as Dictionary).get("prefixes", []))
- 40 | 	weather_prefixes = _strings((raw.get("weather", {}) as Dictionary).get("prefixes", []))
- 41 | 	fallback_prefixes = _strings((raw.get("fallback", {}) as Dictionary).get("prefixes", []))
- 42 | 	if chat_responses.is_empty():
- 43 | 		chat_responses = _strings(DEFAULT_CHAT)
- 44 | 	if reminder_prefixes.is_empty():
- 45 | 		reminder_prefixes = _strings(DEFAULT_REMINDER_PREFIX)
- 46 | 	if weather_prefixes.is_empty():
- 47 | 		weather_prefixes = _strings(DEFAULT_WEATHER_PREFIX)
- 48 | 	if fallback_prefixes.is_empty():
- 49 | 		fallback_prefixes = _strings(reminder_prefixes)
- 50 | 
- 51 | 
- 52 | func set_seed(seed: int) -> void:
- 53 | 	rng.seed = seed
- 54 | 
- 55 | 
- 56 | func chat_reply(nickname: String = "") -> String:
- 57 | 	var pool := chat_responses
- 58 | 	if not nickname.is_empty() and not chat_nickname_responses.is_empty() and rng.randf() < 0.25:
- 59 | 		pool = chat_nickname_responses
- 60 | 	var text := _choose(pool)
- 61 | 	if not nickname.is_empty():
- 62 | 		text = text.replace("{nickname}", nickname)
- 63 | 	return decorate(text)
- 64 | 
- 65 | 
- 66 | func format_notice(kind: String, original: String) -> String:
- 67 | 	var prefixes := fallback_prefixes
- 68 | 	if kind == "weather":
- 69 | 		prefixes = weather_prefixes
- 70 | 	elif kind == "reminder":
- 71 | 		prefixes = reminder_prefixes
- 72 | 	var prefix := _choose(prefixes)
- 73 | 	var combined := prefix
- 74 | 	if not original.strip_edges().is_empty():
- 75 | 		combined = "%s %s" % [prefix, original.strip_edges()]
- 76 | 	return decorate(combined)
- 77 | 
- 78 | 
- 79 | func decorate(text: String) -> String:
- 80 | 	var clean := text.strip_edges()
- 81 | 	if clean.length() <= 1:
- 82 | 		return clean
- 83 | 
- 84 | 	var target_count := _ellipsis_count(clean.length())
- 85 | 	var candidates := _candidate_boundaries(clean)
- 86 | 	if candidates.is_empty():
- 87 | 		return clean
- 88 | 	target_count = mini(target_count, candidates.size())
- 89 | 
- 90 | 	var chosen: Dictionary = {}
- 91 | 	for _index in range(target_count):
- 92 | 		var pick := rng.randi_range(0, candidates.size() - 1)
- 93 | 		var boundary: int = int(candidates[pick])
- 94 | 		chosen[boundary] = true
- 95 | 		candidates.remove_at(pick)
- 96 | 
- 97 | 	var result := ""
- 98 | 	for i in range(clean.length()):
- 99 | 		if chosen.has(i):
+extends RefCounted
+
+const DEFAULT_CHAT := [
+	"唔，我听见了。",
+	"再让我睡一会儿。",
+	"嗯，我还在听。",
+	"刚才梦到什么来着。",
+]
+const DEFAULT_REMINDER_PREFIX := ["唔，好像有什么事。"]
+const DEFAULT_WEATHER_PREFIX := ["外面，是天气的事吗。"]
+
+var rng := RandomNumberGenerator.new()
+var chat_responses: Array[String] = []
+var chat_nickname_responses: Array[String] = []
+var reminder_prefixes: Array[String] = []
+var weather_prefixes: Array[String] = []
+var fallback_prefixes: Array[String] = []
+
+
+func _init() -> void:
+	rng.randomize()
+
+
+func load_config(path: String = "res://config/dialogue.json") -> void:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		configure({})
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary:
+		configure({})
+		return
+	configure((parsed as Dictionary).get("dream_talk", {}) as Dictionary)
+
+
+func configure(raw: Dictionary) -> void:
+	chat_responses = _strings((raw.get("chat", {}) as Dictionary).get("responses", []))
+	chat_nickname_responses = _strings((raw.get("chat", {}) as Dictionary).get("nickname_responses", []))
+	reminder_prefixes = _strings((raw.get("reminder", {}) as Dictionary).get("prefixes", []))
+	weather_prefixes = _strings((raw.get("weather", {}) as Dictionary).get("prefixes", []))
+	fallback_prefixes = _strings((raw.get("fallback", {}) as Dictionary).get("prefixes", []))
+	if chat_responses.is_empty():
+		chat_responses = _strings(DEFAULT_CHAT)
+	if reminder_prefixes.is_empty():
+		reminder_prefixes = _strings(DEFAULT_REMINDER_PREFIX)
+	if weather_prefixes.is_empty():
+		weather_prefixes = _strings(DEFAULT_WEATHER_PREFIX)
+	if fallback_prefixes.is_empty():
+		fallback_prefixes = _strings(reminder_prefixes)
+
+
+func set_seed(seed: int) -> void:
+	rng.seed = seed
+
+
+func chat_reply(nickname: String = "") -> String:
+	var pool := chat_responses
+	if not nickname.is_empty() and not chat_nickname_responses.is_empty() and rng.randf() < 0.25:
+		pool = chat_nickname_responses
+	var text := _choose(pool)
+	if not nickname.is_empty():
+		text = text.replace("{nickname}", nickname)
+	return decorate(text)
+
+
+func format_notice(kind: String, original: String) -> String:
+	var prefixes := fallback_prefixes
+	if kind == "weather":
+		prefixes = weather_prefixes
+	elif kind == "reminder":
+		prefixes = reminder_prefixes
+	var prefix := _choose(prefixes)
+	var combined := prefix
+	if not original.strip_edges().is_empty():
+		combined = "%s %s" % [prefix, original.strip_edges()]
+	return decorate(combined)
+
+
+func decorate(text: String) -> String:
+	var clean := text.strip_edges()
+	if clean.length() <= 1:
+		return clean
+
+	var target_count := _ellipsis_count(clean.length())
+	var candidates := _candidate_boundaries(clean)
+	if candidates.is_empty():
+		return clean
+	target_count = mini(target_count, candidates.size())
+
+	var chosen: Dictionary = {}
+	for _index in range(target_count):
+		var pick := rng.randi_range(0, candidates.size() - 1)
+		var boundary: int = int(candidates[pick])
+		chosen[boundary] = true
+		candidates.remove_at(pick)
+
+	var result := ""
+	for i in range(clean.length()):
+		if chosen.has(i):
 			result += "..."
 		result += clean.substr(i, 1)
 	return result

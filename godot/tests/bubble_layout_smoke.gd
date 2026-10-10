@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | const WINDOW_WIDTH := 760.0
- 4 | const WINDOW_HEIGHT := 420.0
- 5 | const EXPECTED_CARD_BOTTOM_RIGHT := Vector2(468.0, 158.0)
- 6 | 
- 7 | func _init() -> void:
- 8 | 	call_deferred("_run")
- 9 | 
+extends SceneTree
+
+const WINDOW_WIDTH := 760.0
+const WINDOW_HEIGHT := 420.0
+const EXPECTED_CARD_BOTTOM_RIGHT := Vector2(468.0, 158.0)
+
+func _init() -> void:
+	call_deferred("_run")
+
 
 func _assert_case(
 	bubble: Control,

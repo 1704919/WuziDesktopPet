@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | 
- 4 | static func populate(
- 5 | 	target: Dictionary,
- 6 | 	config: Dictionary,
- 7 | 	video_runtime_enabled: bool
- 8 | ) -> void:
- 9 | 	var clip_cfg := config.get("clips", {}) as Dictionary
+extends RefCounted
+
+
+static func populate(
+	target: Dictionary,
+	config: Dictionary,
+	video_runtime_enabled: bool
+) -> void:
+	var clip_cfg := config.get("clips", {}) as Dictionary
 
 	for clip_id in clip_cfg.keys():
 		var spec := clip_cfg[clip_id] as Dictionary

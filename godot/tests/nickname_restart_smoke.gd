@@ -1,12 +1,12 @@
- 1 | extends SceneTree
- 2 | 
- 3 | const Settings = preload("res://scripts/settings_store.gd")
- 4 | 
- 5 | 
- 6 | func _init() -> void:
- 7 | 	var settings := Settings.new()
- 8 | 	settings.load_settings()
- 9 | 	var ok := true
+extends SceneTree
+
+const Settings = preload("res://scripts/settings_store.gd")
+
+
+func _init() -> void:
+	var settings := Settings.new()
+	settings.load_settings()
+	var ok := true
 	if OS.get_cmdline_user_args().has("write"):
 		settings.set_value("stage2_existing_key", "preserved", false)
 		ok = settings.set_nickname("水🙂".repeat(6)) and settings.get_nickname().length() == 12

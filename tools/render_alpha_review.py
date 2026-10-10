@@ -1,12 +1,12 @@
- 1 | from __future__ import annotations
- 2 | 
- 3 | from pathlib import Path
- 4 | 
- 5 | import numpy as np
- 6 | from PIL import Image, ImageDraw
- 7 | 
- 8 | ROOT = Path(__file__).resolve().parents[1]
- 9 | OUT = ROOT / "work" / "video_review" / "alpha_review"
+from __future__ import annotations
+
+from pathlib import Path
+
+import numpy as np
+from PIL import Image, ImageDraw
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "work" / "video_review" / "alpha_review"
 OUT.mkdir(parents=True, exist_ok=True)
 
 ACTIONS = {

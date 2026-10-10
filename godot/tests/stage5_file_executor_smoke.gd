@@ -1,102 +1,102 @@
-  1 | extends SceneTree
-  2 | 
-  3 | const Planner = preload("res://scripts/file_operation_planner.gd")
-  4 | const Executor = preload("res://scripts/file_operation_executor.gd")
-  5 | const Bridge = preload("res://scripts/windows_file_bridge.gd")
-  6 | const Manager = preload("res://scripts/file_drop_manager.gd")
-  7 | const Workbench = preload("res://scripts/batch_file_window.gd")
-  8 | 
-  9 | var failures: Array[String] = []
- 10 | var scratch: String
- 11 | var planner := Planner.new()
- 12 | 
- 13 | 
- 14 | class CancelAfterFirst extends Executor:
- 15 | 	func _publish(plan: Dictionary) -> void:
- 16 | 		super._publish(plan)
- 17 | 		for item: Dictionary in plan.items:
- 18 | 			if item.status == "completed":
- 19 | 				cancel()
- 20 | 
- 21 | 
- 22 | class TargetRace extends Executor:
- 23 | 	var created := false
- 24 | 	func _publish(plan: Dictionary) -> void:
- 25 | 		super._publish(plan)
- 26 | 		if not created and plan.items[0].status == "processing":
- 27 | 			created = true
- 28 | 			var file := FileAccess.open(str(plan.items[0].target), FileAccess.WRITE)
- 29 | 			file.store_string("external file")
- 30 | 			file.close()
- 31 | 
- 32 | 
- 33 | class RecoveryRace extends Executor:
- 34 | 	var created := false
- 35 | 	func _publish(plan: Dictionary) -> void:
- 36 | 		super._publish(plan)
- 37 | 		if not created and plan.items[0].has("temporary_path"):
- 38 | 			created = true
- 39 | 			# Another process claims both original and final names after staging.
- 40 | 			for path in [plan.items[0].source, plan.items[0].target]:
- 41 | 				var file := FileAccess.open(str(path), FileAccess.WRITE)
- 42 | 				file.store_string("external")
- 43 | 				file.close()
- 44 | 
- 45 | 
- 46 | func _init() -> void:
- 47 | 	call_deferred("_run")
- 48 | 
- 49 | 
- 50 | func check(value: bool, message: String) -> void:
- 51 | 	if not value:
- 52 | 		failures.append(message)
- 53 | 
- 54 | 
- 55 | func _file(name: String, contents: String = "sample") -> String:
- 56 | 	var path := scratch.path_join(name)
- 57 | 	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
- 58 | 	var file := FileAccess.open(path, FileAccess.WRITE)
- 59 | 	file.store_string(contents)
- 60 | 	file.close()
- 61 | 	return path
- 62 | 
- 63 | 
- 64 | func _execute(plan: Dictionary, executor: RefCounted = null) -> Dictionary:
- 65 | 	if executor == null:
- 66 | 		executor = Executor.new()
- 67 | 	return executor.execute(plan, str(plan.plan_version))
- 68 | 
- 69 | 
- 70 | func _run() -> void:
- 71 | 	scratch = ProjectSettings.globalize_path("user://stage5b_" + Crypto.new().generate_random_bytes(6).hex_encode())
- 72 | 	DirAccess.make_dir_recursive_absolute(scratch)
- 73 | 	var caps := Bridge.run("caps")
- 74 | 	check(bool(caps.ok), "native Windows bridge available")
- 75 | 	print("HEIC_CAPABILITIES ", JSON.stringify(caps))
- 76 | 	# Single rename, source-directory semantics, case-only rename and extension case.
- 77 | 	var source := _file("simple/Original.TXT", "original")
- 78 | 	var plan := planner.build_plan([source], {"prefix": "new_"})
- 79 | 	var result := _execute(plan)
- 80 | 	check(result.counts.completed == 1 and not FileAccess.file_exists(source), "in-place rename removes original path")
- 81 | 	check(FileAccess.get_file_as_string(str(plan.items[0].target)) == "original", "rename preserves content")
- 82 | 	check(str(plan.items[0].target).ends_with(".TXT"), "extension case preserved")
- 83 | 	source = _file("case/alpha.txt", "case")
- 84 | 	plan = planner.build_plan([source], {"find_text": "alpha", "replace_text": "ALPHA"})
- 85 | 	check(plan.valid_count == 1 and _execute(plan).counts.completed == 1, "case-only rename supported")
- 86 | 	# Swaps and a 3-cycle produced by public regex replacement rules.
- 87 | 	var a := _file("swap/AB.txt", "A")
- 88 | 	var b := _file("swap/BA.txt", "B")
- 89 | 	plan = planner.build_plan([a, b], {"regex_enabled": true, "find_text": "^(.)(.)$", "replace_text": "$2$1"})
- 90 | 	result = _execute(plan)
- 91 | 	check(result.counts.completed == 2, "A B swap succeeds")
- 92 | 	check(FileAccess.get_file_as_string(a) == "B" and FileAccess.get_file_as_string(b) == "A", "swap contents preserved")
- 93 | 	var cycle := PackedStringArray([_file("cycle/ABC.txt", "A"), _file("cycle/BCA.txt", "B"), _file("cycle/CAB.txt", "C")])
- 94 | 	plan = planner.build_plan(cycle, {"regex_enabled": true, "find_text": "^(.)(.)(.)$", "replace_text": "$2$3$1"})
- 95 | 	result = _execute(plan)
- 96 | 	check(result.counts.completed == 3, "three-file cycle succeeds")
- 97 | 	check(FileAccess.get_file_as_string(cycle[0]) == "C" and FileAccess.get_file_as_string(cycle[1]) == "A" and FileAccess.get_file_as_string(cycle[2]) == "B", "three-cycle contents preserved")
- 98 | 	# A target owned by a non-moving item must not be silently overwritten.
- 99 | 	a = _file("blocked/a.txt")
+extends SceneTree
+
+const Planner = preload("res://scripts/file_operation_planner.gd")
+const Executor = preload("res://scripts/file_operation_executor.gd")
+const Bridge = preload("res://scripts/windows_file_bridge.gd")
+const Manager = preload("res://scripts/file_drop_manager.gd")
+const Workbench = preload("res://scripts/batch_file_window.gd")
+
+var failures: Array[String] = []
+var scratch: String
+var planner := Planner.new()
+
+
+class CancelAfterFirst extends Executor:
+	func _publish(plan: Dictionary) -> void:
+		super._publish(plan)
+		for item: Dictionary in plan.items:
+			if item.status == "completed":
+				cancel()
+
+
+class TargetRace extends Executor:
+	var created := false
+	func _publish(plan: Dictionary) -> void:
+		super._publish(plan)
+		if not created and plan.items[0].status == "processing":
+			created = true
+			var file := FileAccess.open(str(plan.items[0].target), FileAccess.WRITE)
+			file.store_string("external file")
+			file.close()
+
+
+class RecoveryRace extends Executor:
+	var created := false
+	func _publish(plan: Dictionary) -> void:
+		super._publish(plan)
+		if not created and plan.items[0].has("temporary_path"):
+			created = true
+			# Another process claims both original and final names after staging.
+			for path in [plan.items[0].source, plan.items[0].target]:
+				var file := FileAccess.open(str(path), FileAccess.WRITE)
+				file.store_string("external")
+				file.close()
+
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func check(value: bool, message: String) -> void:
+	if not value:
+		failures.append(message)
+
+
+func _file(name: String, contents: String = "sample") -> String:
+	var path := scratch.path_join(name)
+	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(contents)
+	file.close()
+	return path
+
+
+func _execute(plan: Dictionary, executor: RefCounted = null) -> Dictionary:
+	if executor == null:
+		executor = Executor.new()
+	return executor.execute(plan, str(plan.plan_version))
+
+
+func _run() -> void:
+	scratch = ProjectSettings.globalize_path("user://stage5b_" + Crypto.new().generate_random_bytes(6).hex_encode())
+	DirAccess.make_dir_recursive_absolute(scratch)
+	var caps := Bridge.run("caps")
+	check(bool(caps.ok), "native Windows bridge available")
+	print("HEIC_CAPABILITIES ", JSON.stringify(caps))
+	# Single rename, source-directory semantics, case-only rename and extension case.
+	var source := _file("simple/Original.TXT", "original")
+	var plan := planner.build_plan([source], {"prefix": "new_"})
+	var result := _execute(plan)
+	check(result.counts.completed == 1 and not FileAccess.file_exists(source), "in-place rename removes original path")
+	check(FileAccess.get_file_as_string(str(plan.items[0].target)) == "original", "rename preserves content")
+	check(str(plan.items[0].target).ends_with(".TXT"), "extension case preserved")
+	source = _file("case/alpha.txt", "case")
+	plan = planner.build_plan([source], {"find_text": "alpha", "replace_text": "ALPHA"})
+	check(plan.valid_count == 1 and _execute(plan).counts.completed == 1, "case-only rename supported")
+	# Swaps and a 3-cycle produced by public regex replacement rules.
+	var a := _file("swap/AB.txt", "A")
+	var b := _file("swap/BA.txt", "B")
+	plan = planner.build_plan([a, b], {"regex_enabled": true, "find_text": "^(.)(.)$", "replace_text": "$2$1"})
+	result = _execute(plan)
+	check(result.counts.completed == 2, "A B swap succeeds")
+	check(FileAccess.get_file_as_string(a) == "B" and FileAccess.get_file_as_string(b) == "A", "swap contents preserved")
+	var cycle := PackedStringArray([_file("cycle/ABC.txt", "A"), _file("cycle/BCA.txt", "B"), _file("cycle/CAB.txt", "C")])
+	plan = planner.build_plan(cycle, {"regex_enabled": true, "find_text": "^(.)(.)(.)$", "replace_text": "$2$3$1"})
+	result = _execute(plan)
+	check(result.counts.completed == 3, "three-file cycle succeeds")
+	check(FileAccess.get_file_as_string(cycle[0]) == "C" and FileAccess.get_file_as_string(cycle[1]) == "A" and FileAccess.get_file_as_string(cycle[2]) == "B", "three-cycle contents preserved")
+	# A target owned by a non-moving item must not be silently overwritten.
+	a = _file("blocked/a.txt")
 	b = _file("blocked/pre_a.txt")
 	plan = planner.build_plan([a, b], {"output_mode": "custom", "output_dir": b.get_base_dir(), "prefix": "pre_"})
 	check(not bool(plan.items[0].can_execute), "copy cannot occupy queued source")

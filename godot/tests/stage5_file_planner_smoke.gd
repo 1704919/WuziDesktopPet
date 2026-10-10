@@ -1,102 +1,102 @@
-  1 | extends SceneTree
-  2 | 
-  3 | const FileOperationPlanner = preload("res://scripts/file_operation_planner.gd")
-  4 | const FileDropManager = preload("res://scripts/file_drop_manager.gd")
-  5 | const BatchFileWindow = preload("res://scripts/batch_file_window.gd")
-  6 | 
-  7 | var failures: Array[String] = []
-  8 | var scratch := ""
-  9 | 
- 10 | 
- 11 | func check(condition: bool, label: String) -> void:
- 12 | 	if not condition:
- 13 | 		failures.append(label)
- 14 | 
- 15 | 
- 16 | func _init() -> void:
- 17 | 	call_deferred("_run")
- 18 | 
- 19 | 
- 20 | func _run() -> void:
- 21 | 	scratch = ProjectSettings.globalize_path("user://stage5_file_planner_smoke")
- 22 | 	_prepare_scratch()
- 23 | 
- 24 | 	var a := scratch.path_join("IMG_001.png")
- 25 | 	var b := scratch.path_join("IMG_002.png")
- 26 | 	var c := scratch.path_join("safe.txt")
- 27 | 	_write_file(a)
- 28 | 	_write_file(b)
- 29 | 	_write_file(c)
- 30 | 
- 31 | 	var planner := FileOperationPlanner.new()
- 32 | 	var paths := PackedStringArray([a, b])
- 33 | 	var params := {
- 34 | 		"prefix": "图_",
- 35 | 		"numbering_enabled": true,
- 36 | 		"number_start": 1,
- 37 | 		"number_step": 1,
- 38 | 		"number_digits": 2,
- 39 | 		"image_format": "jpg",
- 40 | 		"output_mode": "source"
- 41 | 	}
- 42 | 	var plan1 := planner.build_plan(paths, params)
- 43 | 	var plan2 := planner.build_plan(paths, params)
- 44 | 
- 45 | 	check(bool(plan1.preview_only), "planner is preview only")
- 46 | 	check(bool(plan1.can_execute), "valid frozen plan is executable in 5B")
- 47 | 	check(str(plan1.plan_version) == str(plan2.plan_version), "stable inputs produce stable plan version")
- 48 | 	check(int(plan1.valid_count) == 2, "two renamed image targets are valid")
- 49 | 	check(int(plan1.conflict_count) == 0, "valid plan has no conflicts")
- 50 | 	var items := plan1.items as Array
- 51 | 	check(str((items[0] as Dictionary).target_name) == "图_IMG_001_01.jpg", "prefix numbering and image format")
- 52 | 	check(str((items[1] as Dictionary).target_name) == "图_IMG_002_02.jpg", "number increments")
- 53 | 
- 54 | 	var heic_plan := planner.build_plan(
- 55 | 		PackedStringArray([a]),
- 56 | 		{"prefix": "heic_", "image_format": "heic", "output_mode": "source"}
- 57 | 	)
- 58 | 	var heic_item := (heic_plan.items as Array)[0] as Dictionary
- 59 | 	check(str(heic_item.target_name) == "heic_IMG_001.heic", "HEIC target participates in 5A preview plan")
- 60 | 
- 61 | 	var changed_params := params.duplicate(true)
- 62 | 	changed_params.prefix = "新_"
- 63 | 	var changed := planner.build_plan(paths, changed_params)
- 64 | 	check(str(changed.plan_version) != str(plan1.plan_version), "parameter change invalidates old plan version")
- 65 | 	check(str(plan1.plan_version).length() > 40, "plan version uses a strong deterministic digest")
- 66 | 
- 67 | 	var rename_rules := planner.build_plan(
- 68 | 		PackedStringArray([c]),
- 69 | 		{
- 70 | 			"find_text": "safe",
- 71 | 			"replace_text": "note",
- 72 | 			"prefix": "pre_",
- 73 | 			"suffix": "_done",
- 74 | 			"output_mode": "source"
- 75 | 		}
- 76 | 	)
- 77 | 	var rename_item := (rename_rules.items as Array)[0] as Dictionary
- 78 | 	check(str(rename_item.target_name) == "pre_note_done.txt", "find replace prefix suffix preserve extension")
- 79 | 
- 80 | 	var invalid_regex := planner.build_plan(
- 81 | 		PackedStringArray([c]),
- 82 | 		{"find_text": "([", "regex_enabled": true, "prefix": "x_", "output_mode": "source"}
- 83 | 	)
- 84 | 	check(_plan_has_issue(invalid_regex, "正则表达式无效"), "invalid regex blocks plan")
- 85 | 
- 86 | 	var reserved := planner.build_plan(
- 87 | 		PackedStringArray([c]),
- 88 | 		{"find_text": "safe", "replace_text": "CON", "output_mode": "source"}
- 89 | 	)
- 90 | 	check(_plan_has_issue(reserved, "保留设备名"), "reserved Windows device name blocked")
- 91 | 
- 92 | 	var illegal := planner.build_plan(
- 93 | 		PackedStringArray([c]),
- 94 | 		{"find_text": "safe", "replace_text": "bad:name", "output_mode": "source"}
- 95 | 	)
- 96 | 	check(_plan_has_issue(illegal, "非法字符"), "illegal Windows filename character blocked")
- 97 | 
- 98 | 	var quote_name := planner.build_plan(
- 99 | 		PackedStringArray([c]),
+extends SceneTree
+
+const FileOperationPlanner = preload("res://scripts/file_operation_planner.gd")
+const FileDropManager = preload("res://scripts/file_drop_manager.gd")
+const BatchFileWindow = preload("res://scripts/batch_file_window.gd")
+
+var failures: Array[String] = []
+var scratch := ""
+
+
+func check(condition: bool, label: String) -> void:
+	if not condition:
+		failures.append(label)
+
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	scratch = ProjectSettings.globalize_path("user://stage5_file_planner_smoke")
+	_prepare_scratch()
+
+	var a := scratch.path_join("IMG_001.png")
+	var b := scratch.path_join("IMG_002.png")
+	var c := scratch.path_join("safe.txt")
+	_write_file(a)
+	_write_file(b)
+	_write_file(c)
+
+	var planner := FileOperationPlanner.new()
+	var paths := PackedStringArray([a, b])
+	var params := {
+		"prefix": "图_",
+		"numbering_enabled": true,
+		"number_start": 1,
+		"number_step": 1,
+		"number_digits": 2,
+		"image_format": "jpg",
+		"output_mode": "source"
+	}
+	var plan1 := planner.build_plan(paths, params)
+	var plan2 := planner.build_plan(paths, params)
+
+	check(bool(plan1.preview_only), "planner is preview only")
+	check(bool(plan1.can_execute), "valid frozen plan is executable in 5B")
+	check(str(plan1.plan_version) == str(plan2.plan_version), "stable inputs produce stable plan version")
+	check(int(plan1.valid_count) == 2, "two renamed image targets are valid")
+	check(int(plan1.conflict_count) == 0, "valid plan has no conflicts")
+	var items := plan1.items as Array
+	check(str((items[0] as Dictionary).target_name) == "图_IMG_001_01.jpg", "prefix numbering and image format")
+	check(str((items[1] as Dictionary).target_name) == "图_IMG_002_02.jpg", "number increments")
+
+	var heic_plan := planner.build_plan(
+		PackedStringArray([a]),
+		{"prefix": "heic_", "image_format": "heic", "output_mode": "source"}
+	)
+	var heic_item := (heic_plan.items as Array)[0] as Dictionary
+	check(str(heic_item.target_name) == "heic_IMG_001.heic", "HEIC target participates in 5A preview plan")
+
+	var changed_params := params.duplicate(true)
+	changed_params.prefix = "新_"
+	var changed := planner.build_plan(paths, changed_params)
+	check(str(changed.plan_version) != str(plan1.plan_version), "parameter change invalidates old plan version")
+	check(str(plan1.plan_version).length() > 40, "plan version uses a strong deterministic digest")
+
+	var rename_rules := planner.build_plan(
+		PackedStringArray([c]),
+		{
+			"find_text": "safe",
+			"replace_text": "note",
+			"prefix": "pre_",
+			"suffix": "_done",
+			"output_mode": "source"
+		}
+	)
+	var rename_item := (rename_rules.items as Array)[0] as Dictionary
+	check(str(rename_item.target_name) == "pre_note_done.txt", "find replace prefix suffix preserve extension")
+
+	var invalid_regex := planner.build_plan(
+		PackedStringArray([c]),
+		{"find_text": "([", "regex_enabled": true, "prefix": "x_", "output_mode": "source"}
+	)
+	check(_plan_has_issue(invalid_regex, "正则表达式无效"), "invalid regex blocks plan")
+
+	var reserved := planner.build_plan(
+		PackedStringArray([c]),
+		{"find_text": "safe", "replace_text": "CON", "output_mode": "source"}
+	)
+	check(_plan_has_issue(reserved, "保留设备名"), "reserved Windows device name blocked")
+
+	var illegal := planner.build_plan(
+		PackedStringArray([c]),
+		{"find_text": "safe", "replace_text": "bad:name", "output_mode": "source"}
+	)
+	check(_plan_has_issue(illegal, "非法字符"), "illegal Windows filename character blocked")
+
+	var quote_name := planner.build_plan(
+		PackedStringArray([c]),
 		{"find_text": "safe", "replace_text": "bad%sname" % String.chr(34), "output_mode": "source"}
 	)
 	check(_plan_has_issue(quote_name, "双引号"), "double quote filename blocked")

@@ -1,102 +1,102 @@
-  1 | {
-  2 |   "schema_version": 10,
-  3 |   "description": "Approved visual baseline with fixed ordinary action scale, sleep-loop watermark cleanup using protected character/Zzz silhouette plus combined gray-cyan and gray-brown residual filtering, and wake-up scale derived from the time-aligned reverse sleep-down physical-size trajectory. Wake-up frame 0 matches sleep-loop, allows only mild early shrink to compensate source zoom, bounds per-frame scale changes, and fixes standing scale from frame 65 onward.",
-  4 |   "min_reference_fill_ratio": {
-  5 |     "idle": 0.58,
-  6 |     "click_happy": 0.58,
-  7 |     "click_shy": 0.58,
-  8 |     "march_in_place": 0.58,
-  9 |     "sleepy": 0.57,
- 10 |     "yawn": 0.57,
- 11 |     "click_angry": 0.58,
- 12 |     "sleep_down": 0.55,
- 13 |     "drag_reaction": 0.58,
- 14 |     "startle": 0.57,
- 15 |     "yawn_small": 0.57,
- 16 |     "game_rage": 0.58,
- 17 |     "click_wave": 0.58,
- 18 |     "wake_up": 0.45,
- 19 |     "sleep_loop": 0.45,
- 20 |     "sing": 0.58,
- 21 |     "game_controller": 0.58,
- 22 |     "read_book": 0.57,
- 23 |     "watch_kline": 0.58,
- 24 |     "drink_milk_tea": 0.57,
- 25 |     "work_computer": 0.58,
- 26 |     "lie_phone": 0.58,
- 27 |     "walk_left": 0.58,
- 28 |     "walk_right": 0.58,
- 29 |     "mic_test": 0.58,
- 30 |     "cat_accident": 0.58,
- 31 |     "unbox_cards": 0.55,
- 32 |     "pc_game_rage": 0.53,
- 33 |     "sunglasses_proud": 0.55,
- 34 |     "pc_game_focused": 0.46,
- 35 |     "hop_bounce": 0.55,
- 36 |     "birthday_cake": 0.58,
- 37 |     "eat_noodles": 0.58,
- 38 |     "eat_fried_chicken": 0.58,
- 39 |     "eat_sushi": 0.58,
- 40 |     "eat_breakfast": 0.58,
- 41 |     "eat_bullfrog": 0.58,
- 42 |     "eat_fries": 0.58
- 43 |   },
- 44 |   "rgba_sha256": {
- 45 |     "idle": {
- 46 |       "120": "e2c9002fea41a3eb20b424aa51143b2c8afd88abf09f9be31df17e028be9feb2",
- 47 |       "000": "841d502e071adb8cabcf58a3e3c6142735c927923329b016fb242d7cf18cf2dc",
- 48 |       "060": "2b7e3102fe1576f375cf0dd6b22ba3a319cc51fdf16deb0a9f068be00b3e911e"
- 49 |     },
- 50 |     "click_happy": {
- 51 |       "120": "7613facfca9db78447a40c9cc87d309a88e3fa455199e749301eb22d3c4f8675",
- 52 |       "000": "65d4e598968e3a9a47cf5a4f693da33847e3d6a4029e5f925416c5c7e08a154b",
- 53 |       "060": "9178e088a179eaa66e6a12051359344018d28a4e14d5c5d7a9c11c45ccd8aa86"
- 54 |     },
- 55 |     "click_shy": {
- 56 |       "120": "8b8e3c81304d8605d814308a96811ace958603dcf741dd241745363951a51575",
- 57 |       "000": "98818f2f52eb37038a4ce748f873f71192bdd1cb59d57c65a5769d632af63efe",
- 58 |       "060": "d89b390b723762a43de449a5aa10e22ce5d2b364eda99e4621ba6df1f9e3ecec"
- 59 |     },
- 60 |     "march_in_place": {
- 61 |       "120": "04d11297bc685949e21a005af032d8c57026877e5af211804911baca9fc07c73",
- 62 |       "000": "2b8cd30b98e1bad2f73be2f118910713cb6fadd169b0ff4c73566c13237feace",
- 63 |       "060": "bffaecb67d6043e1c94b77525e4246689547d6765267c6c14f3b40814c51c871"
- 64 |     },
- 65 |     "sleepy": {
- 66 |       "120": "064907f309fcb73b4b01251114f3127d981ebb743d2f48fedd2e40b522b8b7a0",
- 67 |       "000": "b603e9d8938de39e66a867517fcccbdd482a93349cc2d46247b2a75b4bb813ed",
- 68 |       "060": "4725b5c681f672bb8bd8441825396b7a9291a461e4091c5f49c033a9091cae2d"
- 69 |     },
- 70 |     "yawn": {
- 71 |       "120": "340c0d9141251d139af36a0c670b4417d5ef6abd392592ef17f98d46bb1e53a6",
- 72 |       "000": "1dd28f20c9b5f0580cd8aa5916225ab4ed2425b7ab4639490790f42869ea3084",
- 73 |       "060": "08268c29b304f66ec1cbc8c9f2663ea980fdfd10e4108179a76357f8a8e39639"
- 74 |     },
- 75 |     "click_angry": {
- 76 |       "120": "50754a67db410ef373d596fee93ab8059822b8c521762f66ed5be69910d3d61a",
- 77 |       "000": "d4ebbcc5e0702a8fd9c3d3bcb2c40425f7efabb8da868cad2b4c031982dc29e5",
- 78 |       "060": "6eee20937085a0f00337f40ca3722557a4cb7ae359739927de0686c64fdf8787"
- 79 |     },
- 80 |     "sleep_down": {
- 81 |       "120": "48775ae80cbedc15a0fbbbe3de97b7f962ae38db0c4e3f6f0fab4d8fe42a2829",
- 82 |       "000": "a498c7ca279bf7c3012714d0914806529cfbc7138faa50b862b269527432781a",
- 83 |       "060": "9112d005ce5a1682498bcaefd8af57f2dcdf69e26682fe2929cc11d9261f6735"
- 84 |     },
- 85 |     "drag_reaction": {
- 86 |       "120": "9461f31b4d7831346e23dab6135f075c23c01f0e5dbf314ce815ad8eb80a6f70",
- 87 |       "000": "ed5e0a9bcb47ccea5fe7b4ebac1cb1df842f992c0a0aba94a040e856cbb5d8a7",
- 88 |       "060": "a5f0e8d4fc89ea0ed3e849d7a90356a70ce668de871a8acb66a2d92d737f613e"
- 89 |     },
- 90 |     "startle": {
- 91 |       "120": "edbeda75898b1e417ba2412d04283f15b5caf79f1520f26ef54441950ac51fb9",
- 92 |       "000": "053f5840d9440f5d83391ec2abaf0003dd1a4a0a5ef52cf3eeb66e51ba8e8f05",
- 93 |       "060": "439cfa3b638221bc3308b0d4179a36250f73254b852df45d910f9bbdbd5a13dc"
- 94 |     },
- 95 |     "yawn_small": {
- 96 |       "120": "96efc85be24961dc4d5adedb4084f15ea2733d3cf715669cf0c6746c88cb61cc",
- 97 |       "000": "0b128c653399c38c22294567ee4e4851abd1c0475b1017c10ba4b118f46e23bc",
- 98 |       "060": "3b2005fa52eed451f72989049fe58ce5d0919cdeb94ea9e7898960b8e3bb2897"
- 99 |     },
+{
+  "schema_version": 10,
+  "description": "Approved visual baseline with fixed ordinary action scale, sleep-loop watermark cleanup using protected character/Zzz silhouette plus combined gray-cyan and gray-brown residual filtering, and wake-up scale derived from the time-aligned reverse sleep-down physical-size trajectory. Wake-up frame 0 matches sleep-loop, allows only mild early shrink to compensate source zoom, bounds per-frame scale changes, and fixes standing scale from frame 65 onward.",
+  "min_reference_fill_ratio": {
+    "idle": 0.58,
+    "click_happy": 0.58,
+    "click_shy": 0.58,
+    "march_in_place": 0.58,
+    "sleepy": 0.57,
+    "yawn": 0.57,
+    "click_angry": 0.58,
+    "sleep_down": 0.55,
+    "drag_reaction": 0.58,
+    "startle": 0.57,
+    "yawn_small": 0.57,
+    "game_rage": 0.58,
+    "click_wave": 0.58,
+    "wake_up": 0.45,
+    "sleep_loop": 0.45,
+    "sing": 0.58,
+    "game_controller": 0.58,
+    "read_book": 0.57,
+    "watch_kline": 0.58,
+    "drink_milk_tea": 0.57,
+    "work_computer": 0.58,
+    "lie_phone": 0.58,
+    "walk_left": 0.58,
+    "walk_right": 0.58,
+    "mic_test": 0.58,
+    "cat_accident": 0.58,
+    "unbox_cards": 0.55,
+    "pc_game_rage": 0.53,
+    "sunglasses_proud": 0.55,
+    "pc_game_focused": 0.46,
+    "hop_bounce": 0.55,
+    "birthday_cake": 0.58,
+    "eat_noodles": 0.58,
+    "eat_fried_chicken": 0.58,
+    "eat_sushi": 0.58,
+    "eat_breakfast": 0.58,
+    "eat_bullfrog": 0.58,
+    "eat_fries": 0.58
+  },
+  "rgba_sha256": {
+    "idle": {
+      "120": "e2c9002fea41a3eb20b424aa51143b2c8afd88abf09f9be31df17e028be9feb2",
+      "000": "841d502e071adb8cabcf58a3e3c6142735c927923329b016fb242d7cf18cf2dc",
+      "060": "2b7e3102fe1576f375cf0dd6b22ba3a319cc51fdf16deb0a9f068be00b3e911e"
+    },
+    "click_happy": {
+      "120": "7613facfca9db78447a40c9cc87d309a88e3fa455199e749301eb22d3c4f8675",
+      "000": "65d4e598968e3a9a47cf5a4f693da33847e3d6a4029e5f925416c5c7e08a154b",
+      "060": "9178e088a179eaa66e6a12051359344018d28a4e14d5c5d7a9c11c45ccd8aa86"
+    },
+    "click_shy": {
+      "120": "8b8e3c81304d8605d814308a96811ace958603dcf741dd241745363951a51575",
+      "000": "98818f2f52eb37038a4ce748f873f71192bdd1cb59d57c65a5769d632af63efe",
+      "060": "d89b390b723762a43de449a5aa10e22ce5d2b364eda99e4621ba6df1f9e3ecec"
+    },
+    "march_in_place": {
+      "120": "04d11297bc685949e21a005af032d8c57026877e5af211804911baca9fc07c73",
+      "000": "2b8cd30b98e1bad2f73be2f118910713cb6fadd169b0ff4c73566c13237feace",
+      "060": "bffaecb67d6043e1c94b77525e4246689547d6765267c6c14f3b40814c51c871"
+    },
+    "sleepy": {
+      "120": "064907f309fcb73b4b01251114f3127d981ebb743d2f48fedd2e40b522b8b7a0",
+      "000": "b603e9d8938de39e66a867517fcccbdd482a93349cc2d46247b2a75b4bb813ed",
+      "060": "4725b5c681f672bb8bd8441825396b7a9291a461e4091c5f49c033a9091cae2d"
+    },
+    "yawn": {
+      "120": "340c0d9141251d139af36a0c670b4417d5ef6abd392592ef17f98d46bb1e53a6",
+      "000": "1dd28f20c9b5f0580cd8aa5916225ab4ed2425b7ab4639490790f42869ea3084",
+      "060": "08268c29b304f66ec1cbc8c9f2663ea980fdfd10e4108179a76357f8a8e39639"
+    },
+    "click_angry": {
+      "120": "50754a67db410ef373d596fee93ab8059822b8c521762f66ed5be69910d3d61a",
+      "000": "d4ebbcc5e0702a8fd9c3d3bcb2c40425f7efabb8da868cad2b4c031982dc29e5",
+      "060": "6eee20937085a0f00337f40ca3722557a4cb7ae359739927de0686c64fdf8787"
+    },
+    "sleep_down": {
+      "120": "48775ae80cbedc15a0fbbbe3de97b7f962ae38db0c4e3f6f0fab4d8fe42a2829",
+      "000": "a498c7ca279bf7c3012714d0914806529cfbc7138faa50b862b269527432781a",
+      "060": "9112d005ce5a1682498bcaefd8af57f2dcdf69e26682fe2929cc11d9261f6735"
+    },
+    "drag_reaction": {
+      "120": "9461f31b4d7831346e23dab6135f075c23c01f0e5dbf314ce815ad8eb80a6f70",
+      "000": "ed5e0a9bcb47ccea5fe7b4ebac1cb1df842f992c0a0aba94a040e856cbb5d8a7",
+      "060": "a5f0e8d4fc89ea0ed3e849d7a90356a70ce668de871a8acb66a2d92d737f613e"
+    },
+    "startle": {
+      "120": "edbeda75898b1e417ba2412d04283f15b5caf79f1520f26ef54441950ac51fb9",
+      "000": "053f5840d9440f5d83391ec2abaf0003dd1a4a0a5ef52cf3eeb66e51ba8e8f05",
+      "060": "439cfa3b638221bc3308b0d4179a36250f73254b852df45d910f9bbdbd5a13dc"
+    },
+    "yawn_small": {
+      "120": "96efc85be24961dc4d5adedb4084f15ea2733d3cf715669cf0c6746c88cb61cc",
+      "000": "0b128c653399c38c22294567ee4e4851abd1c0475b1017c10ba4b118f46e23bc",
+      "060": "3b2005fa52eed451f72989049fe58ce5d0919cdeb94ea9e7898960b8e3bb2897"
+    },
     "game_rage": {
       "120": "2ffac279726c7f96a7069a31de6f7a4191314c16c01ad6216242ede113f53606",
       "000": "00c14c91929a88ae068b97476c139b491a6a9f2bb2d1f8ddebe3a116462241bc",

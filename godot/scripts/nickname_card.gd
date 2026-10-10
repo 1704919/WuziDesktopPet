@@ -1,12 +1,12 @@
- 1 | extends "res://scripts/popup_card_controller.gd"
- 2 | 
- 3 | signal nickname_submitted(text: String)
- 4 | 
- 5 | const InputGuard = preload("res://scripts/input_guard.gd")
- 6 | 
- 7 | @onready var nickname_input: LineEdit = $Card/Margin/Content/NicknameInput
- 8 | @onready var hint: Label = $Card/Margin/Content/Hint
- 9 | 
+extends "res://scripts/popup_card_controller.gd"
+
+signal nickname_submitted(text: String)
+
+const InputGuard = preload("res://scripts/input_guard.gd")
+
+@onready var nickname_input: LineEdit = $Card/Margin/Content/NicknameInput
+@onready var hint: Label = $Card/Margin/Content/Hint
+
 
 func _ready() -> void:
 	super._ready()

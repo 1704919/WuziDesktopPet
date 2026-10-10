@@ -1,12 +1,12 @@
- 1 | extends Node
- 2 | 
- 3 | const InputGuard = preload("res://scripts/input_guard.gd")
- 4 | const SETTINGS_PATH := "user://wuzi_pet_settings.json"
- 5 | 
- 6 | var data: Dictionary = {
- 7 | 	"window_position": null,
- 8 | 	"reminders_enabled": true,
- 9 | 	"random_actions_paused": false,
+extends Node
+
+const InputGuard = preload("res://scripts/input_guard.gd")
+const SETTINGS_PATH := "user://wuzi_pet_settings.json"
+
+var data: Dictionary = {
+	"window_position": null,
+	"reminders_enabled": true,
+	"random_actions_paused": false,
 	"roaming_enabled": true,
 	"last_birthday_auto_trigger_year": -1
 }

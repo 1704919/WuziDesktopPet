@@ -1,102 +1,102 @@
-  1 | {
-  2 |   "schema_version": 10,
-  3 |   "source": "分享区/Q版/绿幕视频/角色自然待机动画生成.mp4",
-  4 |   "source_size": [
-  5 |     1280,
-  6 |     720
-  7 |   ],
-  8 |   "source_fps": 24.0,
-  9 |   "source_frame_count": 241,
- 10 |   "output_fps": 12.0,
- 11 |   "frame_count": 121,
- 12 |   "duration_sec": 10.083333333333334,
- 13 |   "canvas": [
- 14 |     480,
- 15 |     360
- 16 |   ],
- 17 |   "watermark_cleanup": {
- 18 |     "clear_left_margin_px": 0,
- 19 |     "clear_right_margin_px": 0,
- 20 |     "component_filter_grid": [
- 21 |       160,
- 22 |       90
- 23 |     ],
- 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
- 25 |   },
- 26 |   "key": {
- 27 |     "method": "edge_median_distance_initial",
- 28 |     "alpha_start": 18.0,
- 29 |     "alpha_range": 30.0,
- 30 |     "background_rule": "single edge-median background color; per-action exceptions are handled separately"
- 31 |   },
- 32 |   "transform": {
- 33 |     "source_center_x": 652.0,
- 34 |     "source_bottom_y": 686.0,
- 35 |     "source_visible_height": 622.0,
- 36 |     "source_visible_width": 480.0,
- 37 |     "identity_core_width": 248.0,
- 38 |     "target_identity_core_width": 87.71704180064309,
- 39 |     "scale_x": 0.3536977491961415,
- 40 |     "scale_y": 0.3536977491961415,
- 41 |     "target_visible_width": 169.7749196141479,
- 42 |     "target_visible_height": 220.0,
- 43 |     "target_center_x": 240.0,
- 44 |     "target_bottom_y": 338.0
- 45 |   },
- 46 |   "visual_scale_normalization": {
- 47 |     "mode": "idle_reference",
- 48 |     "target_face_height": 95.85209003215435,
- 49 |     "multiplier_min": 1.0,
- 50 |     "multiplier_max": 1.0,
- 51 |     "multiplier_median": 1.0,
- 52 |     "sleep_chain_scales": {}
- 53 |   },
- 54 |   "canvas_fit": {
- 55 |     "scale": 1.0,
- 56 |     "shift": [
- 57 |       0,
- 58 |       0
- 59 |     ],
- 60 |     "margin": 8
- 61 |   },
- 62 |   "color_normalization": {
- 63 |     "reference_action": "idle",
- 64 |     "source_palette": {
- 65 |       "all": [
- 66 |         146.48257446289062,
- 67 |         125.84207916259766,
- 68 |         160.51023864746094
- 69 |       ],
- 70 |       "blue": [
- 71 |         113.85511016845703,
- 72 |         127.36907958984375,
- 73 |         216.15745544433594
- 74 |       ],
- 75 |       "pink": [
- 76 |         181.8593292236328,
- 77 |         116.3051528930664,
- 78 |         120.91071319580078
- 79 |       ],
- 80 |       "pale": [
- 81 |         224.34375,
- 82 |         186.5919952392578,
- 83 |         188.96937561035156
- 84 |       ]
- 85 |     },
- 86 |     "correction": {
- 87 |       "enabled": false,
- 88 |       "slope": [
- 89 |         1.0,
- 90 |         1.0,
- 91 |         1.0
- 92 |       ],
- 93 |       "offset": [
- 94 |         0.0,
- 95 |         0.0,
- 96 |         0.0
- 97 |       ],
- 98 |       "labels": [
- 99 |         "all",
+{
+  "schema_version": 10,
+  "source": "分享区/Q版/绿幕视频/角色自然待机动画生成.mp4",
+  "source_size": [
+    1280,
+    720
+  ],
+  "source_fps": 24.0,
+  "source_frame_count": 241,
+  "output_fps": 12.0,
+  "frame_count": 121,
+  "duration_sec": 10.083333333333334,
+  "canvas": [
+    480,
+    360
+  ],
+  "watermark_cleanup": {
+    "clear_left_margin_px": 0,
+    "clear_right_margin_px": 0,
+    "component_filter_grid": [
+      160,
+      90
+    ],
+    "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+  },
+  "key": {
+    "method": "edge_median_distance_initial",
+    "alpha_start": 18.0,
+    "alpha_range": 30.0,
+    "background_rule": "single edge-median background color; per-action exceptions are handled separately"
+  },
+  "transform": {
+    "source_center_x": 652.0,
+    "source_bottom_y": 686.0,
+    "source_visible_height": 622.0,
+    "source_visible_width": 480.0,
+    "identity_core_width": 248.0,
+    "target_identity_core_width": 87.71704180064309,
+    "scale_x": 0.3536977491961415,
+    "scale_y": 0.3536977491961415,
+    "target_visible_width": 169.7749196141479,
+    "target_visible_height": 220.0,
+    "target_center_x": 240.0,
+    "target_bottom_y": 338.0
+  },
+  "visual_scale_normalization": {
+    "mode": "idle_reference",
+    "target_face_height": 95.85209003215435,
+    "multiplier_min": 1.0,
+    "multiplier_max": 1.0,
+    "multiplier_median": 1.0,
+    "sleep_chain_scales": {}
+  },
+  "canvas_fit": {
+    "scale": 1.0,
+    "shift": [
+      0,
+      0
+    ],
+    "margin": 8
+  },
+  "color_normalization": {
+    "reference_action": "idle",
+    "source_palette": {
+      "all": [
+        146.48257446289062,
+        125.84207916259766,
+        160.51023864746094
+      ],
+      "blue": [
+        113.85511016845703,
+        127.36907958984375,
+        216.15745544433594
+      ],
+      "pink": [
+        181.8593292236328,
+        116.3051528930664,
+        120.91071319580078
+      ],
+      "pale": [
+        224.34375,
+        186.5919952392578,
+        188.96937561035156
+      ]
+    },
+    "correction": {
+      "enabled": false,
+      "slope": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "labels": [
+        "all",
         "blue",
         "pink",
         "pale"

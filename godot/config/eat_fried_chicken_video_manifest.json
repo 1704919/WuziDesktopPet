@@ -1,102 +1,102 @@
-  1 | {
-  2 |   "schema_version": 10,
-  3 |   "source": "分享区/Q版/绿幕视频/吃炸鸡.mp4",
-  4 |   "source_size": [
-  5 |     1280,
-  6 |     720
-  7 |   ],
-  8 |   "source_fps": 24.0,
-  9 |   "source_frame_count": 241,
- 10 |   "output_fps": 12.0,
- 11 |   "frame_count": 121,
- 12 |   "duration_sec": 10.083333333333334,
- 13 |   "canvas": [
- 14 |     480,
- 15 |     360
- 16 |   ],
- 17 |   "watermark_cleanup": {
- 18 |     "clear_left_margin_px": 0,
- 19 |     "clear_right_margin_px": 0,
- 20 |     "component_filter_grid": [
- 21 |       160,
- 22 |       90
- 23 |     ],
- 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
- 25 |   },
- 26 |   "key": {
- 27 |     "method": "idle_protected_adaptive_green_chroma",
- 28 |     "background_rule": "green-dominant source colours only; neutral/gray colours are not background by themselves; approved processed-idle colours are protected",
- 29 |     "green_profile": {
- 30 |       "sample_frames": 9,
- 31 |       "sample_stride": 3,
- 32 |       "edge_ratio": 0.08,
- 33 |       "sampled_pixels": 922320,
- 34 |       "greenish_pixel_ratio": 0.7547033567525371,
- 35 |       "edge_greenish_pixel_ratio": 0.9520802721180562,
- 36 |       "green_strength_quantiles": {
- 37 |         "q05": 21.0,
- 38 |         "q10": 21.0,
- 39 |         "q25": 24.0,
- 40 |         "q50": 26.0,
- 41 |         "q75": 30.0,
- 42 |         "q90": 34.0,
- 43 |         "q95": 37.0
- 44 |       },
- 45 |       "soft_green_strength": 4.0,
- 46 |       "hard_green_strength": 12.0,
- 47 |       "palette_start_distance": 7.0,
- 48 |       "palette_range": 20.0,
- 49 |       "background_palette_rgb": [
- 50 |         [
- 51 |           120.0,
- 52 |           152.0,
- 53 |           88.0
- 54 |         ],
- 55 |         [
- 56 |           152.0,
- 57 |           184.0,
- 58 |           120.0
- 59 |         ],
- 60 |         [
- 61 |           152.0,
- 62 |           168.0,
- 63 |           120.0
- 64 |         ],
- 65 |         [
- 66 |           120.0,
- 67 |           152.0,
- 68 |           104.0
- 69 |         ],
- 70 |         [
- 71 |           136.0,
- 72 |           152.0,
- 73 |           104.0
- 74 |         ],
- 75 |         [
- 76 |           168.0,
- 77 |           184.0,
- 78 |           136.0
- 79 |         ],
- 80 |         [
- 81 |           136.0,
- 82 |           168.0,
- 83 |           104.0
- 84 |         ],
- 85 |         [
- 86 |           168.0,
- 87 |           184.0,
- 88 |           120.0
- 89 |         ],
- 90 |         [
- 91 |           136.0,
- 92 |           168.0,
- 93 |           120.0
- 94 |         ],
- 95 |         [
- 96 |           104.0,
- 97 |           152.0,
- 98 |           88.0
- 99 |         ],
+{
+  "schema_version": 10,
+  "source": "分享区/Q版/绿幕视频/吃炸鸡.mp4",
+  "source_size": [
+    1280,
+    720
+  ],
+  "source_fps": 24.0,
+  "source_frame_count": 241,
+  "output_fps": 12.0,
+  "frame_count": 121,
+  "duration_sec": 10.083333333333334,
+  "canvas": [
+    480,
+    360
+  ],
+  "watermark_cleanup": {
+    "clear_left_margin_px": 0,
+    "clear_right_margin_px": 0,
+    "component_filter_grid": [
+      160,
+      90
+    ],
+    "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+  },
+  "key": {
+    "method": "idle_protected_adaptive_green_chroma",
+    "background_rule": "green-dominant source colours only; neutral/gray colours are not background by themselves; approved processed-idle colours are protected",
+    "green_profile": {
+      "sample_frames": 9,
+      "sample_stride": 3,
+      "edge_ratio": 0.08,
+      "sampled_pixels": 922320,
+      "greenish_pixel_ratio": 0.7547033567525371,
+      "edge_greenish_pixel_ratio": 0.9520802721180562,
+      "green_strength_quantiles": {
+        "q05": 21.0,
+        "q10": 21.0,
+        "q25": 24.0,
+        "q50": 26.0,
+        "q75": 30.0,
+        "q90": 34.0,
+        "q95": 37.0
+      },
+      "soft_green_strength": 4.0,
+      "hard_green_strength": 12.0,
+      "palette_start_distance": 7.0,
+      "palette_range": 20.0,
+      "background_palette_rgb": [
+        [
+          120.0,
+          152.0,
+          88.0
+        ],
+        [
+          152.0,
+          184.0,
+          120.0
+        ],
+        [
+          152.0,
+          168.0,
+          120.0
+        ],
+        [
+          120.0,
+          152.0,
+          104.0
+        ],
+        [
+          136.0,
+          152.0,
+          104.0
+        ],
+        [
+          168.0,
+          184.0,
+          136.0
+        ],
+        [
+          136.0,
+          168.0,
+          104.0
+        ],
+        [
+          168.0,
+          184.0,
+          120.0
+        ],
+        [
+          136.0,
+          168.0,
+          120.0
+        ],
+        [
+          104.0,
+          152.0,
+          88.0
+        ],
         [
           152.0,
           184.0,

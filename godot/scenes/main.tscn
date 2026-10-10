@@ -1,102 +1,102 @@
-  1 | [gd_scene load_steps=23 format=3]
-  2 | 
-  3 | [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
-  4 | [ext_resource type="Script" path="res://scripts/settings_store.gd" id="3_settings"]
-  5 | [ext_resource type="Script" path="res://scripts/bubble_controller.gd" id="4_bubble"]
-  6 | [ext_resource type="Script" path="res://scripts/reminder_manager.gd" id="5_reminders"]
-  7 | [ext_resource type="Script" path="res://scripts/file_drop_manager.gd" id="6_files"]
-  8 | [ext_resource type="Script" path="res://scripts/action_registry.gd" id="7_actions"]
-  9 | [ext_resource type="Script" path="res://scripts/weather_manager.gd" id="8_weather"]
- 10 | [ext_resource type="Script" path="res://scripts/popup_card_controller.gd" id="9_popup"]
- 11 | [ext_resource type="Script" path="res://scripts/context_bubble_menu.gd" id="10_context"]
- 12 | [ext_resource type="Script" path="res://scripts/mood_manager.gd" id="11_mood"]
- 13 | [ext_resource type="Script" path="res://scripts/action_coordinator.gd" id="12_coordinator"]
- 14 | [ext_resource type="Script" path="res://scripts/mood_indicator.gd" id="13_mood_indicator"]
- 15 | [ext_resource type="Shader" path="res://shaders/packed_alpha_video.gdshader" id="14_video_shader"]
- 16 | 
- 17 | [sub_resource type="ShaderMaterial" id="PackedAlphaVideoMaterial"]
- 18 | shader = ExtResource("14_video_shader")
- 19 | 
- 20 | [sub_resource type="StyleBoxFlat" id="BubbleCard"]
- 21 | bg_color = Color(0.98, 0.975, 0.995, 0.99)
- 22 | border_width_left = 1
- 23 | border_width_top = 1
- 24 | border_width_right = 1
- 25 | border_width_bottom = 1
- 26 | border_color = Color(0.82, 0.79, 0.90, 0.9)
- 27 | corner_radius_top_left = 24
- 28 | corner_radius_top_right = 24
- 29 | corner_radius_bottom_right = 24
- 30 | corner_radius_bottom_left = 24
- 31 | shadow_color = Color(0.08, 0.06, 0.14, 0.24)
- 32 | shadow_size = 8
- 33 | shadow_offset = Vector2(0, 4)
- 34 | 
- 35 | [sub_resource type="StyleBoxFlat" id="WindowCard"]
- 36 | bg_color = Color(0.98, 0.975, 0.995, 0.99)
- 37 | border_width_left = 1
- 38 | border_width_top = 1
- 39 | border_width_right = 1
- 40 | border_width_bottom = 1
- 41 | border_color = Color(0.82, 0.79, 0.90, 0.9)
- 42 | corner_radius_top_left = 30
- 43 | corner_radius_top_right = 30
- 44 | corner_radius_bottom_right = 30
- 45 | corner_radius_bottom_left = 30
- 46 | shadow_color = Color(0.08, 0.06, 0.14, 0.26)
- 47 | shadow_size = 12
- 48 | shadow_offset = Vector2(0, 6)
- 49 | 
- 50 | [sub_resource type="StyleBoxFlat" id="InputBubbleCard"]
- 51 | bg_color = Color(0.945, 0.965, 0.995, 0.99)
- 52 | border_width_left = 1
- 53 | border_width_top = 1
- 54 | border_width_right = 1
- 55 | border_width_bottom = 1
- 56 | border_color = Color(0.67, 0.62, 0.84, 0.88)
- 57 | corner_radius_top_left = 26
- 58 | corner_radius_top_right = 26
- 59 | corner_radius_bottom_right = 26
- 60 | corner_radius_bottom_left = 26
- 61 | shadow_color = Color(0.08, 0.06, 0.14, 0.20)
- 62 | shadow_size = 8
- 63 | shadow_offset = Vector2(0, 4)
- 64 | 
- 65 | [sub_resource type="StyleBoxFlat" id="InputNormal"]
- 66 | bg_color = Color(0.93, 0.91, 0.96, 1)
- 67 | border_width_left = 1
- 68 | border_width_top = 1
- 69 | border_width_right = 1
- 70 | border_width_bottom = 1
- 71 | border_color = Color(0.76, 0.72, 0.84, 0.9)
- 72 | corner_radius_top_left = 20
- 73 | corner_radius_top_right = 20
- 74 | corner_radius_bottom_right = 20
- 75 | corner_radius_bottom_left = 20
- 76 | content_margin_left = 16.0
- 77 | content_margin_right = 16.0
- 78 | content_margin_top = 12.0
- 79 | content_margin_bottom = 12.0
- 80 | 
- 81 | [sub_resource type="StyleBoxFlat" id="InputFocus"]
- 82 | bg_color = Color(0.97, 0.96, 0.995, 1)
- 83 | border_width_left = 2
- 84 | border_width_top = 2
- 85 | border_width_right = 2
- 86 | border_width_bottom = 2
- 87 | border_color = Color(0.40, 0.31, 0.68, 1)
- 88 | corner_radius_top_left = 20
- 89 | corner_radius_top_right = 20
- 90 | corner_radius_bottom_right = 20
- 91 | corner_radius_bottom_left = 20
- 92 | content_margin_left = 15.0
- 93 | content_margin_right = 15.0
- 94 | content_margin_top = 11.0
- 95 | content_margin_bottom = 11.0
- 96 | 
- 97 | [sub_resource type="StyleBoxFlat" id="PrimaryButton"]
- 98 | bg_color = Color(0.40, 0.31, 0.68, 1)
- 99 | corner_radius_top_left = 20
+[gd_scene load_steps=23 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/settings_store.gd" id="3_settings"]
+[ext_resource type="Script" path="res://scripts/bubble_controller.gd" id="4_bubble"]
+[ext_resource type="Script" path="res://scripts/reminder_manager.gd" id="5_reminders"]
+[ext_resource type="Script" path="res://scripts/file_drop_manager.gd" id="6_files"]
+[ext_resource type="Script" path="res://scripts/action_registry.gd" id="7_actions"]
+[ext_resource type="Script" path="res://scripts/weather_manager.gd" id="8_weather"]
+[ext_resource type="Script" path="res://scripts/popup_card_controller.gd" id="9_popup"]
+[ext_resource type="Script" path="res://scripts/context_bubble_menu.gd" id="10_context"]
+[ext_resource type="Script" path="res://scripts/mood_manager.gd" id="11_mood"]
+[ext_resource type="Script" path="res://scripts/action_coordinator.gd" id="12_coordinator"]
+[ext_resource type="Script" path="res://scripts/mood_indicator.gd" id="13_mood_indicator"]
+[ext_resource type="Shader" path="res://shaders/packed_alpha_video.gdshader" id="14_video_shader"]
+
+[sub_resource type="ShaderMaterial" id="PackedAlphaVideoMaterial"]
+shader = ExtResource("14_video_shader")
+
+[sub_resource type="StyleBoxFlat" id="BubbleCard"]
+bg_color = Color(0.98, 0.975, 0.995, 0.99)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.82, 0.79, 0.90, 0.9)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0.08, 0.06, 0.14, 0.24)
+shadow_size = 8
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="WindowCard"]
+bg_color = Color(0.98, 0.975, 0.995, 0.99)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.82, 0.79, 0.90, 0.9)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+shadow_color = Color(0.08, 0.06, 0.14, 0.26)
+shadow_size = 12
+shadow_offset = Vector2(0, 6)
+
+[sub_resource type="StyleBoxFlat" id="InputBubbleCard"]
+bg_color = Color(0.945, 0.965, 0.995, 0.99)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.67, 0.62, 0.84, 0.88)
+corner_radius_top_left = 26
+corner_radius_top_right = 26
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 26
+shadow_color = Color(0.08, 0.06, 0.14, 0.20)
+shadow_size = 8
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="InputNormal"]
+bg_color = Color(0.93, 0.91, 0.96, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.76, 0.72, 0.84, 0.9)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="InputFocus"]
+bg_color = Color(0.97, 0.96, 0.995, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.40, 0.31, 0.68, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+content_margin_left = 15.0
+content_margin_right = 15.0
+content_margin_top = 11.0
+content_margin_bottom = 11.0
+
+[sub_resource type="StyleBoxFlat" id="PrimaryButton"]
+bg_color = Color(0.40, 0.31, 0.68, 1)
+corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20

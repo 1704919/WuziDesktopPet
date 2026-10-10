@@ -1,102 +1,102 @@
-  1 | extends Control
-  2 | 
-  3 | signal item_selected(id: int)
-  4 | signal interactive_changed(enabled: bool)
-  5 | 
-  6 | @onready var card: PanelContainer = $Card
-  7 | @onready var items_box: VBoxContainer = $Card/Margin/Items
-  8 | 
-  9 | var _active_tween: Tween
- 10 | var _base_position := Vector2.ZERO
- 11 | 
- 12 | 
- 13 | func _ready() -> void:
- 14 | 	hide()
- 15 | 
- 16 | 
- 17 | func open_menu(items: Array, at_position: Vector2, window_size: Vector2) -> void:
- 18 | 	_rebuild(items)
- 19 | 
- 20 | 	if _active_tween != null and _active_tween.is_valid():
- 21 | 		_active_tween.kill()
- 22 | 
- 23 | 	show()
- 24 | 	modulate.a = 0.0
- 25 | 	card.reset_size()
- 26 | 	items_box.reset_size()
- 27 | 
- 28 | 	var min_size := card.get_combined_minimum_size()
- 29 | 	var target_size := Vector2(maxf(202.0, min_size.x), min_size.y)
- 30 | 	size = target_size
- 31 | 	card.size = target_size
- 32 | 
- 33 | 	var x := clampf(
- 34 | 		at_position.x,
- 35 | 		8.0,
- 36 | 		maxf(8.0, window_size.x - target_size.x - 8.0)
- 37 | 	)
- 38 | 	var y := clampf(
- 39 | 		at_position.y,
- 40 | 		8.0,
- 41 | 		maxf(8.0, window_size.y - target_size.y - 8.0)
- 42 | 	)
- 43 | 	_base_position = Vector2(round(x), round(y))
- 44 | 	position = _base_position + Vector2(0.0, 4.0)
- 45 | 	scale = Vector2(0.97, 0.97)
- 46 | 	pivot_offset = size * Vector2(0.45, 0.22)
- 47 | 	interactive_changed.emit(true)
- 48 | 
- 49 | 	_active_tween = create_tween()
- 50 | 	_active_tween.set_parallel(true)
- 51 | 	_active_tween.set_trans(Tween.TRANS_BACK)
- 52 | 	_active_tween.set_ease(Tween.EASE_OUT)
- 53 | 	_active_tween.tween_property(self, "scale", Vector2.ONE, 0.13)
- 54 | 	_active_tween.tween_property(self, "position", _base_position, 0.11)
- 55 | 	_active_tween.tween_property(self, "modulate:a", 1.0, 0.08)
- 56 | 
- 57 | 
- 58 | func hide_menu(animated: bool = true) -> void:
- 59 | 	if not visible:
- 60 | 		interactive_changed.emit(false)
- 61 | 		return
- 62 | 
- 63 | 	if _active_tween != null and _active_tween.is_valid():
- 64 | 		_active_tween.kill()
- 65 | 
- 66 | 	if not animated:
- 67 | 		hide()
- 68 | 		scale = Vector2.ONE
- 69 | 		modulate.a = 1.0
- 70 | 		interactive_changed.emit(false)
- 71 | 		return
- 72 | 
- 73 | 	_active_tween = create_tween()
- 74 | 	_active_tween.set_parallel(true)
- 75 | 	_active_tween.set_trans(Tween.TRANS_QUAD)
- 76 | 	_active_tween.set_ease(Tween.EASE_IN)
- 77 | 	_active_tween.tween_property(
- 78 | 		self,
- 79 | 		"scale",
- 80 | 		Vector2(0.985, 0.985),
- 81 | 		0.07
- 82 | 	)
- 83 | 	_active_tween.tween_property(
- 84 | 		self,
- 85 | 		"position",
- 86 | 		_base_position + Vector2(0.0, -2.0),
- 87 | 		0.07
- 88 | 	)
- 89 | 	_active_tween.tween_property(self, "modulate:a", 0.0, 0.07)
- 90 | 	await _active_tween.finished
- 91 | 	hide()
- 92 | 	scale = Vector2.ONE
- 93 | 	modulate.a = 1.0
- 94 | 	interactive_changed.emit(false)
- 95 | 
- 96 | 
- 97 | func contains_point(local_point: Vector2) -> bool:
- 98 | 	return Rect2(position, size).has_point(local_point)
- 99 | 
+extends Control
+
+signal item_selected(id: int)
+signal interactive_changed(enabled: bool)
+
+@onready var card: PanelContainer = $Card
+@onready var items_box: VBoxContainer = $Card/Margin/Items
+
+var _active_tween: Tween
+var _base_position := Vector2.ZERO
+
+
+func _ready() -> void:
+	hide()
+
+
+func open_menu(items: Array, at_position: Vector2, window_size: Vector2) -> void:
+	_rebuild(items)
+
+	if _active_tween != null and _active_tween.is_valid():
+		_active_tween.kill()
+
+	show()
+	modulate.a = 0.0
+	card.reset_size()
+	items_box.reset_size()
+
+	var min_size := card.get_combined_minimum_size()
+	var target_size := Vector2(maxf(202.0, min_size.x), min_size.y)
+	size = target_size
+	card.size = target_size
+
+	var x := clampf(
+		at_position.x,
+		8.0,
+		maxf(8.0, window_size.x - target_size.x - 8.0)
+	)
+	var y := clampf(
+		at_position.y,
+		8.0,
+		maxf(8.0, window_size.y - target_size.y - 8.0)
+	)
+	_base_position = Vector2(round(x), round(y))
+	position = _base_position + Vector2(0.0, 4.0)
+	scale = Vector2(0.97, 0.97)
+	pivot_offset = size * Vector2(0.45, 0.22)
+	interactive_changed.emit(true)
+
+	_active_tween = create_tween()
+	_active_tween.set_parallel(true)
+	_active_tween.set_trans(Tween.TRANS_BACK)
+	_active_tween.set_ease(Tween.EASE_OUT)
+	_active_tween.tween_property(self, "scale", Vector2.ONE, 0.13)
+	_active_tween.tween_property(self, "position", _base_position, 0.11)
+	_active_tween.tween_property(self, "modulate:a", 1.0, 0.08)
+
+
+func hide_menu(animated: bool = true) -> void:
+	if not visible:
+		interactive_changed.emit(false)
+		return
+
+	if _active_tween != null and _active_tween.is_valid():
+		_active_tween.kill()
+
+	if not animated:
+		hide()
+		scale = Vector2.ONE
+		modulate.a = 1.0
+		interactive_changed.emit(false)
+		return
+
+	_active_tween = create_tween()
+	_active_tween.set_parallel(true)
+	_active_tween.set_trans(Tween.TRANS_QUAD)
+	_active_tween.set_ease(Tween.EASE_IN)
+	_active_tween.tween_property(
+		self,
+		"scale",
+		Vector2(0.985, 0.985),
+		0.07
+	)
+	_active_tween.tween_property(
+		self,
+		"position",
+		_base_position + Vector2(0.0, -2.0),
+		0.07
+	)
+	_active_tween.tween_property(self, "modulate:a", 0.0, 0.07)
+	await _active_tween.finished
+	hide()
+	scale = Vector2.ONE
+	modulate.a = 1.0
+	interactive_changed.emit(false)
+
+
+func contains_point(local_point: Vector2) -> bool:
+	return Rect2(position, size).has_point(local_point)
+
 
 func _rebuild(items: Array) -> void:
 	for child in items_box.get_children():

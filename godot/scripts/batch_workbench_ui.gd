@@ -1,12 +1,12 @@
- 1 | extends RefCounted
- 2 | 
- 3 | const BatchWorkbenchTheme = preload("res://scripts/batch_workbench_theme.gd")
- 4 | 
- 5 | 
- 6 | static func add_section_title(parent: VBoxContainer, text: String) -> void:
- 7 | 	var label := Label.new()
- 8 | 	label.text = text
- 9 | 	label.add_theme_font_size_override("font_size", 15)
+extends RefCounted
+
+const BatchWorkbenchTheme = preload("res://scripts/batch_workbench_theme.gd")
+
+
+static func add_section_title(parent: VBoxContainer, text: String) -> void:
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 15)
 	label.add_theme_color_override("font_color", Color(0.31, 0.24, 0.44))
 	parent.add_child(label)
 

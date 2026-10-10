@@ -1,12 +1,12 @@
- 1 | from __future__ import annotations
- 2 | import json
- 3 | from pathlib import Path
- 4 | 
- 5 | from PIL import Image
- 6 | import imageio_ffmpeg
- 7 | 
- 8 | ROOT = Path(__file__).resolve().parents[1]
- 9 | VIDEO = ROOT / "分享区" / "Q版" / "绿幕视频" / "点击-开心.mp4"
+from __future__ import annotations
+import json
+from pathlib import Path
+
+from PIL import Image
+import imageio_ffmpeg
+
+ROOT = Path(__file__).resolve().parents[1]
+VIDEO = ROOT / "分享区" / "Q版" / "绿幕视频" / "点击-开心.mp4"
 OUT = ROOT / "work" / "greenscreen_debug"
 OUT.mkdir(parents=True, exist_ok=True)
 
