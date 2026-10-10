@@ -1,0 +1,183 @@
+  1 | {
+  2 |   "schema_version": 10,
+  3 |   "source": "分享区/Q版/绿幕视频/点击-傲娇生气.mp4",
+  4 |   "source_size": [
+  5 |     1280,
+  6 |     720
+  7 |   ],
+  8 |   "source_fps": 24.0,
+  9 |   "source_frame_count": 241,
+ 10 |   "output_fps": 12.0,
+ 11 |   "frame_count": 121,
+ 12 |   "duration_sec": 10.083333333333334,
+ 13 |   "canvas": [
+ 14 |     480,
+ 15 |     360
+ 16 |   ],
+ 17 |   "watermark_cleanup": {
+ 18 |     "clear_left_margin_px": 0,
+ 19 |     "clear_right_margin_px": 0,
+ 20 |     "component_filter_grid": [
+ 21 |       160,
+ 22 |       90
+ 23 |     ],
+ 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+ 25 |   },
+ 26 |   "key": {
+ 27 |     "method": "edge_median_distance_initial",
+ 28 |     "alpha_start": 18.0,
+ 29 |     "alpha_range": 30.0,
+ 30 |     "background_rule": "single edge-median background color; per-action exceptions are handled separately"
+ 31 |   },
+ 32 |   "transform": {
+ 33 |     "source_center_x": 644.0,
+ 34 |     "source_bottom_y": 704.0,
+ 35 |     "source_visible_height": 674.0,
+ 36 |     "source_visible_width": 504.0,
+ 37 |     "identity_core_width": 270.0,
+ 38 |     "target_identity_core_width": 87.71704180064309,
+ 39 |     "scale_x": 0.32273430987257357,
+ 40 |     "scale_y": 0.32273430987257357,
+ 41 |     "target_visible_width": 162.65809217577709,
+ 42 |     "target_visible_height": 217.5229248541146,
+ 43 |     "target_center_x": 240.0,
+ 44 |     "target_bottom_y": 338.0,
+ 45 |     "manual_scale_multiplier": 1.0,
+ 46 |     "source_face_height": 297.0,
+ 47 |     "target_face_height": 95.85209003215435,
+ 48 |     "fixed_scale": 0.32273430987257357
+ 49 |   },
+ 50 |   "visual_scale_normalization": {
+ 51 |     "mode": "fixed_action_face_height",
+ 52 |     "target_face_height": 95.85209003215435,
+ 53 |     "multiplier_min": 1.0,
+ 54 |     "multiplier_max": 1.0,
+ 55 |     "multiplier_median": 1.0,
+ 56 |     "sleep_chain_scales": {}
+ 57 |   },
+ 58 |   "canvas_fit": {
+ 59 |     "scale": 1.0,
+ 60 |     "shift": [
+ 61 |       0,
+ 62 |       0
+ 63 |     ],
+ 64 |     "margin": 8
+ 65 |   },
+ 66 |   "color_normalization": {
+ 67 |     "reference_action": "idle",
+ 68 |     "source_palette": {
+ 69 |       "all": [
+ 70 |         149.4352264404297,
+ 71 |         128.25086975097656,
+ 72 |         163.98764038085938
+ 73 |       ],
+ 74 |       "blue": [
+ 75 |         115.73224639892578,
+ 76 |         131.06292724609375,
+ 77 |         219.59886169433594
+ 78 |       ],
+ 79 |       "pink": [
+ 80 |         188.77102661132812,
+ 81 |         115.70887756347656,
+ 82 |         121.33223724365234
+ 83 |       ],
+ 84 |       "pale": [
+ 85 |         227.9818115234375,
+ 86 |         191.5608367919922,
+ 87 |         198.1553955078125
+ 88 |       ]
+ 89 |     },
+ 90 |     "correction": {
+ 91 |       "enabled": true,
+ 92 |       "slope": [
+ 93 |         0.9758927226066589,
+ 94 |         0.9444020390510559,
+ 95 |         0.9470399022102356
+ 96 |       ],
+ 97 |       "offset": [
+ 98 |         0.26492804288864136,
+ 99 |         5.256424903869629,
+        5.177127361297607
+      ],
+      "labels": [
+        "blue",
+        "pink",
+        "pale",
+        "all"
+      ]
+    },
+    "semantic_deltas": {
+      "blue": [
+        1.1745986938476562,
+        -1.13006591796875,
+        3.613555908203125
+      ],
+      "pink": [
+        -3.92822265625,
+        1.1363449096679688,
+        0.169952392578125
+      ],
+      "pale": [
+        0.26898193359375,
+        -1.0486602783203125,
+        -4.211944580078125
+      ]
+    },
+    "corrected_palette": {
+      "all": [
+        144.780029296875,
+        125.2149658203125,
+        160.6072235107422
+      ],
+      "blue": [
+        113.58805084228516,
+        126.59805297851562,
+        215.39883422851562
+      ],
+      "pink": [
+        182.9366912841797,
+        114.76343536376953,
+        120.36483001708984
+      ],
+      "pale": [
+        221.69778442382812,
+        186.77615356445312,
+        191.2671661376953
+      ]
+    }
+  },
+  "alpha_bbox_union": [
+    87,
+    116,
+    325,
+    338
+  ],
+  "min_canvas_margin_px": 22,
+  "hit_shape": {
+    "catalog": "res://config/video_hit_shapes.json",
+    "action_id": "click_angry_video",
+    "frame_count": 121,
+    "alpha_threshold": 72,
+    "padding_px": 7,
+    "row_step_px": 10
+  },
+  "runtime_video": {
+    "path": "assets_display/wuzi_chibi/video_click_angry/runtime_alpha.ogv",
+    "resource_path": "res://assets_display/wuzi_chibi/video_click_angry/runtime_alpha.ogv",
+    "codec": "theora",
+    "alpha_mode": "side_by_side_rgb_alpha",
+    "packed_size": [
+      960,
+      360
+    ],
+    "display_size": [
+      480,
+      360
+    ],
+    "fps": 12.0,
+    "frame_count": 121,
+    "bytes": 959820
+  },
+  "png_fallback_bytes": 7948579,
+  "ready_for_runtime": true
+}

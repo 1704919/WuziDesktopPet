@@ -1,0 +1,550 @@
+  1 | {
+  2 |   "schema_version": 10,
+  3 |   "source": "分享区/Q版/绿幕视频/喝奶茶.mp4",
+  4 |   "source_size": [
+  5 |     1280,
+  6 |     720
+  7 |   ],
+  8 |   "source_fps": 24.0,
+  9 |   "source_frame_count": 241,
+ 10 |   "output_fps": 12.0,
+ 11 |   "frame_count": 121,
+ 12 |   "duration_sec": 10.083333333333334,
+ 13 |   "canvas": [
+ 14 |     480,
+ 15 |     360
+ 16 |   ],
+ 17 |   "watermark_cleanup": {
+ 18 |     "clear_left_margin_px": 0,
+ 19 |     "clear_right_margin_px": 0,
+ 20 |     "component_filter_grid": [
+ 21 |       160,
+ 22 |       90
+ 23 |     ],
+ 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+ 25 |   },
+ 26 |   "key": {
+ 27 |     "method": "idle_protected_adaptive_green_chroma",
+ 28 |     "background_rule": "green-dominant source colours only; neutral/gray colours are not background by themselves; approved processed-idle colours are protected",
+ 29 |     "green_profile": {
+ 30 |       "sample_frames": 9,
+ 31 |       "sample_stride": 3,
+ 32 |       "edge_ratio": 0.08,
+ 33 |       "sampled_pixels": 922320,
+ 34 |       "greenish_pixel_ratio": 0.7589437505421112,
+ 35 |       "edge_greenish_pixel_ratio": 0.9548915116591392,
+ 36 |       "green_strength_quantiles": {
+ 37 |         "q05": 25.0,
+ 38 |         "q10": 28.0,
+ 39 |         "q25": 29.0,
+ 40 |         "q50": 31.0,
+ 41 |         "q75": 36.0,
+ 42 |         "q90": 41.0,
+ 43 |         "q95": 44.0
+ 44 |       },
+ 45 |       "soft_green_strength": 4.0,
+ 46 |       "hard_green_strength": 12.0,
+ 47 |       "palette_start_distance": 7.0,
+ 48 |       "palette_range": 20.0,
+ 49 |       "background_palette_rgb": [
+ 50 |         [
+ 51 |           104.0,
+ 52 |           136.0,
+ 53 |           88.0
+ 54 |         ],
+ 55 |         [
+ 56 |           88.0,
+ 57 |           136.0,
+ 58 |           88.0
+ 59 |         ],
+ 60 |         [
+ 61 |           136.0,
+ 62 |           168.0,
+ 63 |           120.0
+ 64 |         ],
+ 65 |         [
+ 66 |           120.0,
+ 67 |           152.0,
+ 68 |           104.0
+ 69 |         ],
+ 70 |         [
+ 71 |           152.0,
+ 72 |           184.0,
+ 73 |           136.0
+ 74 |         ],
+ 75 |         [
+ 76 |           104.0,
+ 77 |           136.0,
+ 78 |           104.0
+ 79 |         ],
+ 80 |         [
+ 81 |           152.0,
+ 82 |           168.0,
+ 83 |           120.0
+ 84 |         ],
+ 85 |         [
+ 86 |           152.0,
+ 87 |           184.0,
+ 88 |           120.0
+ 89 |         ],
+ 90 |         [
+ 91 |           120.0,
+ 92 |           136.0,
+ 93 |           104.0
+ 94 |         ],
+ 95 |         [
+ 96 |           136.0,
+ 97 |           152.0,
+ 98 |           120.0
+ 99 |         ],
+        [
+          88.0,
+          120.0,
+          72.0
+        ],
+        [
+          120.0,
+          152.0,
+          120.0
+        ],
+        [
+          88.0,
+          120.0,
+          88.0
+        ],
+        [
+          136.0,
+          152.0,
+          104.0
+        ],
+        [
+          88.0,
+          136.0,
+          72.0
+        ],
+        [
+          104.0,
+          152.0,
+          104.0
+        ]
+      ]
+    },
+    "character_protection": {
+      "sample_source": "processed_idle",
+      "sample_frames": 13,
+      "sample_stride": 2,
+      "alpha_min": 220,
+      "quant_step": 16,
+      "palette_bins": 320,
+      "expanded_lookup_bins": 757,
+      "bin_radius": 1,
+      "minimum_bin_count": 6,
+      "sampled_opaque_pixels": 73386,
+      "greenish_idle_pixels_rejected": 152,
+      "green_reject_strength": 4.0,
+      "family_bins": {
+        "blue_purple": 77,
+        "pink_red": 171,
+        "pale_skin_white": 25,
+        "dark_linework": 22,
+        "neutral_gray": 14,
+        "other": 11
+      },
+      "representative_rgb": [
+        [
+          120,
+          136,
+          232
+        ],
+        [
+          104,
+          120,
+          216
+        ],
+        [
+          104,
+          120,
+          232
+        ],
+        [
+          136,
+          152,
+          232
+        ],
+        [
+          120,
+          136,
+          216
+        ],
+        [
+          120,
+          120,
+          232
+        ],
+        [
+          120,
+          152,
+          232
+        ],
+        [
+          88,
+          104,
+          216
+        ],
+        [
+          120,
+          120,
+          216
+        ],
+        [
+          104,
+          104,
+          216
+        ],
+        [
+          136,
+          136,
+          232
+        ],
+        [
+          88,
+          104,
+          200
+        ],
+        [
+          136,
+          136,
+          216
+        ],
+        [
+          136,
+          152,
+          248
+        ],
+        [
+          120,
+          136,
+          248
+        ],
+        [
+          104,
+          120,
+          200
+        ],
+        [
+          152,
+          168,
+          248
+        ],
+        [
+          152,
+          168,
+          232
+        ],
+        [
+          136,
+          152,
+          216
+        ],
+        [
+          136,
+          168,
+          232
+        ],
+        [
+          104,
+          136,
+          232
+        ],
+        [
+          104,
+          104,
+          200
+        ],
+        [
+          120,
+          120,
+          200
+        ],
+        [
+          120,
+          152,
+          216
+        ],
+        [
+          104,
+          104,
+          232
+        ],
+        [
+          88,
+          120,
+          216
+        ],
+        [
+          104,
+          120,
+          184
+        ],
+        [
+          104,
+          136,
+          216
+        ],
+        [
+          88,
+          104,
+          184
+        ],
+        [
+          104,
+          104,
+          184
+        ],
+        [
+          104,
+          120,
+          168
+        ],
+        [
+          88,
+          88,
+          200
+        ],
+        [
+          104,
+          120,
+          152
+        ],
+        [
+          120,
+          136,
+          200
+        ],
+        [
+          88,
+          120,
+          200
+        ],
+        [
+          136,
+          168,
+          248
+        ],
+        [
+          120,
+          120,
+          184
+        ],
+        [
+          104,
+          104,
+          168
+        ],
+        [
+          72,
+          88,
+          200
+        ],
+        [
+          88,
+          104,
+          232
+        ],
+        [
+          136,
+          136,
+          200
+        ],
+        [
+          120,
+          120,
+          248
+        ],
+        [
+          120,
+          104,
+          184
+        ],
+        [
+          152,
+          152,
+          232
+        ],
+        [
+          152,
+          184,
+          248
+        ],
+        [
+          120,
+          104,
+          168
+        ],
+        [
+          136,
+          120,
+          200
+        ],
+        [
+          168,
+          184,
+          248
+        ]
+      ],
+      "recovery_filter": 11,
+      "recovery_bbox_pad": 48
+    }
+  },
+  "transform": {
+    "source_center_x": 649.0,
+    "source_bottom_y": 710.5,
+    "source_visible_height": 710.5,
+    "source_visible_width": 534.0,
+    "identity_core_width": 290.0,
+    "target_identity_core_width": 87.71704180064309,
+    "scale_x": 0.30924756875817383,
+    "scale_y": 0.30924756875817383,
+    "target_visible_width": 165.1382017168648,
+    "target_visible_height": 219.7203976026825,
+    "target_center_x": 240.0,
+    "target_bottom_y": 338.0,
+    "manual_scale_multiplier": 1.055,
+    "source_face_height": 327.0,
+    "target_face_height": 95.85209003215435,
+    "fixed_scale": 0.30924756875817383
+  },
+  "visual_scale_normalization": {
+    "mode": "fixed_action_face_height",
+    "target_face_height": 95.85209003215435,
+    "multiplier_min": 1.0,
+    "multiplier_max": 1.0,
+    "multiplier_median": 1.0,
+    "sleep_chain_scales": {}
+  },
+  "canvas_fit": {
+    "scale": 1.0,
+    "shift": [
+      0,
+      0
+    ],
+    "margin": 8
+  },
+  "color_normalization": {
+    "reference_action": "idle",
+    "source_palette": {
+      "all": [
+        146.65284729003906,
+        128.413818359375,
+        165.8961181640625
+      ],
+      "blue": [
+        113.02055358886719,
+        127.63651275634766,
+        219.21823120117188
+      ],
+      "pink": [
+        183.13558959960938,
+        118.8489990234375,
+        121.61404418945312
+      ],
+      "pale": [
+        223.36636352539062,
+        185.42733764648438,
+        186.9021759033203
+      ]
+    },
+    "correction": {
+      "enabled": true,
+      "slope": [
+        0.9989771246910095,
+        1.0500915050506592,
+        0.9929406642913818
+      ],
+      "offset": [
+        0.26170414686203003,
+        -8.071484565734863,
+        -0.5465537905693054
+      ],
+      "labels": [
+        "blue",
+        "pink",
+        "pale",
+        "all"
+      ]
+    },
+    "semantic_deltas": {
+      "blue": [
+        0.85003662109375,
+        1.8806610107421875,
+        -0.4305419921875
+      ],
+      "pink": [
+        0.24871826171875,
+        0.9264144897460938,
+        2.1022872924804688
+      ],
+      "pale": [
+        0.5760650634765625,
+        -1.2243804931640625,
+        3.0329437255859375
+      ]
+    },
+    "corrected_palette": {
+      "all": [
+        146.65476989746094,
+        126.50060272216797,
+        163.89683532714844
+      ],
+      "blue": [
+        113.02713012695312,
+        126.50933837890625,
+        215.67550659179688
+      ],
+      "pink": [
+        181.61207580566406,
+        115.3834228515625,
+        120.12391662597656
+      ],
+      "pale": [
+        223.67970275878906,
+        187.06309509277344,
+        187.50164794921875
+      ]
+    }
+  },
+  "alpha_bbox_union": [
+    154,
+    118,
+    331,
+    339
+  ],
+  "min_canvas_margin_px": 21,
+  "hit_shape": {
+    "catalog": "res://config/video_hit_shapes.json",
+    "action_id": "drink_milk_tea_video",
+    "frame_count": 121,
+    "alpha_threshold": 72,
+    "padding_px": 7,
+    "row_step_px": 10
+  },
+  "runtime_video": {
+    "path": "assets_display/wuzi_chibi/video_drink_milk_tea/runtime_alpha.ogv",
+    "resource_path": "res://assets_display/wuzi_chibi/video_drink_milk_tea/runtime_alpha.ogv",
+    "codec": "theora",
+    "alpha_mode": "side_by_side_rgb_alpha",
+    "packed_size": [
+      960,
+      360
+    ],
+    "display_size": [
+      480,
+      360
+    ],
+    "fps": 12.0,
+    "frame_count": 121,
+    "bytes": 1451644
+  },
+  "png_fallback_bytes": 8661393,
+  "ready_for_runtime": true
+}

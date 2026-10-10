@@ -1,0 +1,550 @@
+  1 | {
+  2 |   "schema_version": 10,
+  3 |   "source": "分享区/Q版/绿幕视频/吃生日蛋糕.mp4",
+  4 |   "source_size": [
+  5 |     1280,
+  6 |     720
+  7 |   ],
+  8 |   "source_fps": 24.0,
+  9 |   "source_frame_count": 241,
+ 10 |   "output_fps": 12.0,
+ 11 |   "frame_count": 121,
+ 12 |   "duration_sec": 10.083333333333334,
+ 13 |   "canvas": [
+ 14 |     480,
+ 15 |     360
+ 16 |   ],
+ 17 |   "watermark_cleanup": {
+ 18 |     "clear_left_margin_px": 0,
+ 19 |     "clear_right_margin_px": 0,
+ 20 |     "component_filter_grid": [
+ 21 |       160,
+ 22 |       90
+ 23 |     ],
+ 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+ 25 |   },
+ 26 |   "key": {
+ 27 |     "method": "idle_protected_adaptive_green_chroma",
+ 28 |     "background_rule": "green-dominant source colours only; neutral/gray colours are not background by themselves; approved processed-idle colours are protected",
+ 29 |     "green_profile": {
+ 30 |       "sample_frames": 9,
+ 31 |       "sample_stride": 3,
+ 32 |       "edge_ratio": 0.08,
+ 33 |       "sampled_pixels": 922320,
+ 34 |       "greenish_pixel_ratio": 0.7681422933472114,
+ 35 |       "edge_greenish_pixel_ratio": 0.9580559900506271,
+ 36 |       "green_strength_quantiles": {
+ 37 |         "q05": 24.0,
+ 38 |         "q10": 26.0,
+ 39 |         "q25": 26.0,
+ 40 |         "q50": 30.0,
+ 41 |         "q75": 35.0,
+ 42 |         "q90": 38.0,
+ 43 |         "q95": 41.0
+ 44 |       },
+ 45 |       "soft_green_strength": 4.0,
+ 46 |       "hard_green_strength": 12.0,
+ 47 |       "palette_start_distance": 7.0,
+ 48 |       "palette_range": 20.0,
+ 49 |       "background_palette_rgb": [
+ 50 |         [
+ 51 |           120.0,
+ 52 |           152.0,
+ 53 |           104.0
+ 54 |         ],
+ 55 |         [
+ 56 |           104.0,
+ 57 |           152.0,
+ 58 |           88.0
+ 59 |         ],
+ 60 |         [
+ 61 |           136.0,
+ 62 |           168.0,
+ 63 |           120.0
+ 64 |         ],
+ 65 |         [
+ 66 |           152.0,
+ 67 |           184.0,
+ 68 |           136.0
+ 69 |         ],
+ 70 |         [
+ 71 |           120.0,
+ 72 |           152.0,
+ 73 |           88.0
+ 74 |         ],
+ 75 |         [
+ 76 |           152.0,
+ 77 |           168.0,
+ 78 |           120.0
+ 79 |         ],
+ 80 |         [
+ 81 |           152.0,
+ 82 |           184.0,
+ 83 |           120.0
+ 84 |         ],
+ 85 |         [
+ 86 |           104.0,
+ 87 |           136.0,
+ 88 |           88.0
+ 89 |         ],
+ 90 |         [
+ 91 |           136.0,
+ 92 |           152.0,
+ 93 |           104.0
+ 94 |         ],
+ 95 |         [
+ 96 |           136.0,
+ 97 |           168.0,
+ 98 |           104.0
+ 99 |         ],
+        [
+          120.0,
+          136.0,
+          104.0
+        ],
+        [
+          120.0,
+          136.0,
+          88.0
+        ],
+        [
+          168.0,
+          184.0,
+          136.0
+        ],
+        [
+          136.0,
+          152.0,
+          120.0
+        ],
+        [
+          152.0,
+          168.0,
+          136.0
+        ],
+        [
+          88.0,
+          136.0,
+          72.0
+        ]
+      ]
+    },
+    "character_protection": {
+      "sample_source": "processed_idle",
+      "sample_frames": 13,
+      "sample_stride": 2,
+      "alpha_min": 220,
+      "quant_step": 16,
+      "palette_bins": 320,
+      "expanded_lookup_bins": 757,
+      "bin_radius": 1,
+      "minimum_bin_count": 6,
+      "sampled_opaque_pixels": 73386,
+      "greenish_idle_pixels_rejected": 152,
+      "green_reject_strength": 4.0,
+      "family_bins": {
+        "blue_purple": 77,
+        "pink_red": 171,
+        "pale_skin_white": 25,
+        "dark_linework": 22,
+        "neutral_gray": 14,
+        "other": 11
+      },
+      "representative_rgb": [
+        [
+          120,
+          136,
+          232
+        ],
+        [
+          104,
+          120,
+          216
+        ],
+        [
+          104,
+          120,
+          232
+        ],
+        [
+          136,
+          152,
+          232
+        ],
+        [
+          120,
+          136,
+          216
+        ],
+        [
+          120,
+          120,
+          232
+        ],
+        [
+          120,
+          152,
+          232
+        ],
+        [
+          88,
+          104,
+          216
+        ],
+        [
+          120,
+          120,
+          216
+        ],
+        [
+          104,
+          104,
+          216
+        ],
+        [
+          136,
+          136,
+          232
+        ],
+        [
+          88,
+          104,
+          200
+        ],
+        [
+          136,
+          136,
+          216
+        ],
+        [
+          136,
+          152,
+          248
+        ],
+        [
+          120,
+          136,
+          248
+        ],
+        [
+          104,
+          120,
+          200
+        ],
+        [
+          152,
+          168,
+          248
+        ],
+        [
+          152,
+          168,
+          232
+        ],
+        [
+          136,
+          152,
+          216
+        ],
+        [
+          136,
+          168,
+          232
+        ],
+        [
+          104,
+          136,
+          232
+        ],
+        [
+          104,
+          104,
+          200
+        ],
+        [
+          120,
+          120,
+          200
+        ],
+        [
+          120,
+          152,
+          216
+        ],
+        [
+          104,
+          104,
+          232
+        ],
+        [
+          88,
+          120,
+          216
+        ],
+        [
+          104,
+          120,
+          184
+        ],
+        [
+          104,
+          136,
+          216
+        ],
+        [
+          88,
+          104,
+          184
+        ],
+        [
+          104,
+          104,
+          184
+        ],
+        [
+          104,
+          120,
+          168
+        ],
+        [
+          88,
+          88,
+          200
+        ],
+        [
+          104,
+          120,
+          152
+        ],
+        [
+          120,
+          136,
+          200
+        ],
+        [
+          88,
+          120,
+          200
+        ],
+        [
+          136,
+          168,
+          248
+        ],
+        [
+          120,
+          120,
+          184
+        ],
+        [
+          104,
+          104,
+          168
+        ],
+        [
+          72,
+          88,
+          200
+        ],
+        [
+          88,
+          104,
+          232
+        ],
+        [
+          136,
+          136,
+          200
+        ],
+        [
+          120,
+          120,
+          248
+        ],
+        [
+          120,
+          104,
+          184
+        ],
+        [
+          152,
+          152,
+          232
+        ],
+        [
+          152,
+          184,
+          248
+        ],
+        [
+          120,
+          104,
+          168
+        ],
+        [
+          136,
+          120,
+          200
+        ],
+        [
+          168,
+          184,
+          248
+        ]
+      ],
+      "recovery_filter": 11,
+      "recovery_bbox_pad": 48
+    }
+  },
+  "transform": {
+    "source_center_x": 649.0,
+    "source_bottom_y": 706.0,
+    "source_visible_height": 692.0,
+    "source_visible_width": 542.0,
+    "identity_core_width": 297.875,
+    "target_identity_core_width": 87.71704180064309,
+    "scale_x": 0.3052614332234215,
+    "scale_y": 0.3052614332234215,
+    "target_visible_width": 165.45169680709444,
+    "target_visible_height": 211.24091179060767,
+    "target_center_x": 240.0,
+    "target_bottom_y": 338.0,
+    "manual_scale_multiplier": 1.0,
+    "source_face_height": 314.0,
+    "target_face_height": 95.85209003215435,
+    "fixed_scale": 0.3052614332234215
+  },
+  "visual_scale_normalization": {
+    "mode": "fixed_action_face_height",
+    "target_face_height": 95.85209003215435,
+    "multiplier_min": 1.0,
+    "multiplier_max": 1.0,
+    "multiplier_median": 1.0,
+    "sleep_chain_scales": {}
+  },
+  "canvas_fit": {
+    "scale": 1.0,
+    "shift": [
+      0,
+      0
+    ],
+    "margin": 8
+  },
+  "color_normalization": {
+    "reference_action": "idle",
+    "source_palette": {
+      "all": [
+        149.46978759765625,
+        128.4398651123047,
+        159.82054138183594
+      ],
+      "blue": [
+        113.70323944091797,
+        127.17555236816406,
+        215.28619384765625
+      ],
+      "pink": [
+        184.67510986328125,
+        121.24361419677734,
+        122.29380798339844
+      ],
+      "pale": [
+        224.0291748046875,
+        185.8731689453125,
+        184.8512725830078
+      ]
+    },
+    "correction": {
+      "enabled": true,
+      "slope": [
+        1.002625823020935,
+        1.0572869777679443,
+        1.0338001251220703
+      ],
+      "offset": [
+        -1.7751860618591309,
+        -9.715277671813965,
+        -4.691056728363037
+      ],
+      "labels": [
+        "blue",
+        "pink",
+        "pale",
+        "all"
+      ]
+    },
+    "semantic_deltas": {
+      "blue": [
+        2.0332260131835938,
+        3.0692977905273438,
+        -1.1716156005859375
+      ],
+      "pink": [
+        -0.3557891845703125,
+        -0.6847686767578125,
+        0.3418426513671875
+      ],
+      "pale": [
+        1.1521759033203125,
+        -2.508697509765625,
+        1.38348388671875
+      ]
+    },
+    "corrected_palette": {
+      "all": [
+        147.902099609375,
+        125.9472427368164,
+        159.49835205078125
+      ],
+      "blue": [
+        113.67111206054688,
+        127.17314147949219,
+        215.50416564941406
+      ],
+      "pink": [
+        181.931884765625,
+        116.67652130126953,
+        121.23245239257812
+      ],
+      "pale": [
+        222.7158660888672,
+        188.12686157226562,
+        188.64646911621094
+      ]
+    }
+  },
+  "alpha_bbox_union": [
+    155,
+    126,
+    354,
+    338
+  ],
+  "min_canvas_margin_px": 22,
+  "hit_shape": {
+    "catalog": "res://config/video_hit_shapes.json",
+    "action_id": "birthday_cake",
+    "frame_count": 121,
+    "alpha_threshold": 72,
+    "padding_px": 7,
+    "row_step_px": 10
+  },
+  "runtime_video": {
+    "path": "assets_display/wuzi_chibi/video_birthday_cake/runtime_alpha.ogv",
+    "resource_path": "res://assets_display/wuzi_chibi/video_birthday_cake/runtime_alpha.ogv",
+    "codec": "theora",
+    "alpha_mode": "side_by_side_rgb_alpha",
+    "packed_size": [
+      960,
+      360
+    ],
+    "display_size": [
+      480,
+      360
+    ],
+    "fps": 12.0,
+    "frame_count": 121,
+    "bytes": 1455489
+  },
+  "png_fallback_bytes": 8106734,
+  "ready_for_runtime": true
+}
