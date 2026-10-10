@@ -1,0 +1,553 @@
+  1 | {
+  2 |   "schema_version": 10,
+  3 |   "source": "分享区/Q版/绿幕视频/进入睡眠.mp4",
+  4 |   "source_size": [
+  5 |     1280,
+  6 |     720
+  7 |   ],
+  8 |   "source_fps": 24.0,
+  9 |   "source_frame_count": 241,
+ 10 |   "output_fps": 12.0,
+ 11 |   "frame_count": 121,
+ 12 |   "duration_sec": 10.083333333333334,
+ 13 |   "canvas": [
+ 14 |     480,
+ 15 |     360
+ 16 |   ],
+ 17 |   "watermark_cleanup": {
+ 18 |     "clear_left_margin_px": 0,
+ 19 |     "clear_right_margin_px": 0,
+ 20 |     "component_filter_grid": [
+ 21 |       160,
+ 22 |       90
+ 23 |     ],
+ 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+ 25 |   },
+ 26 |   "key": {
+ 27 |     "method": "idle_protected_adaptive_green_chroma",
+ 28 |     "background_rule": "green-dominant source colours only; neutral/gray colours are not background by themselves; approved processed-idle colours are protected",
+ 29 |     "green_profile": {
+ 30 |       "sample_frames": 9,
+ 31 |       "sample_stride": 3,
+ 32 |       "edge_ratio": 0.08,
+ 33 |       "sampled_pixels": 922320,
+ 34 |       "greenish_pixel_ratio": 0.8013075722092116,
+ 35 |       "edge_greenish_pixel_ratio": 0.9838164692817627,
+ 36 |       "green_strength_quantiles": {
+ 37 |         "q05": 31.0,
+ 38 |         "q10": 35.0,
+ 39 |         "q25": 36.0,
+ 40 |         "q50": 39.0,
+ 41 |         "q75": 39.0,
+ 42 |         "q90": 39.0,
+ 43 |         "q95": 41.0
+ 44 |       },
+ 45 |       "soft_green_strength": 4.0,
+ 46 |       "hard_green_strength": 12.0,
+ 47 |       "palette_start_distance": 7.0,
+ 48 |       "palette_range": 20.0,
+ 49 |       "background_palette_rgb": [
+ 50 |         [
+ 51 |           120.0,
+ 52 |           152.0,
+ 53 |           104.0
+ 54 |         ],
+ 55 |         [
+ 56 |           104.0,
+ 57 |           152.0,
+ 58 |           104.0
+ 59 |         ],
+ 60 |         [
+ 61 |           120.0,
+ 62 |           152.0,
+ 63 |           120.0
+ 64 |         ],
+ 65 |         [
+ 66 |           120.0,
+ 67 |           136.0,
+ 68 |           104.0
+ 69 |         ],
+ 70 |         [
+ 71 |           88.0,
+ 72 |           120.0,
+ 73 |           88.0
+ 74 |         ],
+ 75 |         [
+ 76 |           104.0,
+ 77 |           136.0,
+ 78 |           104.0
+ 79 |         ],
+ 80 |         [
+ 81 |           120.0,
+ 82 |           136.0,
+ 83 |           120.0
+ 84 |         ],
+ 85 |         [
+ 86 |           88.0,
+ 87 |           104.0,
+ 88 |           88.0
+ 89 |         ],
+ 90 |         [
+ 91 |           88.0,
+ 92 |           104.0,
+ 93 |           72.0
+ 94 |         ],
+ 95 |         [
+ 96 |           88.0,
+ 97 |           120.0,
+ 98 |           72.0
+ 99 |         ],
+        [
+          184.0,
+          200.0,
+          184.0
+        ],
+        [
+          104.0,
+          120.0,
+          88.0
+        ],
+        [
+          136.0,
+          168.0,
+          136.0
+        ],
+        [
+          136.0,
+          152.0,
+          120.0
+        ],
+        [
+          120.0,
+          152.0,
+          136.0
+        ],
+        [
+          184.0,
+          216.0,
+          184.0
+        ]
+      ]
+    },
+    "character_protection": {
+      "sample_source": "processed_idle",
+      "sample_frames": 13,
+      "sample_stride": 2,
+      "alpha_min": 220,
+      "quant_step": 16,
+      "palette_bins": 320,
+      "expanded_lookup_bins": 757,
+      "bin_radius": 1,
+      "minimum_bin_count": 6,
+      "sampled_opaque_pixels": 73386,
+      "greenish_idle_pixels_rejected": 152,
+      "green_reject_strength": 4.0,
+      "family_bins": {
+        "blue_purple": 77,
+        "pink_red": 171,
+        "pale_skin_white": 25,
+        "dark_linework": 22,
+        "neutral_gray": 14,
+        "other": 11
+      },
+      "representative_rgb": [
+        [
+          120,
+          136,
+          232
+        ],
+        [
+          104,
+          120,
+          216
+        ],
+        [
+          104,
+          120,
+          232
+        ],
+        [
+          136,
+          152,
+          232
+        ],
+        [
+          120,
+          136,
+          216
+        ],
+        [
+          120,
+          120,
+          232
+        ],
+        [
+          120,
+          152,
+          232
+        ],
+        [
+          88,
+          104,
+          216
+        ],
+        [
+          120,
+          120,
+          216
+        ],
+        [
+          104,
+          104,
+          216
+        ],
+        [
+          136,
+          136,
+          232
+        ],
+        [
+          88,
+          104,
+          200
+        ],
+        [
+          136,
+          136,
+          216
+        ],
+        [
+          136,
+          152,
+          248
+        ],
+        [
+          120,
+          136,
+          248
+        ],
+        [
+          104,
+          120,
+          200
+        ],
+        [
+          152,
+          168,
+          248
+        ],
+        [
+          152,
+          168,
+          232
+        ],
+        [
+          136,
+          152,
+          216
+        ],
+        [
+          136,
+          168,
+          232
+        ],
+        [
+          104,
+          136,
+          232
+        ],
+        [
+          104,
+          104,
+          200
+        ],
+        [
+          120,
+          120,
+          200
+        ],
+        [
+          120,
+          152,
+          216
+        ],
+        [
+          104,
+          104,
+          232
+        ],
+        [
+          88,
+          120,
+          216
+        ],
+        [
+          104,
+          120,
+          184
+        ],
+        [
+          104,
+          136,
+          216
+        ],
+        [
+          88,
+          104,
+          184
+        ],
+        [
+          104,
+          104,
+          184
+        ],
+        [
+          104,
+          120,
+          168
+        ],
+        [
+          88,
+          88,
+          200
+        ],
+        [
+          104,
+          120,
+          152
+        ],
+        [
+          120,
+          136,
+          200
+        ],
+        [
+          88,
+          120,
+          200
+        ],
+        [
+          136,
+          168,
+          248
+        ],
+        [
+          120,
+          120,
+          184
+        ],
+        [
+          104,
+          104,
+          168
+        ],
+        [
+          72,
+          88,
+          200
+        ],
+        [
+          88,
+          104,
+          232
+        ],
+        [
+          136,
+          136,
+          200
+        ],
+        [
+          120,
+          120,
+          248
+        ],
+        [
+          120,
+          104,
+          184
+        ],
+        [
+          152,
+          152,
+          232
+        ],
+        [
+          152,
+          184,
+          248
+        ],
+        [
+          120,
+          104,
+          168
+        ],
+        [
+          136,
+          120,
+          200
+        ],
+        [
+          168,
+          184,
+          248
+        ]
+      ],
+      "recovery_filter": 11,
+      "recovery_bbox_pad": 48
+    }
+  },
+  "transform": {
+    "source_center_x": 650.0,
+    "source_bottom_y": 702.0,
+    "source_visible_height": 682.0,
+    "source_visible_width": 548.0,
+    "identity_core_width": 297.0,
+    "target_identity_core_width": 87.71704180064309,
+    "scale_x": 0.3102009386153862,
+    "scale_y": 0.3102009386153862,
+    "target_visible_width": 169.99011436123166,
+    "target_visible_height": 211.5570401356934,
+    "target_center_x": 240.0,
+    "target_bottom_y": 338.0
+  },
+  "visual_scale_normalization": {
+    "mode": "sleep_chain_fixed",
+    "target_face_height": 95.85209003215435,
+    "multiplier_min": 1.0,
+    "multiplier_max": 1.0,
+    "multiplier_median": 1.0,
+    "sleep_chain_scales": {
+      "sleep_down": 0.3102009386153862,
+      "target_lying_width": 312.68254612430934,
+      "sleep_loop_start": 0.24428323915961667,
+      "wake_up_start": 0.24428323915961667,
+      "wake_up_end": 0.3009484773380042,
+      "target_lying_output_width": 251.0
+    }
+  },
+  "canvas_fit": {
+    "scale": 1.0,
+    "shift": [
+      0,
+      0
+    ],
+    "margin": 8
+  },
+  "color_normalization": {
+    "reference_action": "idle",
+    "source_palette": {
+      "all": [
+        149.98439025878906,
+        131.4973907470703,
+        166.6990509033203
+      ],
+      "blue": [
+        113.21188354492188,
+        128.13780212402344,
+        219.19534301757812
+      ],
+      "pink": [
+        183.24557495117188,
+        117.38986206054688,
+        121.2273941040039
+      ],
+      "pale": [
+        224.9229736328125,
+        191.92857360839844,
+        193.8578338623047
+      ]
+    },
+    "correction": {
+      "enabled": true,
+      "slope": [
+        0.996025025844574,
+        0.9509995579719543,
+        0.9706757068634033
+      ],
+      "offset": [
+        -0.5388539433479309,
+        3.7584171295166016,
+        1.5309783220291138
+      ],
+      "labels": [
+        "blue",
+        "pink",
+        "pale",
+        "all"
+      ]
+    },
+    "semantic_deltas": {
+      "blue": [
+        2.12384033203125,
+        2.2641448974609375,
+        2.3241729736328125
+      ],
+      "pink": [
+        -1.35308837890625,
+        -1.3585205078125,
+        -0.03814697265625
+      ],
+      "pale": [
+        0.3297119140625,
+        -2.2020416259765625,
+        -2.4333953857421875
+      ]
+    },
+    "corrected_palette": {
+      "all": [
+        148.4667205810547,
+        128.08201599121094,
+        162.8743133544922
+      ],
+      "blue": [
+        113.60492706298828,
+        126.99447631835938,
+        215.75416564941406
+      ],
+      "pink": [
+        182.2154998779297,
+        116.64964294433594,
+        120.61840057373047
+      ],
+      "pale": [
+        222.920654296875,
+        188.52130126953125,
+        191.59243774414062
+      ]
+    }
+  },
+  "alpha_bbox_union": [
+    123,
+    125,
+    404,
+    341
+  ],
+  "min_canvas_margin_px": 19,
+  "hit_shape": {
+    "catalog": "res://config/video_hit_shapes.json",
+    "action_id": "sleep_down_video",
+    "frame_count": 121,
+    "alpha_threshold": 72,
+    "padding_px": 7,
+    "row_step_px": 10
+  },
+  "runtime_video": {
+    "path": "assets_display/wuzi_chibi/video_sleep_down/runtime_alpha.ogv",
+    "resource_path": "res://assets_display/wuzi_chibi/video_sleep_down/runtime_alpha.ogv",
+    "codec": "theora",
+    "alpha_mode": "side_by_side_rgb_alpha",
+    "packed_size": [
+      960,
+      360
+    ],
+    "display_size": [
+      480,
+      360
+    ],
+    "fps": 12.0,
+    "frame_count": 121,
+    "bytes": 981955
+  },
+  "png_fallback_bytes": 7008438,
+  "ready_for_runtime": true
+}

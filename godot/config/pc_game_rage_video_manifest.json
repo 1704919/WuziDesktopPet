@@ -1,0 +1,550 @@
+  1 | {
+  2 |   "schema_version": 10,
+  3 |   "source": "分享区/Q版/绿幕视频/打电脑游戏暴怒.mp4",
+  4 |   "source_size": [
+  5 |     1280,
+  6 |     720
+  7 |   ],
+  8 |   "source_fps": 24.0,
+  9 |   "source_frame_count": 241,
+ 10 |   "output_fps": 12.0,
+ 11 |   "frame_count": 121,
+ 12 |   "duration_sec": 10.083333333333334,
+ 13 |   "canvas": [
+ 14 |     480,
+ 15 |     360
+ 16 |   ],
+ 17 |   "watermark_cleanup": {
+ 18 |     "clear_left_margin_px": 0,
+ 19 |     "clear_right_margin_px": 0,
+ 20 |     "component_filter_grid": [
+ 21 |       160,
+ 22 |       90
+ 23 |     ],
+ 24 |     "reason": "no hard side crop; disconnected watermark/background is removed by component filtering"
+ 25 |   },
+ 26 |   "key": {
+ 27 |     "method": "idle_protected_adaptive_green_chroma",
+ 28 |     "background_rule": "green-dominant source colours only; neutral/gray colours are not background by themselves; approved processed-idle colours are protected",
+ 29 |     "green_profile": {
+ 30 |       "sample_frames": 9,
+ 31 |       "sample_stride": 3,
+ 32 |       "edge_ratio": 0.08,
+ 33 |       "sampled_pixels": 922320,
+ 34 |       "greenish_pixel_ratio": 0.7305956717841964,
+ 35 |       "edge_greenish_pixel_ratio": 0.9747406007994709,
+ 36 |       "green_strength_quantiles": {
+ 37 |         "q05": 29.0,
+ 38 |         "q10": 33.0,
+ 39 |         "q25": 35.0,
+ 40 |         "q50": 38.0,
+ 41 |         "q75": 45.0,
+ 42 |         "q90": 49.0,
+ 43 |         "q95": 50.0
+ 44 |       },
+ 45 |       "soft_green_strength": 4.0,
+ 46 |       "hard_green_strength": 12.0,
+ 47 |       "palette_start_distance": 7.0,
+ 48 |       "palette_range": 20.0,
+ 49 |       "background_palette_rgb": [
+ 50 |         [
+ 51 |           120.0,
+ 52 |           168.0,
+ 53 |           88.0
+ 54 |         ],
+ 55 |         [
+ 56 |           136.0,
+ 57 |           168.0,
+ 58 |           104.0
+ 59 |         ],
+ 60 |         [
+ 61 |           152.0,
+ 62 |           184.0,
+ 63 |           120.0
+ 64 |         ],
+ 65 |         [
+ 66 |           168.0,
+ 67 |           200.0,
+ 68 |           136.0
+ 69 |         ],
+ 70 |         [
+ 71 |           120.0,
+ 72 |           168.0,
+ 73 |           104.0
+ 74 |         ],
+ 75 |         [
+ 76 |           152.0,
+ 77 |           200.0,
+ 78 |           120.0
+ 79 |         ],
+ 80 |         [
+ 81 |           152.0,
+ 82 |           200.0,
+ 83 |           136.0
+ 84 |         ],
+ 85 |         [
+ 86 |           136.0,
+ 87 |           184.0,
+ 88 |           104.0
+ 89 |         ],
+ 90 |         [
+ 91 |           104.0,
+ 92 |           168.0,
+ 93 |           88.0
+ 94 |         ],
+ 95 |         [
+ 96 |           120.0,
+ 97 |           152.0,
+ 98 |           88.0
+ 99 |         ],
+        [
+          136.0,
+          184.0,
+          120.0
+        ],
+        [
+          104.0,
+          136.0,
+          88.0
+        ],
+        [
+          136.0,
+          168.0,
+          120.0
+        ],
+        [
+          152.0,
+          184.0,
+          136.0
+        ],
+        [
+          168.0,
+          200.0,
+          120.0
+        ],
+        [
+          168.0,
+          184.0,
+          136.0
+        ]
+      ]
+    },
+    "character_protection": {
+      "sample_source": "processed_idle",
+      "sample_frames": 13,
+      "sample_stride": 2,
+      "alpha_min": 220,
+      "quant_step": 16,
+      "palette_bins": 320,
+      "expanded_lookup_bins": 757,
+      "bin_radius": 1,
+      "minimum_bin_count": 6,
+      "sampled_opaque_pixels": 73386,
+      "greenish_idle_pixels_rejected": 152,
+      "green_reject_strength": 4.0,
+      "family_bins": {
+        "blue_purple": 77,
+        "pink_red": 171,
+        "pale_skin_white": 25,
+        "dark_linework": 22,
+        "neutral_gray": 14,
+        "other": 11
+      },
+      "representative_rgb": [
+        [
+          120,
+          136,
+          232
+        ],
+        [
+          104,
+          120,
+          216
+        ],
+        [
+          104,
+          120,
+          232
+        ],
+        [
+          136,
+          152,
+          232
+        ],
+        [
+          120,
+          136,
+          216
+        ],
+        [
+          120,
+          120,
+          232
+        ],
+        [
+          120,
+          152,
+          232
+        ],
+        [
+          88,
+          104,
+          216
+        ],
+        [
+          120,
+          120,
+          216
+        ],
+        [
+          104,
+          104,
+          216
+        ],
+        [
+          136,
+          136,
+          232
+        ],
+        [
+          88,
+          104,
+          200
+        ],
+        [
+          136,
+          136,
+          216
+        ],
+        [
+          136,
+          152,
+          248
+        ],
+        [
+          120,
+          136,
+          248
+        ],
+        [
+          104,
+          120,
+          200
+        ],
+        [
+          152,
+          168,
+          248
+        ],
+        [
+          152,
+          168,
+          232
+        ],
+        [
+          136,
+          152,
+          216
+        ],
+        [
+          136,
+          168,
+          232
+        ],
+        [
+          104,
+          136,
+          232
+        ],
+        [
+          104,
+          104,
+          200
+        ],
+        [
+          120,
+          120,
+          200
+        ],
+        [
+          120,
+          152,
+          216
+        ],
+        [
+          104,
+          104,
+          232
+        ],
+        [
+          88,
+          120,
+          216
+        ],
+        [
+          104,
+          120,
+          184
+        ],
+        [
+          104,
+          136,
+          216
+        ],
+        [
+          88,
+          104,
+          184
+        ],
+        [
+          104,
+          104,
+          184
+        ],
+        [
+          104,
+          120,
+          168
+        ],
+        [
+          88,
+          88,
+          200
+        ],
+        [
+          104,
+          120,
+          152
+        ],
+        [
+          120,
+          136,
+          200
+        ],
+        [
+          88,
+          120,
+          200
+        ],
+        [
+          136,
+          168,
+          248
+        ],
+        [
+          120,
+          120,
+          184
+        ],
+        [
+          104,
+          104,
+          168
+        ],
+        [
+          72,
+          88,
+          200
+        ],
+        [
+          88,
+          104,
+          232
+        ],
+        [
+          136,
+          136,
+          200
+        ],
+        [
+          120,
+          120,
+          248
+        ],
+        [
+          120,
+          104,
+          184
+        ],
+        [
+          152,
+          152,
+          232
+        ],
+        [
+          152,
+          184,
+          248
+        ],
+        [
+          120,
+          104,
+          168
+        ],
+        [
+          136,
+          120,
+          200
+        ],
+        [
+          168,
+          184,
+          248
+        ]
+      ],
+      "recovery_filter": 11,
+      "recovery_bbox_pad": 48
+    }
+  },
+  "transform": {
+    "source_center_x": 645.0,
+    "source_bottom_y": 702.0,
+    "source_visible_height": 696.0,
+    "source_visible_width": 659.0,
+    "identity_core_width": 290.0,
+    "target_identity_core_width": 87.71704180064309,
+    "scale_x": 0.31782535115924865,
+    "scale_y": 0.31782535115924865,
+    "target_visible_width": 209.44690641394484,
+    "target_visible_height": 221.20644440683705,
+    "target_center_x": 240.0,
+    "target_bottom_y": 338.0,
+    "manual_scale_multiplier": 1.071,
+    "source_face_height": 323.0,
+    "target_face_height": 95.85209003215435,
+    "fixed_scale": 0.31782535115924865
+  },
+  "visual_scale_normalization": {
+    "mode": "fixed_action_face_height",
+    "target_face_height": 95.85209003215435,
+    "multiplier_min": 1.0,
+    "multiplier_max": 1.0,
+    "multiplier_median": 1.0,
+    "sleep_chain_scales": {}
+  },
+  "canvas_fit": {
+    "scale": 1.0,
+    "shift": [
+      0,
+      0
+    ],
+    "margin": 8
+  },
+  "color_normalization": {
+    "reference_action": "idle",
+    "source_palette": {
+      "all": [
+        137.43124389648438,
+        119.97272491455078,
+        149.24790954589844
+      ],
+      "blue": [
+        111.7141342163086,
+        125.91566467285156,
+        215.80685424804688
+      ],
+      "pink": [
+        177.13124084472656,
+        117.2767333984375,
+        113.8978500366211
+      ],
+      "pale": [
+        220.27810668945312,
+        186.51524353027344,
+        184.88507080078125
+      ]
+    },
+    "correction": {
+      "enabled": true,
+      "slope": [
+        0.997877836227417,
+        0.9705531001091003,
+        0.9213842153549194
+      ],
+      "offset": [
+        5.33953332901001,
+        5.653583526611328,
+        15.0
+      ],
+      "labels": [
+        "blue",
+        "pink",
+        "pale",
+        "all"
+      ]
+    },
+    "semantic_deltas": {
+      "blue": [
+        -2.0438385009765625,
+        0.9473190307617188,
+        4.8355255126953125
+      ],
+      "pink": [
+        2.7286529541015625,
+        -2.771942138671875,
+        1.67767333984375
+      ],
+      "pale": [
+        3.3497161865234375,
+        3.271209716796875,
+        5.6352691650390625
+      ]
+    },
+    "corrected_palette": {
+      "all": [
+        141.51695251464844,
+        120.55500793457031,
+        153.5823974609375
+      ],
+      "blue": [
+        112.86061096191406,
+        125.93267059326172,
+        213.55712890625
+      ],
+      "pink": [
+        181.7566375732422,
+        118.90711212158203,
+        121.74958801269531
+      ],
+      "pale": [
+        223.4397735595703,
+        183.47915649414062,
+        185.20571899414062
+      ]
+    }
+  },
+  "alpha_bbox_union": [
+    98,
+    115,
+    385,
+    339
+  ],
+  "min_canvas_margin_px": 21,
+  "hit_shape": {
+    "catalog": "res://config/video_hit_shapes.json",
+    "action_id": "pc_game_rage",
+    "frame_count": 121,
+    "alpha_threshold": 72,
+    "padding_px": 7,
+    "row_step_px": 10
+  },
+  "runtime_video": {
+    "path": "assets_display/wuzi_chibi/video_pc_game_rage/runtime_alpha.ogv",
+    "resource_path": "res://assets_display/wuzi_chibi/video_pc_game_rage/runtime_alpha.ogv",
+    "codec": "theora",
+    "alpha_mode": "side_by_side_rgb_alpha",
+    "packed_size": [
+      960,
+      360
+    ],
+    "display_size": [
+      480,
+      360
+    ],
+    "fps": 12.0,
+    "frame_count": 121,
+    "bytes": 1595907
+  },
+  "png_fallback_bytes": 9779789,
+  "ready_for_runtime": true
+}
