@@ -26,6 +26,8 @@
 
 本仓库主要提供 `godot/` 下的 GDScript、场景与配置，以及 `tools/` 中的构建和测试工具。
 
+**注意：本项目大量使用AI开发。**
+
 **注意：Git 仓库本身不包含角色动画二进制资源。** 单纯克隆本仓库，不能直接得到与完整版 ZIP 相同的角色画面；普通用户请从 [Releases](https://github.com/1704919/WuziDesktopPet/releases) 下载 Windows 便携版。开发者需要合法取得相应素材，并自行生成 `godot/assets_display/` 的运行时资源。
 
 Windows 原生文件处理组件的源码位于 `tools/native/file_bridge.cpp`。
