@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/settings_store.gd" id="3_settings"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" path="res://scripts/action_coordinator.gd" id="12_coordinator"]
 [ext_resource type="Script" path="res://scripts/mood_indicator.gd" id="13_mood_indicator"]
 [ext_resource type="Shader" path="res://shaders/packed_alpha_video.gdshader" id="14_video_shader"]
+[ext_resource type="Script" path="res://scripts/stream_reminder_manager.gd" id="15_stream"]
 
 [sub_resource type="ShaderMaterial" id="PackedAlphaVideoMaterial"]
 shader = ExtResource("14_video_shader")
@@ -146,6 +147,9 @@ script = ExtResource("12_coordinator")
 
 [node name="WeatherManager" type="Node" parent="."]
 script = ExtResource("8_weather")
+
+[node name="StreamReminderManager" type="Node" parent="."]
+script = ExtResource("15_stream")
 
 [node name="PetVisual" type="Node2D" parent="."]
 position = Vector2(550, 210)
@@ -401,3 +405,103 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("PrimaryButton")
 text = "保存并获取"
+
+[node name="StreamBubble" type="Control" parent="."]
+visible = false
+z_index = 120
+offset_left = 14.0
+offset_top = 48.0
+offset_right = 414.0
+offset_bottom = 386.0
+mouse_filter = 0
+script = ExtResource("9_popup")
+
+[node name="Card" type="PanelContainer" parent="StreamBubble"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("WindowCard")
+
+[node name="Margin" type="MarginContainer" parent="StreamBubble/Card"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="Content" type="VBoxContainer" parent="StreamBubble/Card/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="StreamBubble/Card/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.11, 0.09, 0.16, 1)
+theme_override_font_sizes/font_size = 21
+text = "开播提醒"
+
+[node name="Provider" type="Label" parent="StreamBubble/Card/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.32, 0.42, 1)
+theme_override_font_sizes/font_size = 13
+text = "Bilibili 直播间 · 只读取公开的开播状态"
+
+[node name="Room" type="LineEdit" parent="StreamBubble/Card/Margin/Content"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.11, 0.09, 0.16, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.42, 0.50, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("InputNormal")
+theme_override_styles/focus = SubResource("InputFocus")
+placeholder_text = "直播间号，短号和真实号都行，例如 510"
+max_length = 10
+clear_button_enabled = true
+
+[node name="Streamer" type="LineEdit" parent="StreamBubble/Card/Margin/Content"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.11, 0.09, 0.16, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.42, 0.50, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("InputNormal")
+theme_override_styles/focus = SubResource("InputFocus")
+placeholder_text = "主播昵称，怎么称呼都行（可留空）"
+max_length = 24
+clear_button_enabled = true
+
+[node name="Enabled" type="CheckButton" parent="StreamBubble/Card/Margin/Content"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.20, 0.16, 0.30, 1)
+theme_override_font_sizes/font_size = 14
+text = "开启开播提醒"
+
+[node name="Hint" type="Label" parent="StreamBubble/Card/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.40, 0.37, 0.46, 1)
+theme_override_font_sizes/font_size = 12
+text = "启动后检查一次，之后每 2 分钟看一次；开播时提醒一次，同一场直播不会重复提醒，关掉桌宠再打开也不会重复。"
+autowrap_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="StreamBubble/Card/Margin/Content"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 10
+
+[node name="Cancel" type="Button" parent="StreamBubble/Card/Margin/Content/Actions"]
+custom_minimum_size = Vector2(88, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.20, 0.16, 0.30, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("SecondaryButton")
+text = "取消"
+
+[node name="Save" type="Button" parent="StreamBubble/Card/Margin/Content/Actions"]
+custom_minimum_size = Vector2(110, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("PrimaryButton")
+text = "保存并检查"

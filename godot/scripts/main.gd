@@ -12,11 +12,18 @@ const PetWindowLayout = preload("res://scripts/pet_window_layout.gd")
 const PetContextMenu = preload("res://scripts/pet_context_menu.gd")
 const PetDragThrowMotion = preload("res://scripts/pet_drag_throw_motion.gd")
 const WeatherReplyFormatter = preload("res://scripts/weather_reply_formatter.gd")
+const StreamStatus = preload("res://scripts/stream_status.gd")
+const StreamReplyFormatter = preload("res://scripts/stream_reply_formatter.gd")
 const PetClipCatalogLoader = preload("res://scripts/pet_clip_catalog_loader.gd")
 const PetMovementCatalogLoader = preload("res://scripts/pet_movement_catalog_loader.gd")
 const PetRoamingController = preload("res://scripts/pet_roaming_controller.gd")
 const PetAnimationPlayback = preload("res://scripts/pet_animation_playback.gd")
 const PetIdleActionPicker = preload("res://scripts/pet_idle_action_picker.gd")
+
+# A reminder stays on screen long enough to be read and answered; if it is not
+# answered the next poll asks again (see StreamReminderManager).
+const STREAM_REMINDER_BUBBLE_SEC := 12.0
+const STREAM_CONFIRM_ACTION := "stream_confirm"
 
 var dialogue_manager := DialogueManager.new()
 var inactivity_manager := InactivityManager.new()
@@ -43,6 +50,12 @@ var batch_file_window: Window
 @onready var weather_enabled: CheckButton = $WeatherBubble/Card/Margin/Content/Enabled
 @onready var weather_cancel: Button = $WeatherBubble/Card/Margin/Content/Actions/Cancel
 @onready var weather_save: Button = $WeatherBubble/Card/Margin/Content/Actions/Save
+@onready var stream_bubble: Control = $StreamBubble
+@onready var stream_room: LineEdit = $StreamBubble/Card/Margin/Content/Room
+@onready var stream_streamer: LineEdit = $StreamBubble/Card/Margin/Content/Streamer
+@onready var stream_enabled: CheckButton = $StreamBubble/Card/Margin/Content/Enabled
+@onready var stream_cancel: Button = $StreamBubble/Card/Margin/Content/Actions/Cancel
+@onready var stream_save: Button = $StreamBubble/Card/Margin/Content/Actions/Save
 @onready var settings_store = $SettingsStore
 @onready var reminder_manager = $ReminderManager
 @onready var file_drop_manager = $FileDropManager
@@ -51,6 +64,7 @@ var batch_file_window: Window
 @onready var action_coordinator = $ActionCoordinator
 @onready var mood_indicator: Control = $MoodIndicator
 @onready var weather_manager = $WeatherManager
+@onready var stream_manager = $StreamReminderManager
 
 var config: Dictionary = {}
 var feature_config: Dictionary = {}
@@ -65,6 +79,9 @@ var active_video_action_id := ""
 var active_video_fps := 12.0
 var active_video_frame_count := 0
 var rng := RandomNumberGenerator.new()
+# Last canonical room id written to the settings file, so the frequent polls
+# only persist when the resolved room actually changes.
+var stream_persisted_room_id := ""
 
 var state: PetState = PetState.IDLE
 var master_texture: Texture2D
@@ -90,6 +107,7 @@ const MENU_FILE_WORKBENCH := PetContextMenu.MENU_FILE_WORKBENCH
 const MENU_CLEAR_FILES := PetContextMenu.MENU_CLEAR_FILES
 const MENU_WEATHER_SETTINGS := PetContextMenu.MENU_WEATHER_SETTINGS
 const MENU_WEATHER_NOW := PetContextMenu.MENU_WEATHER_NOW
+const MENU_STREAM_SETTINGS := PetContextMenu.MENU_STREAM_SETTINGS
 const MENU_SETTINGS := PetContextMenu.MENU_SETTINGS
 const MENU_NICKNAME := PetContextMenu.MENU_NICKNAME
 const MENU_ACTION_CATEGORY_BACK := PetContextMenu.MENU_ACTION_CATEGORY_BACK
@@ -278,6 +296,17 @@ func _configure_feature_modules() -> void:
 		stored_weather = stored_weather_variant as Dictionary
 	weather_manager.configure(weather_cfg, stored_weather)
 
+	var stream_cfg := feature_config.get("stream_reminder", {}) as Dictionary
+	var stored_stream_variant: Variant = settings_store.get_value(
+		"stream_reminder",
+		{}
+	)
+	var stored_stream: Dictionary = {}
+	if typeof(stored_stream_variant) == TYPE_DICTIONARY:
+		stored_stream = stored_stream_variant as Dictionary
+	stream_manager.configure(stream_cfg, stored_stream)
+	stream_persisted_room_id = str(stored_stream.get("resolved_room_id", ""))
+
 	random_actions_paused = bool(settings_store.get_value(
 		"random_actions_paused",
 		false
@@ -299,11 +328,15 @@ func _configure_feature_modules() -> void:
 	weather_manager.weather_updated.connect(_on_weather_updated)
 	weather_manager.reminder_due.connect(_on_weather_reminder_due)
 	weather_manager.request_failed.connect(_on_weather_request_failed)
+	stream_manager.stream_updated.connect(_on_stream_updated)
+	stream_manager.reminder_due.connect(_on_stream_reminder_due)
+	stream_manager.request_failed.connect(_on_stream_request_failed)
 	bubble.action_selected.connect(_on_bubble_action_selected)
 	bubble.interactive_changed.connect(_on_bubble_interactive_changed)
 	bubble.bounds_changed.connect(_on_bubble_bounds_changed)
 	command_bubble.interactive_changed.connect(_on_overlay_interactive_changed)
 	weather_bubble.interactive_changed.connect(_on_overlay_interactive_changed)
+	stream_bubble.interactive_changed.connect(_on_overlay_interactive_changed)
 	context_menu.interactive_changed.connect(_on_overlay_interactive_changed)
 
 	if not get_window().files_dropped.is_connected(_on_files_dropped):
@@ -318,6 +351,9 @@ func _configure_feature_modules() -> void:
 	weather_save.pressed.connect(_on_weather_save_pressed)
 	weather_cancel.pressed.connect(_on_weather_cancel_pressed)
 
+	stream_save.pressed.connect(_on_stream_save_pressed)
+	stream_cancel.pressed.connect(_on_stream_cancel_pressed)
+
 
 func _persist_window_position() -> void:
 	PetWindowLayout.persist_position(settings_store)
@@ -330,6 +366,7 @@ func _setup_control_menu() -> void:
 func _open_control_menu(local_position: Vector2) -> void:
 	command_bubble.call("hide_card", false)
 	weather_bubble.call("hide_card", false)
+	stream_bubble.call("hide_card", false)
 	_hide_nickname_card(false)
 	context_menu_anchor = local_position
 	PetContextMenu.open_root(
@@ -356,6 +393,7 @@ func _open_settings_menu() -> void:
 func _open_batch_file_window() -> void:
 	command_bubble.call("hide_card", false)
 	weather_bubble.call("hide_card", false)
+	stream_bubble.call("hide_card", false)
 	_hide_nickname_card(false)
 	context_menu.call("hide_menu", false)
 	if not is_instance_valid(batch_file_window):
@@ -435,6 +473,8 @@ func _on_control_menu_id_pressed(id: int) -> void:
 			_request_weather_now()
 		MENU_WEATHER_SETTINGS:
 			_open_weather_window()
+		MENU_STREAM_SETTINGS:
+			_open_stream_window()
 		MENU_SETTINGS:
 			call_deferred("_open_settings_menu")
 		MENU_NICKNAME:
@@ -490,6 +530,7 @@ func _play_manual_action(spec: Dictionary) -> void:
 
 func _open_command_window() -> void:
 	weather_bubble.call("hide_card", false)
+	stream_bubble.call("hide_card", false)
 	_hide_nickname_card(false)
 	context_menu.call("hide_menu", false)
 	command_input.clear()
@@ -619,6 +660,7 @@ func _on_command_input_rejected(_rejected: String) -> void:
 func _open_nickname_window() -> void:
 	command_bubble.call("hide_card", false)
 	weather_bubble.call("hide_card", false)
+	stream_bubble.call("hide_card", false)
 	context_menu.call("hide_menu", false)
 	if not is_instance_valid(nickname_card):
 		nickname_card = load("res://scenes/nickname_card.tscn").instantiate()
@@ -647,6 +689,7 @@ func _on_nickname_submitted(text: String) -> void:
 
 func _open_weather_window() -> void:
 	command_bubble.call("hide_card", false)
+	stream_bubble.call("hide_card", false)
 	_hide_nickname_card(false)
 	context_menu.call("hide_menu", false)
 	weather_city.text = str(weather_manager.location_query)
@@ -733,6 +776,128 @@ func _on_weather_request_failed(message: String) -> void:
 	)
 
 
+func _open_stream_window() -> void:
+	command_bubble.call("hide_card", false)
+	weather_bubble.call("hide_card", false)
+	_hide_nickname_card(false)
+	context_menu.call("hide_menu", false)
+	stream_room.text = str(stream_manager.room_query)
+	stream_streamer.text = str(stream_manager.label)
+	stream_enabled.button_pressed = bool(stream_manager.enabled)
+	stream_bubble.call("popup_card")
+	stream_room.call_deferred("grab_focus")
+
+
+func _on_stream_cancel_pressed() -> void:
+	stream_bubble.call("hide_card")
+
+
+func _on_stream_save_pressed() -> void:
+	# One button saves and answers: refresh_now() reports the result even though
+	# the automatic polls stay silent, so the card needs no separate check
+	# action. Validation failures keep the card open for a correction.
+	var raw := stream_room.text.strip_edges()
+	var clean := StreamStatus.normalize_room_id(raw)
+	var enabled := stream_enabled.button_pressed
+
+	# The room id is placed into a request URL, so it is validated before it is
+	# stored; see StreamStatus.normalize_room_id.
+	if enabled and clean.is_empty():
+		bubble.say("直播间号只能是数字哦，比如 510 或 80397～", 4.0)
+		return
+	if not raw.is_empty() and clean.is_empty():
+		bubble.say("直播间号里好像混了别的字，我只认得数字～", 4.0)
+		return
+	if not raw.is_empty() and clean != raw:
+		stream_room.text = clean
+		bubble.say("直播间号里多出来的字符我帮你去掉啦。", 3.4)
+
+	stream_manager.set_room(clean, stream_streamer.text, enabled)
+	settings_store.set_value(
+		"stream_reminder",
+		stream_manager.export_settings()
+	)
+	stream_bubble.call("hide_card")
+
+	if not enabled:
+		bubble.say("好，开播提醒先关掉啦。", 2.8)
+	elif clean.is_empty():
+		bubble.say("好，想关注谁的时候再填房间号吧～", 2.8)
+	else:
+		bubble.say("好～我去看看这个直播间现在有没有开播。", 2.8)
+		# Drops the backoff left by earlier failures and marks the request as
+		# user-requested so its answer is spoken instead of staying quiet.
+		if not stream_manager.refresh_now():
+			bubble.say("正在查着呢，稍等一下～", 2.6)
+
+
+func _on_stream_updated(status: Dictionary, manual: bool) -> void:
+	# Keep the canonical room id on disk so the next start can query it
+	# directly. Only write when it actually changed: polls run every couple of
+	# minutes and must not rewrite the settings file each time.
+	var resolved := str(status.get("room_id", ""))
+	if resolved != stream_persisted_room_id:
+		stream_persisted_room_id = resolved
+		settings_store.set_value(
+			"stream_reminder",
+			stream_manager.export_settings()
+		)
+
+	if not manual:
+		return
+	var report := StreamReplyFormatter.build_check(status, stream_manager.label)
+	bubble.say(
+		dream_talk_manager.format_notice("stream", report)
+		if _is_sleep_dream_state()
+		else report,
+		6.0
+	)
+
+
+func _on_stream_reminder_due(text: String) -> void:
+	# Nothing is written to disk here on purpose: the reminder is only settled by
+	# the user pressing the button. Until then every poll asks again, and the
+	# asking stops by itself once the broadcast ends.
+	var dreaming := _is_sleep_dream_state()
+	bubble.ask(
+		dream_talk_manager.format_notice("stream", text) if dreaming else text,
+		[{"id": STREAM_CONFIRM_ACTION, "label": "知道啦"}],
+		STREAM_REMINDER_BUBBLE_SEC
+	)
+	if not dreaming:
+		_request_coordinated_clip(
+			"click_wave_video",
+			"stream",
+			ACTION_PRIORITY_DIALOGUE,
+			true,
+			PetState.REACTION
+		)
+
+
+func _on_stream_confirmed() -> void:
+	# The manager only accepts an answer for the broadcast it actually asked
+	# about, so a click that arrives after the stream ended changes nothing.
+	#
+	# Deliberately no acknowledgement bubble: the bubble dismisses itself right
+	# after emitting the action, so anything said here would be wiped by that
+	# same dismissal. The reminder closing and staying closed is the feedback.
+	if not stream_manager.confirm():
+		return
+	settings_store.set_value(
+		"stream_reminder",
+		stream_manager.export_settings()
+	)
+
+
+func _on_stream_request_failed(message: String) -> void:
+	bubble.say(
+		dream_talk_manager.format_notice("stream", message)
+		if _is_sleep_dream_state()
+		else message,
+		4.5
+	)
+
+
 func _on_reminder_due(text: String) -> void:
 	bubble.say(
 		dream_talk_manager.format_notice("reminder", text)
@@ -749,6 +914,8 @@ func _on_bubble_action_selected(action_id: String) -> void:
 			_open_batch_file_window()
 		"weather_setup":
 			_open_weather_window()
+		STREAM_CONFIRM_ACTION:
+			_on_stream_confirmed()
 		"dismiss":
 			pass
 
@@ -766,6 +933,7 @@ func _on_overlay_interactive_changed(_enabled: bool) -> void:
 	overlay_interactive = (
 		command_bubble.visible
 		or weather_bubble.visible
+		or stream_bubble.visible
 		or context_menu.visible
 		or (is_instance_valid(nickname_card) and nickname_card.visible)
 	)
@@ -919,6 +1087,8 @@ func _visible_ui_passthrough_rects() -> Array[Rect2]:
 		rects.append(command_bubble.get_global_rect())
 	if weather_bubble.visible:
 		rects.append(weather_bubble.get_global_rect())
+	if stream_bubble.visible:
+		rects.append(stream_bubble.get_global_rect())
 	if is_instance_valid(nickname_card) and nickname_card.visible:
 		rects.append(nickname_card.get_global_rect())
 	if mood_indicator.visible:
@@ -1278,6 +1448,7 @@ func _input(event: InputEvent) -> void:
 		if overlay_interactive:
 			command_bubble.call("hide_card")
 			weather_bubble.call("hide_card")
+			stream_bubble.call("hide_card")
 			_hide_nickname_card()
 			context_menu.call("hide_menu")
 		else:
