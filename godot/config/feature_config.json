@@ -34,6 +34,13 @@
     "hot_threshold_c": 35,
     "cold_threshold_c": 5
   },
+  "stream_reminder": {
+    "enabled": false,
+    "room_id": "",
+    "label": "",
+    "check_interval_seconds": 120,
+    "reminder_retry_seconds": 30
+  },
   "file_conversion": {
     "image_quality": 0.92,
     "output_suffix": "_converted"
