@@ -9,7 +9,9 @@ extends RefCounted
 const DEFAULT_LABEL := "你关注的主播"
 
 
-# Wording for the automatic announcement, sent once per broadcast.
+# Wording for the automatic announcement. It is repeated on every poll until the
+# user confirms it or the broadcast ends, so it reads as a request for an answer
+# rather than as a one-off notice.
 static func build(status: Dictionary, label: String) -> String:
 	var name := display_name(label)
 	var title := str(status.get("title", "")).strip_edges()
@@ -46,3 +48,34 @@ static func display_name(label: String) -> String:
 	if name.is_empty():
 		return DEFAULT_LABEL
 	return name
+
+
+# Wording for the hint in the settings window.
+#
+# Built from the intervals the manager actually runs at instead of being written
+# out by hand, so the card cannot end up describing a cadence the code no longer
+# follows. That is exactly how the earlier text came to promise that a broadcast
+# is announced once while the reminder in fact kept coming back until it was
+# answered.
+static func build_settings_hint(
+	check_interval_sec: float,
+	retry_interval_sec: float
+) -> String:
+	return (
+		"每 %s看一次；开播会提醒你点「知道啦」，没确认就每 %s再问，"
+		+ "直到这场直播结束。确认过的重开桌宠也不会再提醒。"
+	) % [
+		_duration_text(check_interval_sec),
+		_duration_text(retry_interval_sec)
+	]
+
+
+static func _duration_text(seconds: float) -> String:
+	var total := int(roundf(seconds))
+	if total <= 0:
+		return "一会儿"
+	if total < 60:
+		return "%d 秒" % total
+	if total % 60 == 0:
+		return "%d 分钟" % (total / 60)
+	return "%d 分 %d 秒" % [total / 60, total % 60]

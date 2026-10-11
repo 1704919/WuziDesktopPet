@@ -54,6 +54,7 @@ var batch_file_window: Window
 @onready var stream_room: LineEdit = $StreamBubble/Card/Margin/Content/Room
 @onready var stream_streamer: LineEdit = $StreamBubble/Card/Margin/Content/Streamer
 @onready var stream_enabled: CheckButton = $StreamBubble/Card/Margin/Content/Enabled
+@onready var stream_hint: Label = $StreamBubble/Card/Margin/Content/Hint
 @onready var stream_cancel: Button = $StreamBubble/Card/Margin/Content/Actions/Cancel
 @onready var stream_save: Button = $StreamBubble/Card/Margin/Content/Actions/Save
 @onready var settings_store = $SettingsStore
@@ -784,6 +785,12 @@ func _open_stream_window() -> void:
 	stream_room.text = str(stream_manager.room_query)
 	stream_streamer.text = str(stream_manager.label)
 	stream_enabled.button_pressed = bool(stream_manager.enabled)
+	# Described from the cadence the manager currently runs at, so the card
+	# cannot promise something the reminder does not do.
+	stream_hint.text = StreamReplyFormatter.build_settings_hint(
+		stream_manager.check_interval_sec,
+		stream_manager.retry_interval_sec
+	)
 	stream_bubble.call("popup_card")
 	stream_room.call_deferred("grab_focus")
 
@@ -854,17 +861,21 @@ func _on_stream_updated(status: Dictionary, manual: bool) -> void:
 	)
 
 
-func _on_stream_reminder_due(text: String) -> void:
+func _on_stream_reminder_due(text: String, repeated: bool) -> void:
 	# Nothing is written to disk here on purpose: the reminder is only settled by
 	# the user pressing the button. Until then every poll asks again, and the
 	# asking stops by itself once the broadcast ends.
+	#
+	# Only the first ask of a broadcast animates the pet. An unanswered reminder
+	# comes back every 30 seconds, and waving again each time would be noise on
+	# top of a bubble that already says the same thing.
 	var dreaming := _is_sleep_dream_state()
 	bubble.ask(
 		dream_talk_manager.format_notice("stream", text) if dreaming else text,
 		[{"id": STREAM_CONFIRM_ACTION, "label": "知道啦"}],
 		STREAM_REMINDER_BUBBLE_SEC
 	)
-	if not dreaming:
+	if not dreaming and not repeated:
 		_request_coordinated_clip(
 			"click_wave_video",
 			"stream",

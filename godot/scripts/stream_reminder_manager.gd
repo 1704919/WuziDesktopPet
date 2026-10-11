@@ -6,6 +6,10 @@ extends Node
 # poll until the user presses the confirm button or the broadcast ends. Only the
 # user's answer is written to disk (confirmed_key).
 #
+# One room is polled at a time, and only the answer to the request that was
+# started last is applied, see _drop_in_flight: a room switch in the middle of a
+# request must not let the room that was left behind publish its status.
+#
 # API contract measured on 2026-10-11 against the live endpoint; the field
 # expectations are pinned by godot/tests/stream_status_smoke.gd.
 #   GET https://api.live.bilibili.com/room/v1/Room/get_info?room_id=<id>
@@ -17,7 +21,10 @@ extends Node
 # this stops working the first thing to re-check is the endpoint contract above.
 
 signal stream_updated(status: Dictionary, manual: bool)
-signal reminder_due(text: String)
+# repeated is false for the first ask of a broadcast and true for the ones that
+# follow it while the user has not answered yet, so the caller can keep the
+# repeat quiet without having to know the reminder rules itself.
+signal reminder_due(text: String, repeated: bool)
 signal request_failed(message: String)
 
 const StreamStatus = preload("res://scripts/stream_status.gd")
@@ -36,6 +43,9 @@ const DEFAULT_RETRY_INTERVAL_SEC := 30.0
 const MIN_RETRY_INTERVAL_SEC := 10.0
 const MAX_BACKOFF_MULTIPLIER := 4.0
 const REQUEST_TIMEOUT_SEC := 15.0
+# How soon to try again when a request could not even be started because the
+# previous one is still finishing, see _process.
+const BUSY_RETRY_SEC := 2.0
 
 var room_query := ""          # what the user typed; may be a short id
 var resolved_room_id := ""    # canonical id from the API, cached after success
@@ -56,6 +66,14 @@ var reminder_key := ""
 # True while a request started by the user is still on its way, so its result
 # is reported even though automatic polls stay silent.
 var manual_check_pending := false
+# Switching rooms, or switching the reminder off, makes whatever a request that
+# is already on its way was going to say obsolete. intent_token is bumped by
+# every such change and request_token records the value a request left with, so
+# a late answer for a room the user has already left can neither overwrite
+# resolved_room_id -- which would pin the following polls, and the reminder, to
+# the old room -- nor raise a reminder that has just been switched off.
+var intent_token := 0
+var request_token := -1
 
 var status_request: HTTPRequest
 
@@ -93,6 +111,8 @@ func configure(spec: Dictionary, stored: Dictionary = {}) -> void:
 			)
 		)
 	)
+	# Being configured again invalidates anything that is already on its way.
+	_drop_in_flight()
 	# Check on the first frame after startup, then wait for the interval.
 	check_countdown_sec = 0.0
 	consecutive_failures = 0
@@ -103,15 +123,42 @@ func set_room(raw: String, new_label: String, new_enabled: bool) -> void:
 	if clean != room_query:
 		# The cached canonical id belongs to the previous room. The confirmation
 		# key itself already contains the room id, so it stays valid and
-		# switching rooms cannot hide a new broadcast; only the pending question
-		# belongs to the old room and is dropped.
+		# switching rooms cannot hide a new broadcast.
 		resolved_room_id = ""
+	if clean != room_query or not new_enabled:
+		# The pending question belongs to the configuration that was just left
+		# behind: it is either about a room the user has moved away from, or
+		# about a reminder that has just been switched off. Either way it can no
+		# longer be answered, so a click that is still on screen settles nothing.
 		reminder_key = ""
+	if clean != room_query or new_enabled != enabled:
+		# Whatever is on its way describes the previous configuration, so it is
+		# dropped instead of being applied to the new one.
+		_drop_in_flight()
 	room_query = clean
 	label = new_label.strip_edges()
 	enabled = new_enabled
 	check_countdown_sec = 2.0
 	consecutive_failures = 0
+
+
+# Makes every answer that is already on its way stale, and stops waiting for it
+# so the new configuration is queried straight away instead of after the old
+# request has run into its timeout.
+#
+# cancel_request() reports itself as a failed request; the token bump turns that
+# into a silent no-op. Waiting a moment before the next attempt (the countdown
+# set by set_room) is what keeps the cancellation from being mistaken for the
+# answer to the request that replaces it.
+func _drop_in_flight() -> void:
+	intent_token += 1
+	request_token = -1
+	if (
+		status_request != null
+		and status_request.get_http_client_status()
+		!= HTTPClient.STATUS_DISCONNECTED
+	):
+		status_request.cancel_request()
 
 
 func export_settings() -> Dictionary:
@@ -143,9 +190,16 @@ func _process(delta: float) -> void:
 		return
 
 	check_countdown_sec -= delta
-	if check_countdown_sec <= 0.0:
-		check_countdown_sec = _effective_interval()
-		refresh()
+	if check_countdown_sec > 0.0:
+		return
+	check_countdown_sec = _effective_interval()
+	if not refresh() and consecutive_failures == 0:
+		# A request that could not start because the previous one is still
+		# finishing (switching rooms cancels it, which takes a moment) comes
+		# back soon, instead of sitting out a whole interval before the new room
+		# is ever queried. A request that genuinely failed to start has already
+		# bumped the failure counter and keeps the backoff it earns.
+		check_countdown_sec = minf(check_countdown_sec, BUSY_RETRY_SEC)
 
 
 # How long to wait before the next poll.
@@ -193,11 +247,22 @@ func refresh() -> bool:
 	# The User-Agent header is mandatory: this endpoint answers HTTP 412
 	# without it.
 	var headers := PackedStringArray(["User-Agent: " + USER_AGENT])
+	note_request_started()
 	var error := status_request.request(ENDPOINT + target, headers)
 	if error != OK:
+		# Nothing will answer this one after all.
+		request_token = -1
 		_note_failure("开播查询没能启动，等会儿再试试～")
 		return false
 	return true
+
+
+# Records which configuration the answer to the next request belongs to. Called
+# right before a request leaves; reachable on its own so a test can put a
+# request "in flight" without a network round trip and then check what a late
+# answer does to the state.
+func note_request_started() -> void:
+	request_token = intent_token
 
 
 func _on_status_completed(
@@ -206,6 +271,16 @@ func _on_status_completed(
 	_headers: PackedStringArray,
 	body: PackedByteArray
 ) -> void:
+	# An answer is only applied while it still belongs to the configuration it
+	# was asked for. If the user switched rooms, or switched the reminder off, in
+	# the meantime, this one is stale: it must not write resolved_room_id and it
+	# must not raise a reminder. A cancelled request lands here too, so dropping
+	# it silently is also what keeps a room switch from looking like a network
+	# failure.
+	if request_token != intent_token:
+		return
+	request_token = -1
+
 	if result != HTTPRequest.RESULT_SUCCESS:
 		_note_failure("连不上开播接口，等会儿再帮你看看～")
 		return
@@ -235,12 +310,19 @@ func _on_status_completed(
 	manual_check_pending = false
 	stream_updated.emit(status, manual)
 
-	var pending := StreamStatus.should_remind(status, confirmed_key)
+	var ask_key := StreamStatus.session_key(status)
+	# Backstop, not the primary guard: the token check above already drops the
+	# answer that was on its way when the reminder was switched off, so this only
+	# matters if a later change stops invalidating in-flight requests.
+	var pending := enabled and StreamStatus.should_remind(status, confirmed_key)
+	# Whether this broadcast is already being asked about. The first ask is the
+	# one that animates the pet; the repeats only show the question again.
+	var repeated := pending and ask_key == reminder_key
 	if pending:
 		# Nothing is marked as told here on purpose. reminder_key only records
 		# which broadcast is asking, so the next poll asks again until the user
 		# answers, and the question disappears by itself once the broadcast ends.
-		reminder_key = StreamStatus.session_key(status)
+		reminder_key = ask_key
 	else:
 		# Either the room is not broadcasting (which includes the looping state)
 		# or the user already confirmed this broadcast. Dropping the pending key
@@ -255,7 +337,7 @@ func _on_status_completed(
 
 	if not pending:
 		return
-	reminder_due.emit(StreamReplyFormatter.build(status, label))
+	reminder_due.emit(StreamReplyFormatter.build(status, label), repeated)
 
 
 func _current_target() -> String:

@@ -482,7 +482,7 @@ text = "开启开播提醒"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.40, 0.37, 0.46, 1)
 theme_override_font_sizes/font_size = 12
-text = "启动后检查一次，之后每 2 分钟看一次；开播时提醒一次，同一场直播不会重复提醒，关掉桌宠再打开也不会重复。"
+text = "每 2 分钟看一次；开播会提醒你点「知道啦」，没确认就每 30 秒再问，直到这场直播结束。确认过的重开桌宠也不会再提醒。"
 autowrap_mode = 2
 
 [node name="Actions" type="HBoxContainer" parent="StreamBubble/Card/Margin/Content"]

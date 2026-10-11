@@ -327,6 +327,48 @@ func _check_formatter() -> void:
 	)
 
 
+# The settings card describes the reminder, so its wording has to follow the
+# behaviour instead of a hand-written promise. It is generated from the
+# intervals the manager runs at, which is what keeps the two from drifting
+# apart.
+func _check_settings_hint() -> void:
+	check(
+		StreamReplyFormatter.build_settings_hint(120.0, 30.0)
+		== (
+			"每 2 分钟看一次；开播会提醒你点「知道啦」，没确认就每 30 秒再问，"
+			+ "直到这场直播结束。确认过的重开桌宠也不会再提醒。"
+		),
+		"hint_default_wording"
+	)
+	# The claim that used to be here was the opposite of what the code does.
+	check(
+		not StreamReplyFormatter.build_settings_hint(120.0, 30.0).contains(
+			"不会重复提醒"
+		),
+		"hint_does_not_claim_a_single_ask"
+	)
+
+	# Both intervals come from the configuration, so the text has to follow them.
+	check(
+		StreamReplyFormatter.build_settings_hint(180.0, 45.0).contains("每 3 分钟")
+		and StreamReplyFormatter.build_settings_hint(180.0, 45.0).contains("每 45 秒"),
+		"hint_follows_the_configured_intervals"
+	)
+	check(
+		StreamReplyFormatter.build_settings_hint(90.0, 10.0).contains("每 1 分 30 秒")
+		and StreamReplyFormatter.build_settings_hint(90.0, 10.0).contains("每 10 秒"),
+		"hint_below_two_minutes"
+	)
+	check(
+		StreamReplyFormatter.build_settings_hint(150.0, 15.0).contains("每 2 分 30 秒"),
+		"hint_mixed_minutes_and_seconds"
+	)
+	check(
+		StreamReplyFormatter.build_settings_hint(0.0, 0.0).contains("一会儿"),
+		"hint_without_a_usable_interval"
+	)
+
+
 func _run() -> void:
 	_check_room_id_normalization()
 	_check_parsing()
@@ -334,6 +376,7 @@ func _run() -> void:
 	_check_session_key()
 	_check_reminder_rules()
 	_check_formatter()
+	_check_settings_hint()
 
 	if failures.is_empty():
 		print("STREAM_STATUS_SMOKE_OK")
