@@ -8,12 +8,14 @@ const DEFAULT_CHAT := [
 ]
 const DEFAULT_REMINDER_PREFIX := ["唔，好像有什么事。"]
 const DEFAULT_WEATHER_PREFIX := ["外面，是天气的事吗。"]
+const DEFAULT_STREAM_PREFIX := ["唔，我好像听到开播了。"]
 
 var rng := RandomNumberGenerator.new()
 var chat_responses: Array[String] = []
 var chat_nickname_responses: Array[String] = []
 var reminder_prefixes: Array[String] = []
 var weather_prefixes: Array[String] = []
+var stream_prefixes: Array[String] = []
 var fallback_prefixes: Array[String] = []
 
 
@@ -38,6 +40,7 @@ func configure(raw: Dictionary) -> void:
 	chat_nickname_responses = _strings((raw.get("chat", {}) as Dictionary).get("nickname_responses", []))
 	reminder_prefixes = _strings((raw.get("reminder", {}) as Dictionary).get("prefixes", []))
 	weather_prefixes = _strings((raw.get("weather", {}) as Dictionary).get("prefixes", []))
+	stream_prefixes = _strings((raw.get("stream", {}) as Dictionary).get("prefixes", []))
 	fallback_prefixes = _strings((raw.get("fallback", {}) as Dictionary).get("prefixes", []))
 	if chat_responses.is_empty():
 		chat_responses = _strings(DEFAULT_CHAT)
@@ -45,6 +48,8 @@ func configure(raw: Dictionary) -> void:
 		reminder_prefixes = _strings(DEFAULT_REMINDER_PREFIX)
 	if weather_prefixes.is_empty():
 		weather_prefixes = _strings(DEFAULT_WEATHER_PREFIX)
+	if stream_prefixes.is_empty():
+		stream_prefixes = _strings(DEFAULT_STREAM_PREFIX)
 	if fallback_prefixes.is_empty():
 		fallback_prefixes = _strings(reminder_prefixes)
 
@@ -67,6 +72,8 @@ func format_notice(kind: String, original: String) -> String:
 	var prefixes := fallback_prefixes
 	if kind == "weather":
 		prefixes = weather_prefixes
+	elif kind == "stream":
+		prefixes = stream_prefixes
 	elif kind == "reminder":
 		prefixes = reminder_prefixes
 	var prefix := _choose(prefixes)

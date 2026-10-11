@@ -17,6 +17,7 @@ const MENU_ACTION_CATEGORY_BACK := 14
 const MENU_TOGGLE_ROAMING := 15
 const MENU_ACTION_PAGE_UP := 16
 const MENU_ACTION_PAGE_DOWN := 17
+const MENU_STREAM_SETTINGS := 18
 const ACTION_PAGE_SIZE := 6
 const ACTION_CATEGORY_MENU_BASE := 100
 const ACTION_MENU_BASE := 1000
@@ -85,6 +86,7 @@ static func open_settings(
 	context_menu.call("open_menu", [
 		{"id": MENU_NICKNAME, "label": "用户昵称…"},
 		{"id": MENU_WEATHER_SETTINGS, "label": "天气设置…"},
+		{"id": MENU_STREAM_SETTINGS, "label": "开播提醒…"},
 		{"separator": true},
 		{"id": MENU_ACTION_BACK, "label": "← 返回"}
 	], context_menu_anchor, Vector2(760, 420))
