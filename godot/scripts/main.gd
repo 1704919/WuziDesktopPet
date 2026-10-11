@@ -76,6 +76,7 @@ var idle_video_frame := 0
 var idle_video_accum_sec := 0.0
 var idle_runtime_stream: VideoStream
 var video_runtime_enabled := false
+var release_slim := false
 var active_video_action_id := ""
 var active_video_fps := 12.0
 var active_video_frame_count := 0
@@ -241,6 +242,8 @@ func _load_config() -> void:
 		return
 
 	config = parsed as Dictionary
+	# This profile is set only in the isolated release staging project.
+	release_slim = str(config.get("runtime_profile", "dev_full")) == "release_slim"
 
 
 func _load_feature_config() -> void:
@@ -1133,8 +1136,8 @@ func _configure_mouse_passthrough() -> void:
 func _load_clips() -> void:
 	clips.clear()
 	var runtime_cfg := config.get("video_runtime", {}) as Dictionary
-	video_runtime_enabled = bool(runtime_cfg.get("enabled", false))
-	PetClipCatalogLoader.populate(clips, config, video_runtime_enabled)
+	video_runtime_enabled = true if release_slim else bool(runtime_cfg.get("enabled", false))
+	PetClipCatalogLoader.populate(clips, config, video_runtime_enabled, release_slim)
 
 
 func _load_idle_video() -> void:
@@ -1155,7 +1158,12 @@ func _load_idle_video() -> void:
 	if video_runtime_enabled and ResourceLoader.exists(runtime_video_path):
 		idle_runtime_stream = load(runtime_video_path) as VideoStream
 		if idle_runtime_stream == null:
-			push_warning("Failed to load idle runtime video; PNG fallback remains active.")
+			push_warning("Failed to load idle runtime video.")
+
+	if release_slim:
+		# Keep 121-frame timing metadata but do not attempt missing PNG loads.
+		_reset_idle_video()
+		return
 
 	for index in range(frame_count):
 		var path := "%s/%03d.png" % [frames_dir, index]
@@ -1959,7 +1967,14 @@ func _run_clip_sequence(
 		ACTION_VISUAL_FADE_OUT_SEC,
 		ACTION_VISUAL_FADE_IN_SEC
 	) as Dictionary
-	if token != sequence_token or str(result.get("status", "")) != "finished":
+	if token != sequence_token:
+		return
+	if str(result.get("status", "")) == "degraded" and release_slim:
+		# Do not hold a sleeping/roaming action or retry missing PNG frames.
+		action_coordinator.mark_finished(clip_id)
+		_return_to_idle(false)
+		return
+	if str(result.get("status", "")) != "finished":
 		return
 
 	action_coordinator.mark_finished(clip_id)

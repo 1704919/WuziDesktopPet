@@ -4,7 +4,8 @@ extends RefCounted
 static func populate(
 	target: Dictionary,
 	config: Dictionary,
-	video_runtime_enabled: bool
+	video_runtime_enabled: bool,
+	release_slim: bool = false
 ) -> void:
 	var clip_cfg := config.get("clips", {}) as Dictionary
 
@@ -35,8 +36,10 @@ static func populate(
 			for frame_path in configured_paths:
 				frame_paths.append(str(frame_path))
 
+		# Release keeps the first-frame anchor, never a fictitious 121-frame PNG sequence.
+		var paths_to_check := frame_paths.slice(0, 1) if release_slim else frame_paths
 		var valid_paths: Array[String] = []
-		for frame_path_text in frame_paths:
+		for frame_path_text in paths_to_check:
 			if not frame_path_text.begins_with(frames_dir + "/"):
 				push_warning("Skipped frame outside clip directory: %s" % frame_path_text)
 				continue
@@ -62,7 +65,7 @@ static func populate(
 		if video_runtime_enabled and ResourceLoader.exists(runtime_video_path):
 			runtime_stream = load(runtime_video_path) as VideoStream
 			if runtime_stream == null:
-				push_warning("Failed to load runtime video; PNG fallback remains active: %s" % runtime_video_path)
+				push_warning("Failed to load runtime video: %s" % runtime_video_path)
 
 		target[str(clip_id)] = {
 			"frame_paths": valid_paths,
@@ -75,5 +78,6 @@ static func populate(
 			"fps": fps,
 			"frame_count": configured_frame_count if configured_frame_count > 0 else valid_paths.size(),
 			"runtime_video_path": runtime_video_path,
-			"runtime_stream": runtime_stream
+			"runtime_stream": runtime_stream,
+			"release_slim": release_slim
 		}

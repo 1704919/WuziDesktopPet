@@ -111,6 +111,7 @@ func play_clip(
 	fade_in_sec: float
 ) -> Dictionary:
 	var runtime_stream := clip.get("runtime_stream") as VideoStream
+	var release_slim := bool(clip.get("release_slim", false))
 	if video_runtime_enabled and runtime_stream != null:
 		return await _play_runtime_backend(
 			clip,
@@ -122,8 +123,12 @@ func play_clip(
 			reduce_motion,
 			fade_min_alpha,
 			fade_out_sec,
-			fade_in_sec
+			fade_in_sec,
+			release_slim
 		)
+
+	if release_slim:
+		return _degraded_static_result(clip, clip_id)
 
 	return await _play_direct_backend(
 		clip.get("frame_paths", []) as Array,
@@ -152,10 +157,13 @@ func _play_runtime_backend(
 	reduce_motion: bool,
 	fade_min_alpha: float,
 	fade_out_sec: float,
-	fade_in_sec: float
+	fade_in_sec: float,
+	release_slim: bool = false
 ) -> Dictionary:
 	var runtime_stream := clip.get("runtime_stream") as VideoStream
 	if runtime_stream == null:
+		if release_slim:
+			return _degraded_static_result(clip, clip_id)
 		return await _play_direct_backend(
 			clip.get("frame_paths", []) as Array,
 			clip.get("timing_ms", []) as Array,
@@ -195,6 +203,8 @@ func _play_runtime_backend(
 			frame_count,
 			false
 		)):
+			if release_slim:
+				return _degraded_static_result(clip, clip_id)
 			return await _play_direct_backend(
 				clip.get("frame_paths", []) as Array,
 				clip.get("timing_ms", []) as Array,
@@ -216,6 +226,8 @@ func _play_runtime_backend(
 			return _cancelled_result()
 
 		if not pet_video.is_playing():
+			if release_slim:
+				return _degraded_static_result(clip, clip_id)
 			push_warning("Runtime video failed to start; falling back to PNG sequence: %s" % clip_id)
 			hide_runtime_video.call()
 			return await _play_direct_backend(
@@ -263,6 +275,21 @@ func _play_runtime_backend(
 		"status": "finished",
 		"backend": "runtime",
 	}
+
+
+# A slim release has no animated PNG fallback. Restore a stable static frame
+# and let the caller release the action coordinator and return to idle.
+func _degraded_static_result(clip: Dictionary, clip_id: String) -> Dictionary:
+	push_warning("Runtime video unavailable; static fallback: %s" % clip_id)
+	cancel_visual_fade()
+	hide_runtime_video.call()
+	var anchor := clip.get("start_texture") as Texture2D
+	if anchor != null:
+		pet_sprite.texture = anchor
+		pet_sprite.modulate = Color.WHITE
+	pet_sprite_next.texture = null
+	pet_sprite_next.modulate.a = 0.0
+	return {"status": "degraded", "backend": "static"}
 
 
 func _play_direct_backend(

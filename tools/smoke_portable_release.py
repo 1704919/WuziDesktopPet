@@ -1,6 +1,8 @@
 """Smoke-test a Windows portable release in an isolated fresh directory."""
 from __future__ import annotations
 
+import argparse
+
 import hashlib
 import os
 import shutil
@@ -23,24 +25,29 @@ def sha(path: Path) -> str | None:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--zip", type=Path,
+                        default=ROOT / "dist" / "WuziDesktopPet-v0.1.0-win64.zip")
+    args = parser.parse_args()
     production_before = sha(PRODUCTION_SETTINGS)
     log_dir = ROOT / "work"
     log_dir.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="wuzi_portable_release_") as tmp:
         destination = Path(tmp)
-        release_zip = ROOT / "dist" / "WuziDesktopPet-v0.1.0-win64.zip"
+        release_zip = args.zip.resolve()
         if not release_zip.is_file():
             raise RuntimeError("Portable ZIP must exist before the smoke test")
         with zipfile.ZipFile(release_zip, "r") as bundle:
             bundle.extractall(destination)
-        folder = destination / "WuziDesktopPet-v0.1.0-win64"
+        folder = destination / release_zip.stem
         for needed in [
             folder / "舞梓桌宠.exe", folder / "舞梓桌宠.pck",
             folder / "native" / "wuzi_file_bridge.exe",
         ]:
             if not needed.is_file():
                 raise RuntimeError("Unpacked release is incomplete: " + str(needed))
-        user_name = "WuziPetReleaseSmoke_20261010"
+        user_name = ("WuziPetReleaseSmoke_20261010" if "v0.1.0" in release_zip.stem
+                     else "WuziPetSlimCandidateSmoke_20261010")
         (folder / "override.cfg").write_text(
             "[application]\nconfig/use_custom_user_dir=true\n"
             f'config/custom_user_dir_name="{user_name}"\n',
@@ -55,7 +62,7 @@ def main() -> int:
             ("gui", ["--quit-after", "180"]),
         ]
         for name, arguments in cases:
-            log = log_dir / ("portable_release_" + name + ".log")
+            log = log_dir / ("portable_release_" + release_zip.stem + "_" + name + ".log")
             command = [
                 str(folder / "舞梓桌宠.exe"),
                 "--log-file", str(log), *arguments,
