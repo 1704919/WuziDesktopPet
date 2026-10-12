@@ -4,12 +4,8 @@
 
 ```text
 godot/
-├─ assets_display/wuzi_chibi/
-│  ├─ video_idle/              待机视频处理帧
-│  ├─ video_click_happy/       点击开心处理帧
-│  ├─ video_click_shy/         点击害羞处理帧
-│  ├─ video_march_in_place/    原地踏步处理帧
-│  └─ video_sleepy/            打瞌睡处理帧
+├─ assets_display/wuzi_chibi/  （本地开发目录，公开仓库不包含）
+│  └─ video_*/                 动作 OGV 视频及开发用 PNG 帧
 ├─ config/
 │  ├─ pet_behavior.json
 │  ├─ dialogue.json          阶段二本地规则和回复池
@@ -19,13 +15,13 @@ godot/
 ├─ scripts/
 └─ tests/
 
-分享区/Q版/
+分享区/Q版/                       （本地开发目录，公开仓库不包含）
 ├─ master.png                  角色身份参考
 ├─ 角色标准包/                 AI 视频生成时的身份与结构参考
 └─ 绿幕视频/                   当前正式 MP4 与动作提示词
 ```
 
-正式动画资源由 `godot/assets_display/wuzi_chibi/video_*/runtime_alpha.ogv` 优先播放，必要时回退到同目录的 `frames/` 透明 PNG 序列。两者都来自视频构建器；旧静态关键帧不参与运行。公开源码仓库默认不包含这些动画产物（见 `docs/ASSET_POLICY.md`）。
+Windows v0.1.1-rc2 轻量运行包包含 **38 组透明 OGV 动画**（`runtime_alpha.ogv`）和静态首帧，使用 OGV 播放，不包含原始 MP4 或完整 PNG 帧序列。公开源码仓库不包含动画二进制资源。
 
 ## 处理工具
 
@@ -35,8 +31,8 @@ godot/
 
 ## 参考资料
 
-`assets/references/` 保留为角色与动作参考，不参与正式运行。
+`assets/references/` 属于本地开发环境，未包含在公开仓库中；用于角色与动作参考，不参与正式运行。
 
 ## 归档
 
-`archive/cleanup_20261003/` 保存退出正式路径的旧内容。**当前运行代码不得引用归档目录。**
+`archive/cleanup_20261003/` 属于本地开发环境，未包含在公开仓库中；用于旧内容归档，正式运行不使用。
