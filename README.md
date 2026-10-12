@@ -6,7 +6,7 @@
 
 ## 如何使用
 
-1. 下载上面的 `WuziDesktopPet-v0.1.0-win64.zip`（约 96 MiB）。
+1. 下载上面的 `WuziDesktopPet-v0.1.1-rc2-win64.zip`（约 91.69 MiB）。
 2. 将 ZIP **完整解压**到任意文件夹，不要直接在压缩包里启动。
 3. 双击 `舞梓桌宠.exe`。
 
@@ -43,6 +43,14 @@ Windows 原生文件处理组件的源码位于 `tools/native/file_bridge.cpp`�
 - **舞梓／阿梓的角色形象、相关设计及衍生动画不属于源码 MIT 授权范围**；相关权利归各自合法权利人所有。
 - 这是非官方粉丝二创作品，不代表角色权利人或任何官方组织。
 - Godot 引擎及其他实际分发组件依各自许可证使用。
+
+**v0.1.1-rc2 Windows ZIP SHA-256：**
+
+```text
+5379436c02bf0d0659942bfc29f4588af40292fb8571270274e97b7bf33cb11f
+```
+
+PowerShell 校验：`Get-FileHash .\WuziDesktopPet-v0.1.1-rc2-win64.zip -Algorithm SHA256`。
 
 **v0.1.0 Windows ZIP SHA-256：**
 
