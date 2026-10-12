@@ -6,7 +6,7 @@
 
 ## 如何使用
 
-1. 下载上面的 `WuziDesktopPet-v0.1.0-win64.zip`（约 352 MiB）。
+1. 下载上面的 `WuziDesktopPet-v0.1.0-win64.zip`（约 96 MiB）。
 2. 将 ZIP **完整解压**到任意文件夹，不要直接在压缩包里启动。
 3. 双击 `舞梓桌宠.exe`。
 
