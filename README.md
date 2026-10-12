@@ -2,7 +2,7 @@
 
 基于 **Godot 4.7** 开发的 Windows 桌面宠物。舞梓会随机活动、和你互动，也能帮助处理图片和批量重命名文件。
 
-**[下载 Windows 64 位完整版 v0.1.0](https://github.com/1704919/WuziDesktopPet/releases/download/v0.1.0/WuziDesktopPet-v0.1.0-win64.zip)** · [查看版本说明](https://github.com/1704919/WuziDesktopPet/releases/tag/v0.1.0)
+**[下载 Windows 64 位最新版 v0.1.1-rc2](https://github.com/1704919/WuziDesktopPet/releases/download/v0.1.1-rc2/WuziDesktopPet-v0.1.1-rc2-win64.zip)** · [查看版本说明](https://github.com/1704919/WuziDesktopPet/releases/tag/v0.1.1-rc2)
 
 ## 如何使用
 
@@ -19,6 +19,7 @@
 - **本地对话**：离线关键词聊天、昵称、彩蛋、情绪回答和动作联动；不需要配置云端 AI API。
 - **文件处理**：批量重命名，PNG／JPG／WebP 格式转换、预览及重名冲突保护；HEIC 能力依赖 Windows 系统图片组件。
 - **生活提醒**：喝水、吃饭及可选天气提醒；天气查询使用 Open-Meteo 网络服务。
+- **Bilibili 开播提醒**：在右键「设置… → 开播提醒…」中填写直播间号并启用；定期检测开播，通过气泡提示，点击「知道啦」后同一场直播不再重复提醒；默认关闭。
 
 完整版包含 **38 组已处理的运行时动画**。
 
