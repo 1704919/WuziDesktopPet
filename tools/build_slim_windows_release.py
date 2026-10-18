@@ -20,7 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "godot"
 WORK = ROOT / "work"
-VERSION = os.environ.get("WUZI_RELEASE_VERSION", "v0.1.1-rc2")
+VERSION = os.environ.get("WUZI_RELEASE_VERSION", "v0.1.1-rc3")
 if not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+(?:-rc[0-9]+)?", VERSION):
     raise ValueError("Invalid WUZI_RELEASE_VERSION")
 STAGE = WORK / ("release_slim_staging_" + VERSION)
