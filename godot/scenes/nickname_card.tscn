@@ -71,15 +71,11 @@ content_margin_right = 20.0
 content_margin_top = 10.0
 content_margin_bottom = 10.0
 
-[node name="NicknameCard" type="Control"]
+[node name="NicknameCard" type="Window"]
 visible = false
-z_index = 120
-offset_left = 34.0
-offset_top = 122.0
-offset_right = 406.0
-offset_bottom = 342.0
-mouse_filter = 0
+size = Vector2i(372, 220)
 script = ExtResource("1_nickname")
+anchor_position = Vector2i(34, 122)
 
 [node name="Card" type="PanelContainer" parent="."]
 anchors_preset = 15

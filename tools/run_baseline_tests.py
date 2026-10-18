@@ -45,6 +45,7 @@ OFFLINE_TESTS = {
     "bubble_layout_smoke": "BUBBLE_LAYOUT_SMOKE_OK",
     "bubble_passthrough_smoke": "PASSTHROUGH_BUBBLE_SMOKE_OK",
     "ui_smoke": "UI_BUBBLE_SMOKE_OK",
+    "frameless_window_smoke": "FRAMELESS_WINDOW_SMOKE_OK",
     "weather_reminder_smoke": "WEATHER_REMINDER_SMOKE_OK",
     "stream_status_smoke": "STREAM_STATUS_SMOKE_OK",
     "stream_reminder_integration_smoke": "STREAM_REMINDER_INTEGRATION_SMOKE_OK",

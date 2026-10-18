@@ -270,7 +270,7 @@ func _check_room_switch_through_the_card() -> void:
 	# no request at all, which is what keeps this case offline and deterministic.
 	main.call("_open_stream_window")
 	await process_frame
-	var card: Control = main.get_node("StreamBubble")
+	var card: Window = main.get_node("StreamBubble")
 	var room_field: LineEdit = main.get_node("StreamBubble/Card/Margin/Content/Room")
 	var toggle: CheckButton = main.get_node("StreamBubble/Card/Margin/Content/Enabled")
 	check(card.visible, "settings_card_opens")
@@ -356,7 +356,7 @@ func _check_settings_text() -> void:
 	main.call("_open_stream_window")
 	await process_frame
 	await process_frame
-	# The card animates open; measure once it has settled.
+	# Allow wrapped text and the containing native window to finish layout.
 	await create_timer(0.4).timeout
 	var hint: Label = main.get_node("StreamBubble/Card/Margin/Content/Hint")
 	var cadence := StreamReplyFormatter.build_settings_hint(
@@ -372,15 +372,17 @@ func _check_settings_text() -> void:
 	check(not hint.text.contains("不会重复提醒"), "hint_drops_the_once_only_claim")
 	check(not hint.text.contains("提醒一次"), "hint_drops_the_single_ask_claim")
 
-	# The card is a fixed size and its content box grows to fit the text, so a
-	# wording that is one line too long would push the buttons past the panel.
-	var card: Control = main.get_node("StreamBubble")
+	# Measure against the actual native window, not the growing content box:
+	# the previous embedded card could pass a minimum-size check while clipped.
+	var card: Window = main.get_node("StreamBubble")
 	var content: Control = main.get_node("StreamBubble/Card/Margin/Content")
 	print(
 		"STREAM_HINT_CARD card=%s lines=%s content=%s"
 		% [card.size.y, hint.get_line_count(), content.size.y]
 	)
-	check(content.size.y <= card.size.y, "hint_still_fits_the_card")
+	check(Rect2(Vector2.ZERO, Vector2(card.size)).encloses(content.get_global_rect()), "content_fully_inside_window")
+	var save_button: Control = main.get_node("StreamBubble/Card/Margin/Content/Actions/Save")
+	check(Rect2(Vector2.ZERO, Vector2(card.size)).encloses(save_button.get_global_rect()), "save_button_fully_inside_window")
 
 
 func _finish() -> void:

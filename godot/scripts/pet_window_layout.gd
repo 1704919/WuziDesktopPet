@@ -1,5 +1,6 @@
 extends RefCounted
 
+const WindowsWindowPolicy = preload("res://scripts/windows_window_policy.gd")
 const WINDOW_LAYOUT_VERSION := 2
 const LEGACY_PET_X := 210.0
 
@@ -53,6 +54,7 @@ static func configure(
 			initial_pos = candidate
 
 	DisplayServer.window_set_position(initial_pos)
+	WindowsWindowPolicy.hide_from_taskbar(viewport.get_window())
 
 	if migrated or layout_version != WINDOW_LAYOUT_VERSION:
 		settings_store.set_value(

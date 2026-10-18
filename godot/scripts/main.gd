@@ -31,7 +31,7 @@ var dream_talk_manager := DreamTalkManager.new()
 var dynamic_hit_shape_manager := DynamicHitShapeManager.new()
 var roaming_controller := PetRoamingController.new()
 var animation_playback := PetAnimationPlayback.new()
-var nickname_card: Control
+var nickname_card: Window
 var batch_file_window: Window
 
 @onready var pet_visual: Node2D = $PetVisual
@@ -41,16 +41,16 @@ var batch_file_window: Window
 @onready var pet_video: VideoStreamPlayer = $PetVisual/BodyPivot/PetVideo
 @onready var bubble = $Bubble
 @onready var context_menu: Control = $ContextBubble
-@onready var command_bubble: Control = $CommandBubble
+@onready var command_bubble: Window = $CommandBubble
 @onready var command_input: LineEdit = $CommandBubble/Card/Margin/Content/CommandInput
 @onready var command_cancel: Button = $CommandBubble/Card/Margin/Content/Actions/Cancel
 @onready var command_send: Button = $CommandBubble/Card/Margin/Content/Actions/Send
-@onready var weather_bubble: Control = $WeatherBubble
+@onready var weather_bubble: Window = $WeatherBubble
 @onready var weather_city: LineEdit = $WeatherBubble/Card/Margin/Content/City
 @onready var weather_enabled: CheckButton = $WeatherBubble/Card/Margin/Content/Enabled
 @onready var weather_cancel: Button = $WeatherBubble/Card/Margin/Content/Actions/Cancel
 @onready var weather_save: Button = $WeatherBubble/Card/Margin/Content/Actions/Save
-@onready var stream_bubble: Control = $StreamBubble
+@onready var stream_bubble: Window = $StreamBubble
 @onready var stream_room: LineEdit = $StreamBubble/Card/Margin/Content/Room
 @onready var stream_streamer: LineEdit = $StreamBubble/Card/Margin/Content/Streamer
 @onready var stream_enabled: CheckButton = $StreamBubble/Card/Margin/Content/Enabled
@@ -1097,14 +1097,6 @@ func _visible_ui_passthrough_rects() -> Array[Rect2]:
 		rects.append(bubble.call("get_window_bounds") as Rect2)
 	if context_menu.visible:
 		rects.append(context_menu.get_global_rect())
-	if command_bubble.visible:
-		rects.append(command_bubble.get_global_rect())
-	if weather_bubble.visible:
-		rects.append(weather_bubble.get_global_rect())
-	if stream_bubble.visible:
-		rects.append(stream_bubble.get_global_rect())
-	if is_instance_valid(nickname_card) and nickname_card.visible:
-		rects.append(nickname_card.get_global_rect())
 	if mood_indicator.visible:
 		rects.append(mood_indicator.get_global_rect())
 	return rects

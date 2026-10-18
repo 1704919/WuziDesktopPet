@@ -8,6 +8,7 @@ const WindowsFileBridge = preload("res://scripts/windows_file_bridge.gd")
 const BatchWorkbenchTheme = preload("res://scripts/batch_workbench_theme.gd")
 const BatchWorkbenchUI = preload("res://scripts/batch_workbench_ui.gd")
 const BatchWorkbenchFilePicker = preload("res://scripts/batch_workbench_file_picker.gd")
+const FramelessWindow = preload("res://scripts/frameless_window.gd")
 
 var file_drop_manager: Node
 var planner := FileOperationPlanner.new()
@@ -58,13 +59,16 @@ var output_folder_dialog: FileDialog
 
 func _ready() -> void:
 	title = "舞梓 · 文件处理"
-	size = Vector2i(1060, 700)
-	min_size = Vector2i(900, 600)
+	var available := FramelessWindow.usable_rect(self).size
+	min_size = Vector2i(900, 600).min(available)
+	size = Vector2i(1060, 700).min(available)
 	always_on_top = false
 	transient = false
 	exclusive = false
+	FramelessWindow.configure(self)
 	close_requested.connect(_close_workbench)
 	_build_ui()
+	FramelessWindow.add_resize_grip(self)
 	_build_dialogs()
 	capabilities = WindowsFileBridge.run("caps")
 	_update_capability_label()
@@ -113,8 +117,8 @@ func _show_workbench() -> void:
 		var usable := DisplayServer.screen_get_usable_rect(current_screen)
 		if usable.size.x > 0 and usable.size.y > 0:
 			position = usable.position + (usable.size - size) / 2
-	show()
-	grab_focus()
+	position = FramelessWindow.clamp_position(self, position)
+	FramelessWindow.show_window(self)
 
 
 func _build_ui() -> void:
@@ -137,23 +141,35 @@ func _build_ui() -> void:
 	margin.add_child(root_box)
 
 	var header := HBoxContainer.new()
+	header.name = "DragHeader"
 	header.add_theme_constant_override("separation", 10)
 	root_box.add_child(header)
+	FramelessWindow.bind_drag_handle(header, self)
 
 	var title_label := Label.new()
 	title_label.text = "文件处理"
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.add_theme_font_size_override("font_size", 24)
 	title_label.add_theme_color_override("font_color", Color(0.18, 0.14, 0.25))
 	header.add_child(title_label)
 
 	var header_spacer := Control.new()
+	header_spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(header_spacer)
 
 	count_label = Label.new()
 	count_label.text = "0 个文件"
+	count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	count_label.add_theme_color_override("font_color", Color(0.42, 0.37, 0.52))
 	header.add_child(count_label)
+	var close_header := Button.new()
+	close_header.text = "×"
+	close_header.tooltip_text = "关闭文件处理"
+	close_header.custom_minimum_size = Vector2(32, 32)
+	close_header.flat = true
+	close_header.pressed.connect(_close_workbench)
+	header.add_child(close_header)
 
 	var toolbar := HBoxContainer.new()
 	toolbar.add_theme_constant_override("separation", 8)
@@ -408,6 +424,10 @@ func _build_dialogs() -> void:
 	confirmation.cancel_button_text = "返回预览"
 	confirmation.confirmed.connect(_confirm_execution)
 	add_child(confirmation)
+	# Keep the confirmation modal while removing the engine's native title bar.
+	confirmation.borderless = true
+	confirmation.theme = BatchWorkbenchTheme.workbench_theme()
+	FramelessWindow.bind_drag_handle(confirmation.get_label(), confirmation)
 
 
 func _open_add_files() -> void:

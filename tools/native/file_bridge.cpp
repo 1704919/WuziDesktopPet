@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <string>
 #include <vector>
+#include "window_style.h"
 using Microsoft::WRL::ComPtr;
 
 static HRESULT transcode(IWICImagingFactory* factory, const wchar_t* source,
@@ -88,7 +89,9 @@ int wmain(int argc, wchar_t** argv) {
     HRESULT init = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     HRESULT hr = E_INVALIDARG;
     std::wstring op = argc > 1 ? argv[1] : L"";
-    if (op == L"move" && argc == 4) {
+    if (op == L"window-style" && argc == 4) {
+        hr = hideWindowFromTaskbar(argv[2], argv[3]);
+    } else if (op == L"move" && argc == 4) {
         // Deliberately omit MOVEFILE_REPLACE_EXISTING and COPY_ALLOWED.
         hr = MoveFileExW(argv[2], argv[3], MOVEFILE_WRITE_THROUGH) ? S_OK : HRESULT_FROM_WIN32(GetLastError());
     } else if (op == L"copy" && argc == 4) {

@@ -14,7 +14,7 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 
-	var command: Control = scene.get_node("CommandBubble")
+	var command: Window = scene.get_node("CommandBubble")
 	if not command.visible:
 		push_error("COMMAND_BUBBLE_PREVIEW_FAILED")
 		quit(2)

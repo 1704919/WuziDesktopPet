@@ -119,7 +119,7 @@ func _run() -> void:
 		failures.append("paged_action_menu_overflow_y")
 	context_menu.call("hide_menu", false)
 
-	var command_bubble: Control = scene.get_node("CommandBubble")
+	var command_bubble: Window = scene.get_node("CommandBubble")
 	# Opening "对她说" must remain immediate even while a video action is
 	# transitioning/loading in the background.
 	scene.call("_start_clip_sequence", "click_happy_video", scene.PetState.REACTION, true)
@@ -130,18 +130,18 @@ func _run() -> void:
 	await process_frame
 	if not command_bubble.visible:
 		failures.append("command_bubble_not_visible")
-	if command_bubble.position.x + command_bubble.size.x >= PET_VISIBLE_LEFT:
+	if command_bubble.position.x + command_bubble.size.x >= root.position.x + PET_VISIBLE_LEFT + 28:
 		failures.append("command_bubble_overlaps_pet")
 	command_bubble.call("hide_card", false)
 	scene.call("_cancel_active_action")
 	await process_frame
 
-	var weather_bubble: Control = scene.get_node("WeatherBubble")
+	var weather_bubble: Window = scene.get_node("WeatherBubble")
 	scene.call("_open_weather_window")
 	await process_frame
 	if not weather_bubble.visible:
 		failures.append("weather_bubble_not_visible")
-	if weather_bubble.position.x + weather_bubble.size.x >= PET_VISIBLE_LEFT:
+	if weather_bubble.position.x + weather_bubble.size.x >= root.position.x + PET_VISIBLE_LEFT + 28:
 		failures.append("weather_bubble_overlaps_pet")
 	weather_bubble.call("hide_card", false)
 

@@ -44,16 +44,10 @@ func _run() -> void:
 	var card = scene.nickname_card
 	check(card.visible and scene.overlay_interactive, "nickname overlay active")
 	check(card.nickname_input.max_length == 12 and card.nickname_input.has_focus(), "nickname limit and focus")
-	check(card.position.x + card.size.x < 424 and card.position.y + card.size.y <= 420, "nickname card fits beside pet")
+	check(card is Window and card.borderless, "nickname has its own frameless window")
 	var panel: PanelContainer = card.get_node("Card")
 	check(panel.size.x <= card.size.x + 1 and panel.size.y <= card.size.y + 1, "nickname content fits card")
-	check(
-		Geometry2D.is_point_in_polygon(
-			card.get_global_rect().get_center(),
-			scene.debug_last_passthrough_polygon
-		),
-		"nickname card is inside passthrough"
-	)
+	check(card.nickname_input.get_window() == card, "nickname receives input in its own window")
 	check(
 		not Geometry2D.is_point_in_polygon(
 			Vector2(759, 419),

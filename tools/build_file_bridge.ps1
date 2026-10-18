@@ -16,7 +16,7 @@ try {
 @echo off
 call "$vcvars" >nul
 if errorlevel 1 exit /b 1
-cl /nologo /std:c++17 /EHsc /O2 /MT /DUNICODE /D_UNICODE ../../tools/native/file_bridge.cpp /Fe:../../godot/native/wuzi_file_bridge.exe /link ole32.lib oleaut32.lib windowscodecs.lib shlwapi.lib
+cl /nologo /std:c++17 /EHsc /O2 /MT /DUNICODE /D_UNICODE ../../tools/native/file_bridge.cpp /Fe:../../godot/native/wuzi_file_bridge.exe /link ole32.lib oleaut32.lib windowscodecs.lib shlwapi.lib user32.lib
 "@ | Set-Content -LiteralPath 'build.cmd' -Encoding ascii
     & $env:ComSpec /d /c build.cmd
     if ($LASTEXITCODE -ne 0) { throw "C++ build failed: $LASTEXITCODE" }

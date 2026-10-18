@@ -251,15 +251,11 @@ theme_override_constants/margin_bottom = 8
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="CommandBubble" type="Control" parent="."]
+[node name="CommandBubble" type="Window" parent="."]
 visible = false
-z_index = 120
-offset_left = 116.0
-offset_top = 108.0
-offset_right = 422.0
-offset_bottom = 242.0
-mouse_filter = 0
+size = Vector2i(306, 134)
 script = ExtResource("9_popup")
+anchor_position = Vector2i(116, 108)
 
 [node name="Card" type="PanelContainer" parent="CommandBubble"]
 anchors_preset = 15
@@ -319,15 +315,11 @@ theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("PrimaryButton")
 text = "发送"
 
-[node name="WeatherBubble" type="Control" parent="."]
+[node name="WeatherBubble" type="Window" parent="."]
 visible = false
-z_index = 120
-offset_left = 14.0
-offset_top = 48.0
-offset_right = 414.0
-offset_bottom = 356.0
-mouse_filter = 0
+size = Vector2i(400, 308)
 script = ExtResource("9_popup")
+anchor_position = Vector2i(14, 48)
 
 [node name="Card" type="PanelContainer" parent="WeatherBubble"]
 anchors_preset = 15
@@ -406,15 +398,11 @@ theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("PrimaryButton")
 text = "保存并获取"
 
-[node name="StreamBubble" type="Control" parent="."]
+[node name="StreamBubble" type="Window" parent="."]
 visible = false
-z_index = 120
-offset_left = 14.0
-offset_top = 48.0
-offset_right = 414.0
-offset_bottom = 386.0
-mouse_filter = 0
+size = Vector2i(400, 338)
 script = ExtResource("9_popup")
+anchor_position = Vector2i(14, 48)
 
 [node name="Card" type="PanelContainer" parent="StreamBubble"]
 anchors_preset = 15
