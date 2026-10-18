@@ -2,11 +2,11 @@
 
 基于 **Godot 4.7** 开发的 Windows 桌面宠物。舞梓会随机活动、和你互动，也能帮助处理图片和批量重命名文件。
 
-**[下载 Windows 64 位最新版 v0.1.1-rc2](https://github.com/1704919/WuziDesktopPet/releases/download/v0.1.1-rc2/WuziDesktopPet-v0.1.1-rc2-win64.zip)** · [查看版本说明](https://github.com/1704919/WuziDesktopPet/releases/tag/v0.1.1-rc2)
+**[下载 Windows 64 位最新版 v0.1.1-rc3](https://github.com/1704919/WuziDesktopPet/releases/download/v0.1.1-rc3/WuziDesktopPet-v0.1.1-rc3-win64.zip)** · [查看版本说明](https://github.com/1704919/WuziDesktopPet/releases/tag/v0.1.1-rc3)
 
 ## 如何使用
 
-1. 下载上面的 `WuziDesktopPet-v0.1.1-rc2-win64.zip`（约 91.69 MiB）。
+1. 下载上面的 `WuziDesktopPet-v0.1.1-rc3-win64.zip`（约 91.70 MiB）。
 2. 将 ZIP **完整解压**到任意文件夹，不要直接在压缩包里启动。
 3. 双击 `舞梓桌宠.exe`。
 
@@ -15,6 +15,7 @@
 ## 功能介绍
 
 - **桌面陪伴**：透明动画、点击 Q 弹、拖动／抛掷、右键动作点播、桌面漫游。
+- **窗口交互**：桌宠与自定义面板不占用任务栏入口；聊天、天气、开播提醒和昵称设置窗口可拖动，文件处理工作台可调整大小。
 - **自主行为**：26 种加权随机日常动作，独立打瞌睡与睡眠系统；可以暂停自主行为。
 - **本地对话**：离线关键词聊天、昵称、彩蛋、情绪回答和动作联动；不需要配置云端 AI API。
 - **文件处理**：批量重命名，PNG／JPG／WebP 格式转换、预览及重名冲突保护；HEIC 能力依赖 Windows 系统图片组件。
@@ -43,6 +44,14 @@ Windows 原生文件处理组件的源码位于 `tools/native/file_bridge.cpp`�
 - **舞梓／阿梓的角色形象、相关设计及衍生动画不属于源码 MIT 授权范围**；相关权利归各自合法权利人所有。
 - 这是非官方粉丝二创作品，不代表角色权利人或任何官方组织。
 - Godot 引擎及其他实际分发组件依各自许可证使用。
+
+**v0.1.1-rc3 Windows ZIP SHA-256：**
+
+```text
+e980735a99bbe7acb22db5777ba457e72157b00df2c5aa893fd2cdae990ffcab
+```
+
+PowerShell 校验：`Get-FileHash .\WuziDesktopPet-v0.1.1-rc3-win64.zip -Algorithm SHA256`。
 
 **v0.1.1-rc2 Windows ZIP SHA-256：**
 

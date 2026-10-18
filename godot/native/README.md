@@ -11,4 +11,4 @@
 
 重建：在项目根目录运行 `tools/build_file_bridge.ps1`，需要 Visual Studio C++ Build Tools 和 Windows SDK。编译时静态链接 MSVC 运行库；最终用户不需要安装编译工具。
 
-当前仍按项目目录启动。以后导出 Godot 程序时，必须将本文件夹中的 exe 作为外置文件复制到桌宠 exe 旁的 `native/` 子目录，不能只收入 PCK。运行时缺少组件会拒绝文件执行。系统 HEIC 能力与电脑已安装的 Windows 图片组件有关，不保证所有 Windows 电脑都具有相同能力。
+Windows 便携版已独立发布。打包时必须将 `wuzi_file_bridge.exe` 作为外置文件放入桌宠 EXE 同级的 `native/` 子目录，不能只收入 PCK。运行时缺少组件会拒绝文件处理操作。系统 HEIC 能力与电脑已安装的 Windows 图片组件有关，不保证所有 Windows 电脑都具有相同能力。
